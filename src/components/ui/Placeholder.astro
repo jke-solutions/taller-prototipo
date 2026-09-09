@@ -1,0 +1,91 @@
+---
+/**
+ * Placeholder de imagen: caja de color con un ícono de línea centrado y una
+ * etiqueta chica abajo que dice qué foto va ahí. Se usa mientras no hay
+ * fotografía real (brief → "Assets" y "Cuando lleguen las fotos reales").
+ *
+ * Si se le pasa `image` (URL remota / CDN), monta un <LazyImage> encima: la
+ * caja de color queda de fondo reservando el espacio y la foto entra con
+ * carga diferida por scroll cuando está por aparecer en pantalla.
+ * Para imágenes locales de src/assets usar <Image> de astro:assets.
+ */
+import Icon from './Icon.astro';
+import LazyImage from './LazyImage.astro';
+import type { IconName } from './icons';
+import type { BrandColor } from '@data/categories';
+
+interface Props {
+  icon: IconName;
+  /** Texto de la etiqueta inferior, ej. "Foto del producto". */
+  label: string;
+  /**
+   * Tinte de fondo. 'cream' (default, como la Variación 6) o un color de
+   * marca para un tinte suave de esa categoría.
+   */
+  color?: 'cream' | BrandColor;
+  /** Proporción, ej. "1/1" (default), "4/5". */
+  ratio?: string;
+  /** % del ancho que ocupa el ícono. Default 30. */
+  iconScale?: number;
+  /** Foto real opcional (CDN). Si se pasa, se carga diferida por scroll. */
+  image?: { src: string; alt: string; srcset?: string; sizes?: string; eager?: boolean };
+  class?: string;
+}
+
+const {
+  icon,
+  label,
+  color = 'cream',
+  ratio = '1 / 1',
+  iconScale = 30,
+  image,
+  class: className,
+} = Astro.props;
+
+const brandVar: Record<BrandColor, string> = {
+  teal: 'var(--teal)',
+  gold: 'var(--gold)',
+  olive: 'var(--olive)',
+  coral: 'var(--coral)',
+  violet: 'var(--violet)',
+};
+
+const bg =
+  color === 'cream'
+    ? 'var(--cream)'
+    : `color-mix(in oklch, ${brandVar[color]} 16%, white)`;
+const iconColor = color === 'cream' ? 'var(--muted)' : brandVar[color];
+---
+
+<div
+  class:list={['relative flex items-center justify-center overflow-hidden rounded-card', className]}
+  style={`aspect-ratio:${ratio}; background:${bg};`}
+  role="img"
+  aria-label={image ? undefined : `Espacio para ${label.toLowerCase()}`}
+>
+  <div style={`width:${iconScale}%; color:${iconColor};`}>
+    <Icon name={icon} size={0} class="w-full h-auto" />
+  </div>
+  <span
+    class="absolute bottom-[10px] left-1/2 -translate-x-1/2 whitespace-nowrap font-body text-[11px] font-bold uppercase tracking-[0.05em]"
+    style="color:color-mix(in oklch, var(--ink) 55%, transparent);"
+  >
+    {label}
+  </span>
+
+  {
+    image && (
+      <LazyImage
+        src={image.src}
+        alt={image.alt}
+        srcset={image.srcset}
+        sizes={image.sizes}
+        eager={image.eager}
+        ratio={ratio}
+        class="absolute inset-0 h-full w-full rounded-none bg-transparent"
+      />
+    )
+  }
+
+  <slot />
+</div>

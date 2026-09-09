@@ -1,0 +1,47 @@
+---
+/**
+ * Tarjeta de categoría del Home. Toda la tarjeta es un link.
+ * El color de marca de la categoría tiñe el círculo del ícono y el contador
+ * (vía currentColor); el resto del texto usa los colores del sistema.
+ * Ref. visual: .f-cat de la variante F.
+ */
+import Icon from '@components/ui/Icon.astro';
+import type { Category, BrandColor } from '@data/categories';
+
+interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+
+const brandVar: Record<BrandColor, string> = {
+  teal: 'var(--teal)',
+  gold: 'var(--gold)',
+  olive: 'var(--olive)',
+  coral: 'var(--coral)',
+  violet: 'var(--violet)',
+};
+---
+
+<a
+  href={category.href}
+  class="f-cat group flex h-full flex-col items-center justify-center text-center gap-[18px] px-7 py-12 min-h-[420px] sm:min-h-[560px] border border-border sm:border-0 sm:border-r sm:last:border-r-0 rounded-card sm:rounded-none transition-colors hover:bg-cream"
+  style={`color:${brandVar[category.color]};`}
+>
+  <span
+    class="flex items-center justify-center w-[84px] h-[84px] rounded-full border-1.5"
+    style="border-color:currentColor;"
+  >
+    <Icon name={category.icon} size={36} />
+  </span>
+  <h3 class="font-display text-[21px] text-ink">{category.name}</h3>
+  <p class="font-body text-[14.5px] text-muted max-w-[240px]">{category.description}</p>
+  <span class="font-body text-[12px] font-extrabold uppercase tracking-[0.04em]">
+    {category.pieces} piezas
+  </span>
+  <span
+    class="font-body text-[13px] font-bold text-ink underline underline-offset-[3px] mt-[2px]"
+  >
+    Ver colección
+  </span>
+</a>

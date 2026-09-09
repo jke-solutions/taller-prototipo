@@ -1,0 +1,60 @@
+---
+/**
+ * "Explora por categoría" — rótulo + tarjetas grandes separadas por líneas
+ * finas sobre fondo blanco.
+ *
+ * Desktop (>=640px): grid auto-fit que se acomoda solo a la cantidad de
+ * categorías. Mobile (<640px): slider horizontal automático (scroll-snap +
+ * autoplay) con puntos de paginación.
+ * Ref. visual: .f-cats de la variante F.
+ */
+import SectionLabel from '@components/ui/SectionLabel.astro';
+import CategoryCard from './CategoryCard.astro';
+import { categories as categoriesDefault, type Category } from '@data/categories';
+
+interface Props {
+  eyebrow?: string;
+  categories?: Category[];
+}
+
+const { eyebrow = 'Explora por categoría', categories = categoriesDefault } = Astro.props;
+---
+
+<section>
+  <SectionLabel eyebrow={eyebrow} withBorderTop />
+
+  <div data-rcarousel data-bp="640" data-interval="5000">
+    <div
+      class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto border-y border-border bg-white px-5 pb-4 sm:grid sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] sm:gap-0 sm:overflow-visible sm:px-0 sm:pb-0"
+      data-track
+    >
+      {
+        categories.map((category) => (
+          <div class="shrink-0 basis-[82%] snap-start sm:contents" data-slide>
+            <CategoryCard category={category} />
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-4 flex justify-center gap-2 sm:hidden" data-dots>
+      {
+        categories.map((_, i) => (
+          <button
+            type="button"
+            class="h-[7px] rounded-full bg-border transition-all data-[active]:bg-maroon"
+            style="width:7px;"
+            aria-label={`Ir a la categoría ${i + 1}`}
+            data-dot
+            data-index={i}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initAllResponsiveCarousels } from '@/scripts/responsiveCarousel';
+  initAllResponsiveCarousels();
+</script>

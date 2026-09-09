@@ -1,0 +1,55 @@
+---
+/**
+ * "Conoce el taller" — dos columnas a sangre completa (sin el contenedor de
+ * 1120px): a la izquierda el panel de imagen ocupa TODO ese lado, borde a
+ * borde y a toda la altura; a la derecha el texto con su padding.
+ * Bajo 768px colapsa a una columna (imagen arriba, texto centrado abajo).
+ *
+ * Por ahora el panel muestra la mascota Felipe sobre fondo crema; cuando llegue
+ * la foto real reemplaza toda esa área.
+ */
+import Button from '@components/ui/Button.astro';
+import { story as defaultStory, type StoryContent } from '@data/story';
+
+interface Props {
+  content?: StoryContent;
+}
+
+const { content = defaultStory } = Astro.props;
+---
+
+<section class="bg-white border-t border-border">
+  <div class="grid items-stretch md:grid-cols-[1fr_1.1fr]">
+    <div
+      class="relative flex min-h-[300px] items-center justify-center border-b border-border bg-cream md:min-h-[68vh] md:border-b-0 md:border-r"
+      role="img"
+      aria-label="Espacio para foto del taller"
+    >
+      <img
+        src={content.image.src}
+        alt={content.image.alt}
+        class="w-[46%] max-w-[220px] h-auto"
+      />
+      <span
+        class="absolute bottom-5 left-1/2 -translate-x-1/2 font-body text-[11px] font-bold uppercase tracking-[0.05em] text-muted"
+      >
+        Foto del taller
+      </span>
+    </div>
+
+    <div
+      class="flex flex-col justify-center px-7 py-14 text-center md:px-16 md:py-20 md:text-left"
+    >
+      <p class="section-eyebrow justify-center md:justify-start">{content.eyebrow}</p>
+      <h2 class="font-display text-[26px] text-ink mt-4 mb-3">{content.title}</h2>
+      <p
+        class="font-body text-[14.5px] text-muted leading-[1.7] mb-5 max-w-[440px] mx-auto md:mx-0"
+      >
+        {content.paragraph}
+      </p>
+      <div>
+        <Button href={content.cta.href} variant="secondary">{content.cta.label}</Button>
+      </div>
+    </div>
+  </div>
+</section>

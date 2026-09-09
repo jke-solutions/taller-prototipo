@@ -1,0 +1,34 @@
+---
+/**
+ * Un slide del slider de productos destacados.
+ * Tarjeta con borde fino: placeholder cuadrado a la izquierda, info a la
+ * derecha (nombre, tags, descripción, precio, botón). Bajo 768px se apila.
+ * Ref. visual: .e-featured .grid de la variante F.
+ */
+import Button from '@components/ui/Button.astro';
+import Tag from '@components/ui/Tag.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+import type { FeaturedProduct } from '@data/featuredProducts';
+
+interface Props {
+  product: FeaturedProduct;
+}
+
+const { product } = Astro.props;
+---
+
+<article
+  class="grid md:grid-cols-2 gap-7 md:gap-14 items-center border border-border rounded-card bg-white p-7 md:p-12"
+>
+  <Placeholder icon={product.icon} label={`Foto de ${product.name}`} iconScale={26} />
+
+  <div>
+    <h3 class="font-display text-[26px] text-ink mb-[10px]">{product.name}</h3>
+    <div class="flex flex-wrap gap-2 mb-4">
+      {product.tags.map((t) => <Tag variant={t.variant}>{t.label}</Tag>)}
+    </div>
+    <p class="font-body text-[14.5px] text-muted leading-[1.7] mb-5">{product.description}</p>
+    <div class="font-display text-[22px] text-maroon mb-[18px]">{product.price}</div>
+    <Button href={product.href} variant="primary">Añadir al carrito</Button>
+  </div>
+</article>

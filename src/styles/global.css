@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Variables base — espejo de los design tokens del brief.
+   Tailwind ya expone los colores/espaciados; acá quedan las que se usan
+   como CSS var pura (tipografía display intercambiable, tonos con
+   color-mix para quien prefiera esa sintaxis).
+   ========================================================================== */
+:root {
+  --primary: #ff7d07;
+  --cream: #fbf2e1;
+  --maroon: #932810;
+  --forest: #007239;
+  --gold: #f5a202;
+  --olive: #9cbf3d;
+  --violet: #5f54a6;
+  --coral: #e2565b;
+  --teal: #129892;
+
+  --ink: #641b0b;
+  --muted: #804437;
+  --border: #e6dbd8;
+
+  /* Cambiar acá cuando llegue el archivo real de "Gummy". */
+  --font-display: 'Baloo 2', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--cream);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    line-height: 1.1;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Foco visible y consistente en todo elemento interactivo (accesibilidad
+     mínima del brief): no depender solo de :hover. */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  summary:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--maroon);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* Contenedor centrado (.wrap del prototipo de referencia). */
+  .wrap {
+    max-width: theme('maxWidth.wrap');
+    margin-inline: auto;
+    padding-inline: 32px;
+  }
+
+  @media (max-width: 640px) {
+    .wrap {
+      padding-inline: 20px;
+    }
+  }
+
+  /* Eyebrow / título de sección con la regla naranja debajo. */
+  .section-eyebrow {
+    font-size: 12.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background: var(--primary);
+    display: inline-block;
+  }
+
+  .accent-rule {
+    width: 44px;
+    height: 3px;
+    background: var(--primary);
+  }
+
+  /* Oculta la barra de scroll nativa en los tracks de slider (el gesto
+     táctil y el scroll-snap siguen funcionando). */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

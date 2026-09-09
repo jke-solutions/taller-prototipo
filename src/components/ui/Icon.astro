@@ -1,0 +1,32 @@
+---
+import type { IconName } from './icons';
+
+interface Props {
+  name: IconName;
+  /**
+   * Tamaño en px (width y height). Default 24.
+   * Pasar 0 para no fijar tamaño y controlarlo por `class` (ej. w-full).
+   */
+  size?: number;
+  class?: string;
+  /**
+   * Texto accesible. Si se omite, el ícono se marca aria-hidden (decorativo).
+   * Todo ícono que sea el único contenido de un botón/link necesita label.
+   */
+  label?: string;
+}
+
+const { name, size = 24, class: className, label } = Astro.props;
+const dims = size > 0 ? { width: size, height: size } : {};
+---
+
+<svg
+  {...dims}
+  class={className}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <use href={`#ic-${name}`}></use>
+</svg>

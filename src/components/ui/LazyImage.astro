@@ -1,0 +1,58 @@
+---
+/**
+ * Imagen con carga diferida por scroll y espacio reservado.
+ *
+ * - El contenedor fija la proporción (`ratio`) => el layout no salta aunque la
+ *   imagen tarde o falle.
+ * - La imagen real se descarga recién cuando está por entrar en pantalla
+ *   (ver src/scripts/lazyMedia.ts). Ideal para fotos servidas desde un CDN.
+ * - Mientras carga se ve un fondo neutro; al cargar hace un fade-in corto.
+ *
+ * Para imágenes LOCALES de `src/assets` conviene usar <Image> de astro:assets
+ * (optimización en build). Este componente es para URLs remotas / CDN.
+ */
+interface Props {
+  src: string;
+  alt: string;
+  /** srcset opcional para responsive desde el CDN. */
+  srcset?: string;
+  sizes?: string;
+  /** Proporción del hueco reservado, ej. "1 / 1", "4 / 5", "16 / 9". */
+  ratio?: string;
+  /** Si es la imagen principal visible al cargar la página, pasar true. */
+  eager?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  srcset,
+  sizes,
+  ratio = '1 / 1',
+  eager = false,
+  class: className,
+} = Astro.props;
+---
+
+<div
+  class:list={['lazy-frame relative overflow-hidden bg-cream', className]}
+  style={`aspect-ratio:${ratio};`}
+>
+  <img
+    alt={alt}
+    sizes={sizes}
+    decoding="async"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 [&[data-loaded]]:opacity-100"
+    {...eager
+      ? { src, srcset }
+      : { 'data-lazy-src': src, 'data-lazy-srcset': srcset }}
+  />
+</div>
+
+<script>
+  import { initLazyMedia } from '@/scripts/lazyMedia';
+  initLazyMedia();
+</script>

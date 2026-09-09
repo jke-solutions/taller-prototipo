@@ -1,0 +1,223 @@
+---
+/**
+ * Slider tipo "revista/moda" — tope del Home, reemplaza al Hero estático.
+ *
+ * Reglas del brief (excepciones exclusivas de ESTE slider):
+ *  - Foto a sangre completa, oscurecida con degradado para legibilidad.
+ *  - Todo el texto centrado y en blanco.
+ *  - Badge: recuadro con borde fino, sin relleno, texto corto en mayúsculas.
+ *  - Botón: fondo BLANCO, texto oscuro (var(--ink)), radius 4px — NO el Primary.
+ *  - Flechas: círculos blancos semitransparentes, chevron oscuro.
+ *  - Puntos: blancos, el activo más ancho.
+ *
+ * Mecánica: scroll-snap (swipe táctil nativo) + JS vanilla (autoplay pausable,
+ * flechas, puntos sincronizados con IntersectionObserver). Sin librerías.
+ * Ref. visual: captura "Men Summer Collection" aprobada por el cliente.
+ */
+import { Image } from 'astro:assets';
+import Icon from '@components/ui/Icon.astro';
+import { heroSlides as defaultSlides, type HeroSlide } from '@data/heroSlides';
+
+import productos from '@assets/slider/productos.jpg';
+import taller from '@assets/slider/taller.jpg';
+
+interface Props {
+  slides?: HeroSlide[];
+}
+
+const { slides = defaultSlides } = Astro.props;
+
+const imageMap = { productos, taller };
+const widths = [640, 960, 1280, 1600, 2000, 2400];
+const showControls = slides.length > 1;
+---
+
+<section
+  class="relative overflow-hidden bg-ink"
+  data-hero-slider
+  aria-roledescription="carrusel"
+  aria-label="Destacados de Taller Azotea"
+>
+  <div
+    class="no-scrollbar flex overflow-x-auto snap-x snap-mandatory"
+    data-track
+  >
+    {
+      slides.map((slide, i) => (
+        <div
+          class="relative shrink-0 basis-full snap-start min-h-[68vh] md:min-h-[82vh] flex items-center justify-center"
+          data-slide
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${i + 1} de ${slides.length}`}
+        >
+          <Image
+            src={imageMap[slide.image]}
+            alt={slide.alt}
+            widths={widths}
+            sizes="100vw"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            fetchpriority={i === 0 ? 'high' : 'auto'}
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+          {/* Overlay oscuro para legibilidad (confirmado con el cliente). */}
+          <div
+            class="absolute inset-0"
+            style="background:linear-gradient(to bottom, rgba(0,0,0,.20) 0%, rgba(0,0,0,.30) 45%, rgba(0,0,0,.45) 100%);"
+          />
+
+          <div class="relative z-10 mx-auto max-w-[760px] px-6 text-center text-white">
+            <span
+              class="mb-6 inline-block rounded-[3px] border border-white/70 px-4 py-2 text-[12px] font-bold uppercase tracking-[0.16em]"
+            >
+              {slide.badge}
+            </span>
+            <h2
+              class="mb-5 font-display font-extrabold leading-[1.05] text-white"
+              style="font-size:clamp(30px, 6vw, 56px);"
+            >
+              {slide.title}
+            </h2>
+            <p class="mx-auto mb-8 max-w-[520px] text-[15px] leading-[1.6] text-white/90 md:text-[17px]">
+              {slide.subtitle}
+            </p>
+            <a
+              href={slide.cta.href}
+              class="inline-block rounded-[4px] bg-white px-8 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-ink transition-transform hover:-translate-y-px"
+            >
+              {slide.cta.label}
+            </a>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    showControls && (
+      <>
+        <button
+          type="button"
+          class="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/60 text-ink backdrop-blur-sm transition-colors hover:bg-white/80 md:left-6"
+          aria-label="Slide anterior"
+          data-prev
+        >
+          <Icon name="arrow-left" size={22} />
+        </button>
+        <button
+          type="button"
+          class="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/60 text-ink backdrop-blur-sm transition-colors hover:bg-white/80 md:right-6"
+          aria-label="Slide siguiente"
+          data-next
+        >
+          <Icon name="arrow-right" size={22} />
+        </button>
+
+        <div
+          class="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2"
+          data-dots
+        >
+          {slides.map((_, i) => (
+            <button
+              type="button"
+              class="h-[3px] rounded-full bg-white/50 transition-all data-[active]:bg-white"
+              style="width:22px;"
+              aria-label={`Ir al slide ${i + 1}`}
+              data-dot
+              data-index={i}
+            />
+          ))}
+        </div>
+      </>
+    )
+  }
+</section>
+
+<script>
+  // Slider tipo revista — vanilla, sin librerías.
+  document.querySelectorAll<HTMLElement>('[data-hero-slider]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]');
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-next]');
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    if (!track || slides.length < 2) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer = 0;
+    let resumeTimer = 0;
+
+    const setActive = (i: number) => {
+      current = i;
+      dots.forEach((d, di) => {
+        d.toggleAttribute('data-active', di === i);
+        d.style.width = di === i ? '34px' : '22px';
+      });
+    };
+
+    const goTo = (i: number) => {
+      const target = (i + slides.length) % slides.length;
+      const left = slides[target].offsetLeft - slides[0].offsetLeft;
+      track.scrollTo({ left, behavior: reduceMotion ? 'auto' : 'smooth' });
+      setActive(target);
+    };
+
+    const start = () => {
+      if (reduceMotion) return;
+      stop();
+      timer = window.setInterval(() => goTo(current + 1), 5000);
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = 0;
+    };
+    const pauseThenResume = () => {
+      stop();
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(start, 6000);
+    };
+
+    prev?.addEventListener('click', () => {
+      goTo(current - 1);
+      pauseThenResume();
+    });
+    next?.addEventListener('click', () => {
+      goTo(current + 1);
+      pauseThenResume();
+    });
+    dots.forEach((d, i) =>
+      d.addEventListener('click', () => {
+        goTo(i);
+        pauseThenResume();
+      })
+    );
+
+    // pointerdown cubre mouse y touch en un solo evento.
+    root.addEventListener('pointerdown', pauseThenResume);
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+
+    // Punto activo según el slide visible (fiable en mobile).
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            setActive(slides.indexOf(entry.target as HTMLElement));
+          }
+        });
+      },
+      { root: track, threshold: [0.6] }
+    );
+    slides.forEach((s) => io.observe(s));
+
+    // Pausa el autoplay cuando la sección no está en pantalla.
+    new IntersectionObserver(
+      (entries) => entries.forEach((e) => (e.isIntersecting ? start() : stop())),
+      { threshold: 0.2 }
+    ).observe(root);
+
+    setActive(0);
+    start();
+  });
+</script>

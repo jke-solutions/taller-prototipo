@@ -1,0 +1,274 @@
+---
+/**
+ * Página TEMPORAL de estilos — referencia visual del sistema de diseño para
+ * revisión del cliente. No es parte del sitio final.
+ * TODO: borrar src/pages/estilos.astro antes de pasar a producción.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import Tag from '@components/ui/Tag.astro';
+import Icon from '@components/ui/Icon.astro';
+import SectionLabel from '@components/ui/SectionLabel.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+import { ICON_NAMES } from '@components/ui/icons';
+
+const brandColors = [
+  { name: 'primary', hex: '#ff7d07', use: 'Naranja marca / acentos' },
+  { name: 'cream', hex: '#fbf2e1', use: 'Fondo base' },
+  { name: 'maroon', hex: '#932810', use: 'CTAs, precios, acentos fuertes' },
+  { name: 'forest', hex: '#007239', use: 'Color de apoyo' },
+  { name: 'gold', hex: '#f5a202', use: 'Categoría Madera' },
+  { name: 'olive', hex: '#9cbf3d', use: 'Categoría Piezas Mixtas' },
+  { name: 'violet', hex: '#5f54a6', use: 'Categoría Kits' },
+  { name: 'coral', hex: '#e2565b', use: 'Badges de promoción' },
+  { name: 'teal', hex: '#129892', use: 'Categoría Cerámica' },
+];
+
+const textColors = [
+  { name: 'ink', hex: '#641b0b', use: 'Texto principal' },
+  { name: 'muted', hex: '#804437', use: 'Texto secundario' },
+  { name: 'border', hex: '#e6dbd8', use: 'Líneas divisorias' },
+];
+
+const spacing = [
+  ['4px', 'micro-ajustes (íconos, gaps mínimos)'],
+  ['8px', 'separación entre elementos relacionados'],
+  ['16px', 'padding interno de inputs y tags'],
+  ['24px', 'gutter entre tarjetas y columnas'],
+  ['32px', 'padding interno de tarjetas y paneles'],
+  ['48px', 'separación entre bloques de contenido'],
+  ['72px', 'margen entre secciones'],
+];
+
+// Escala de tamaños de texto realmente usada en el prototipo.
+const textScale = [
+  { name: 'Display XL', size: 'clamp(30–56px)', family: 'display', weight: 800, use: 'Título del slider tipo revista' },
+  { name: 'Display L', size: 'min(5.5vw, 46px)', family: 'display', weight: 800, use: 'Título del hero de dos columnas' },
+  { name: 'Display M', size: '26px', family: 'display', weight: 700, use: 'Títulos de sección (h2) y producto destacado' },
+  { name: 'Display S', size: '21px', family: 'display', weight: 700, use: 'Nombre de categoría (h3)' },
+  { name: 'Display XS', size: '15.5–16px', family: 'display', weight: 700, use: 'Nombre en tarjetas de promo / precios' },
+  { name: 'Body L', size: '17px', family: 'body', weight: 400, use: 'Subtítulo del slider' },
+  { name: 'Body M', size: '15–15.5px', family: 'body', weight: 400, use: 'Párrafos, hero, descripciones' },
+  { name: 'Body S', size: '14.5px', family: 'body', weight: 400, use: 'Texto secundario en tarjetas' },
+  { name: 'Body XS', size: '13px', family: 'body', weight: 700, use: 'Links ("Ver colección"), tags, botón sm' },
+  { name: 'Caption', size: '12–12.5px', family: 'body', weight: 800, use: 'Contadores, categoría en promo, badge' },
+  { name: 'Eyebrow', size: '12.5px', family: 'body', weight: 800, use: 'Rótulos de sección (mayúsculas + tracking)' },
+  { name: 'Micro', size: '11px', family: 'body', weight: 700, use: 'Etiqueta de los placeholders de foto' },
+];
+---
+
+<BaseLayout title="Sistema de diseño (temporal)">
+  <div class="bg-maroon text-white text-[13px] font-bold text-center py-2">
+    Página temporal de estilos — no forma parte del sitio final
+  </div>
+
+  <div class="wrap py-18 space-y-18">
+    <header>
+      <p class="section-eyebrow">Sistema de diseño</p>
+      <h1 class="font-display text-[40px] text-ink mt-4">Taller Azotea — Estilos</h1>
+      <p class="text-muted text-[15px] mt-2 max-w-[560px]">
+        Referencia rápida de los design tokens y componentes base del prototipo.
+      </p>
+    </header>
+
+    <!-- Colores -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Paleta de marca</h2>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-6">
+        {
+          brandColors.map((c) => (
+            <div class="rounded-card border border-border overflow-hidden">
+              <div class="h-20" style={`background:${c.hex}`}></div>
+              <div class="p-4">
+                <p class="font-bold text-[13px] text-ink">{c.name}</p>
+                <p class="text-[12px] text-muted uppercase tracking-wide">{c.hex}</p>
+                <p class="text-[12px] text-muted mt-1">{c.use}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <h3 class="font-display text-[18px] text-ink mt-8 mb-4">Texto y líneas</h3>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-6">
+        {
+          textColors.map((c) => (
+            <div class="rounded-card border border-border overflow-hidden">
+              <div class="h-20" style={`background:${c.hex}`}></div>
+              <div class="p-4">
+                <p class="font-bold text-[13px] text-ink">{c.name}</p>
+                <p class="text-[12px] text-muted uppercase tracking-wide">{c.hex}</p>
+                <p class="text-[12px] text-muted mt-1">{c.use}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Tipografía -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Tipografía</h2>
+      <div class="space-y-4">
+        <p class="font-display text-[46px] text-ink leading-tight">Display — Baloo 2</p>
+        <p class="text-[13px] text-muted -mt-3">
+          Titulares. Reemplazo temporal de "Gummy" (variable <code>--font-display</code>).
+        </p>
+        <hr class="border-border" />
+        <p class="font-body text-[28px] text-ink">Cuerpo — Nunito 800</p>
+        <p class="font-body font-bold text-[18px] text-ink">Cuerpo — Nunito 700</p>
+        <p class="font-body text-[15px] text-ink">
+          Cuerpo — Nunito 400. El zorro marrón salta sobre el perro perezoso mientras el
+          taller huele a aserrín y arcilla.
+        </p>
+      </div>
+
+      <h3 class="font-display text-[18px] text-ink mt-10 mb-4">Escala de tamaños de texto</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-left align-baseline">
+          <thead>
+            <tr class="border-b border-border text-[12px] uppercase tracking-wide text-muted">
+              <th class="py-2 pr-4 font-bold">Nombre</th>
+              <th class="py-2 pr-4 font-bold">Tamaño</th>
+              <th class="py-2 pr-4 font-bold">Muestra</th>
+              <th class="py-2 font-bold">Uso</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              textScale.map((t) => (
+                <tr class="border-b border-border">
+                  <td class="py-3 pr-4 font-bold text-[13px] text-ink whitespace-nowrap">{t.name}</td>
+                  <td class="py-3 pr-4 text-[12.5px] text-muted whitespace-nowrap">{t.size}</td>
+                  <td class="py-3 pr-4 text-ink">
+                    <span
+                      class:list={[t.family === 'display' ? 'font-display' : 'font-body']}
+                      style={`font-size:${
+                        t.size.includes('clamp')
+                          ? '40px'
+                          : t.size.includes('vw')
+                            ? '40px'
+                            : t.size.split('–')[0].replace(/[^0-9.]/g, '') + 'px'
+                      }; font-weight:${t.weight}; line-height:1.1;`}
+                    >
+                      Taller Azotea
+                    </span>
+                  </td>
+                  <td class="py-3 text-[12.5px] text-muted">{t.use}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="text-[12px] text-muted mt-3">
+        Los tamaños salen del HTML de referencia. Cuando llegue la fuente "Gummy" solo
+        cambia la familia display (variable <code>--font-display</code>), no la escala.
+      </p>
+    </section>
+
+    <!-- Botones -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Botones</h2>
+      <div class="space-y-6">
+        <div class="flex flex-wrap items-center gap-4">
+          <Button variant="primary" size="sm">Primary sm</Button>
+          <Button variant="primary" size="md">Primary md</Button>
+          <Button variant="primary" size="lg">Primary lg</Button>
+          <Button variant="primary" disabled>Disabled</Button>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <Button variant="secondary" size="sm">Secondary sm</Button>
+          <Button variant="secondary" size="md">Secondary md</Button>
+          <Button variant="secondary" size="lg">Secondary lg</Button>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <Button variant="link">Link / "Ver colección"</Button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tags -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Tags</h2>
+      <div class="flex flex-wrap gap-2">
+        <Tag variant="ceramica">Cerámica</Tag>
+        <Tag variant="madera">Madera</Tag>
+        <Tag variant="edicion">Edición limitada</Tag>
+      </div>
+    </section>
+
+    <!-- Radios y espaciado -->
+    <section class="grid md:grid-cols-2 gap-12">
+      <div>
+        <h2 class="font-display text-[24px] text-ink mb-6">Radios</h2>
+        <div class="flex flex-wrap gap-6">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-white border border-border rounded-btn"></div>
+            <p class="text-[12px] text-muted mt-2">6px · botón/tarjeta</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-white border border-border rounded-tag"></div>
+            <p class="text-[12px] text-muted mt-2">4px · tag/badge</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-white border-1.5 border-border rounded-input"></div>
+            <p class="text-[12px] text-muted mt-2">8px · input</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h2 class="font-display text-[24px] text-ink mb-6">Escala de espaciado</h2>
+        <ul class="space-y-2">
+          {
+            spacing.map(([val, use]) => (
+              <li class="flex items-center gap-4">
+                <span class="bg-primary h-4" style={`width:${val}`}></span>
+                <span class="font-bold text-[13px] text-ink w-12">{val}</span>
+                <span class="text-[12px] text-muted">{use}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- Iconos -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Íconos (sprite)</h2>
+      <div class="flex flex-wrap gap-6">
+        {
+          ICON_NAMES.map((n) => (
+            <div class="text-center text-ink">
+              <div class="w-14 h-14 border border-border rounded-card flex items-center justify-center">
+                <Icon name={n} size={24} />
+              </div>
+              <p class="text-[11px] text-muted mt-1">{n}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Placeholder -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Placeholder de imagen</h2>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
+        <Placeholder icon="vase" label="Foto del producto" />
+        <Placeholder icon="bowl" label="Foto del producto" color="teal" />
+        <Placeholder icon="tray" label="Foto del taller" ratio="4 / 5" color="gold" />
+      </div>
+    </section>
+
+    <!-- Rótulo de sección -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Rótulo de sección</h2>
+    </section>
+  </div>
+
+  <SectionLabel eyebrow="Ejemplo de rótulo">
+    <a slot="action" href="#" class="text-[13px] font-bold text-ink underline underline-offset-[3px]">
+      Ver todas
+    </a>
+  </SectionLabel>
+</BaseLayout>

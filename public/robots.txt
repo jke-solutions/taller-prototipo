@@ -1,0 +1,5 @@
+# TODO: quitar este robots.txt (o reemplazarlo por reglas reales) cuando el
+# sitio esté aprobado por el cliente y conectado al CMS final.
+# Mientras el prototipo esté en revisión NO debe indexarse en buscadores.
+User-agent: *
+Disallow: /

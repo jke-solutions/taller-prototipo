@@ -1,0 +1,59 @@
+---
+/**
+ * Tarjeta de "En promoción".
+ * Placeholder cuadrado con badge de descuento arriba-izquierda, categoría en
+ * color, nombre, precio actual + precio tachado, y link "Añadir al carrito"
+ * SIEMPRE visible (no depende de :hover, para que funcione igual en mobile).
+ * Ref. visual: .e-promo-card de la variante F.
+ */
+import Placeholder from '@components/ui/Placeholder.astro';
+import type { PromoProduct } from '@data/promos';
+import type { BrandColor } from '@data/categories';
+
+interface Props {
+  product: PromoProduct;
+}
+
+const { product } = Astro.props;
+
+const brandVar: Record<BrandColor, string> = {
+  teal: 'var(--teal)',
+  gold: 'var(--gold)',
+  olive: 'var(--olive)',
+  coral: 'var(--coral)',
+  violet: 'var(--violet)',
+};
+---
+
+<article class="h-full bg-white p-6 border border-border rounded-card md:border-0 md:border-r md:last:border-r-0 md:rounded-none">
+  <Placeholder
+    icon={product.icon}
+    label={`Foto de ${product.name}`}
+    iconScale={32}
+    class="mb-4"
+  >
+    <span
+      class="absolute top-[10px] left-[10px] bg-maroon text-white text-[12px] font-extrabold px-[9px] py-1 rounded-[3px]"
+    >
+      -{product.discountPercent}%
+    </span>
+  </Placeholder>
+
+  <span
+    class="block font-body text-[11.5px] font-extrabold uppercase tracking-[0.04em] mb-2"
+    style={`color:${brandVar[product.categoryColor]};`}
+  >
+    {product.category}
+  </span>
+  <h3 class="font-display text-[15.5px] text-ink mb-[6px]">{product.name}</h3>
+  <div class="flex items-baseline gap-2 mb-[10px]">
+    <span class="font-display text-[16px] text-maroon">{product.priceNow}</span>
+    <span class="font-body text-[12.5px] text-muted line-through">{product.priceBefore}</span>
+  </div>
+  <a
+    href={product.href}
+    class="font-body text-[13px] font-bold text-ink underline underline-offset-[3px]"
+  >
+    Añadir al carrito
+  </a>
+</article>

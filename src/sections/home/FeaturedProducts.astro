@@ -1,0 +1,136 @@
+---
+/**
+ * "Producto destacado" — ahora es un slider con varios productos (por ahora 3).
+ * Mecánica sin librerías: track con scroll-snap (swipe táctil nativo) + JS
+ * vanilla mínimo para flechas y puntos de paginación.
+ *
+ * Las flechas y el ícono de "deslizá" quedan siempre visibles para que se
+ * entienda que es un carrusel.
+ */
+import SectionLabel from '@components/ui/SectionLabel.astro';
+import Icon from '@components/ui/Icon.astro';
+import FeaturedProductCard from './FeaturedProductCard.astro';
+import { featuredProducts as defaultProducts, type FeaturedProduct } from '@data/featuredProducts';
+
+interface Props {
+  eyebrow?: string;
+  products?: FeaturedProduct[];
+}
+
+const { eyebrow = 'Producto destacado', products = defaultProducts } = Astro.props;
+const showControls = products.length > 1;
+---
+
+<section class="bg-white pb-18">
+  <SectionLabel eyebrow={eyebrow}>
+    {
+      showControls && (
+        <span slot="action" class="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.04em] text-muted">
+          <Icon name="arrow-right" size={14} />
+          Deslizá para ver más
+        </span>
+      )
+    }
+  </SectionLabel>
+
+  <div class="wrap">
+    <div class="relative" data-featured-slider>
+      <div
+        class="no-scrollbar flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"
+        data-track
+      >
+        {
+          products.map((product) => (
+            <div class="snap-start shrink-0 basis-full" data-slide>
+              <FeaturedProductCard product={product} />
+            </div>
+          ))
+        }
+      </div>
+
+      {
+        showControls && (
+          <>
+            <button
+              type="button"
+              class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 md:-translate-x-4 z-10 w-10 h-10 rounded-full border-1.5 border-border bg-white text-maroon flex items-center justify-center shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Producto anterior"
+              data-prev
+            >
+              <Icon name="arrow-left" size={20} />
+            </button>
+            <button
+              type="button"
+              class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 md:translate-x-4 z-10 w-10 h-10 rounded-full border-1.5 border-border bg-white text-maroon flex items-center justify-center shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Producto siguiente"
+              data-next
+            >
+              <Icon name="arrow-right" size={20} />
+            </button>
+
+            <div class="flex justify-center gap-2 mt-6" data-dots>
+              {products.map((_, i) => (
+                <button
+                  type="button"
+                  class="h-2 rounded-full bg-border transition-all data-[active]:bg-maroon"
+                  style="width:8px;"
+                  aria-label={`Ir al producto ${i + 1}`}
+                  data-dot
+                  data-index={i}
+                />
+              ))}
+            </div>
+          </>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  // Slider de productos destacados — vanilla, sin librerías.
+  document.querySelectorAll<HTMLElement>('[data-featured-slider]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]');
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-next]');
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    if (!track || slides.length < 2) return;
+
+    let current = 0;
+
+    const setActive = (i: number) => {
+      current = i;
+      dots.forEach((d, di) => {
+        d.toggleAttribute('data-active', di === i);
+        d.style.width = di === i ? '22px' : '8px';
+      });
+      if (prev) prev.disabled = i === 0;
+      if (next) next.disabled = i === slides.length - 1;
+    };
+
+    const goTo = (i: number) => {
+      const clamped = Math.max(0, Math.min(slides.length - 1, i));
+      const left = slides[clamped].offsetLeft - slides[0].offsetLeft;
+      track.scrollTo({ left, behavior: 'smooth' });
+      // Actualiza el estado aunque el scroll suave tarde o se interrumpa.
+      setActive(clamped);
+    };
+
+    prev?.addEventListener('click', () => goTo(current - 1));
+    next?.addEventListener('click', () => goTo(current + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+    // Punto activo según la posición de scroll del track.
+    let raf = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const i = Math.round(track.scrollLeft / track.clientWidth);
+        if (i !== current) setActive(i);
+      });
+    });
+
+    setActive(0);
+  });
+</script>

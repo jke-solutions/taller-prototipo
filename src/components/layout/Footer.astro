@@ -1,0 +1,93 @@
+---
+/**
+ * Footer del sitio — se repite en todas las páginas vía BaseLayout.
+ * Fondo blanco, borde superior fino. 3 columnas: marca, ayuda, newsletter.
+ * Abajo: copyright + íconos de redes.
+ */
+import Icon from '@components/ui/Icon.astro';
+import { site } from '@data/site';
+import { helpNav } from '@data/nav';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-white border-t border-border pt-12 pb-[28px] text-ink">
+  <div class="wrap">
+    <div class="flex flex-wrap justify-between gap-8 mb-[36px]">
+      <div class="max-w-[280px]">
+        <h4 class="font-display text-[16px] mb-[12px]">{site.name}</h4>
+        <p class="text-[13.5px] text-muted leading-[1.7]">{site.shortDescription}</p>
+      </div>
+
+      <div>
+        <h4 class="font-display text-[16px] mb-[12px]">Ayuda</h4>
+        <ul class="space-y-[6px]">
+          {
+            helpNav.map((item) => (
+              <li>
+                <a href={item.href} class="text-[13.5px] text-ink opacity-75 hover:opacity-100 leading-[1.7]">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display text-[16px] mb-[12px]">Recibe novedades</h4>
+        {/* Solo visual: el prototipo no tiene backend. */}
+        <form class="flex gap-2 max-w-[320px] mt-[10px]" data-newsletter>
+          <label class="sr-only" for="newsletter-email">Correo electrónico</label>
+          <input
+            id="newsletter-email"
+            type="email"
+            name="email"
+            placeholder="tu@correo.com"
+            required
+            class="flex-1 font-body text-[13.5px] px-3 py-[9px] border border-border rounded-[2px] bg-white text-ink"
+          />
+          <button
+            type="submit"
+            class="bg-maroon text-white font-bold text-[13px] px-4 py-[9px] rounded-[2px] whitespace-nowrap"
+          >
+            Enviar
+          </button>
+        </form>
+        <p class="text-[12px] text-muted mt-2 hidden" data-newsletter-ok>
+          ¡Gracias! (demo — todavía sin backend)
+        </p>
+      </div>
+    </div>
+
+    <div class="border-t border-border pt-[18px] flex flex-wrap justify-between items-center gap-[10px] text-[12.5px] text-muted">
+      <span>© {year} {site.name}</span>
+      <div class="flex gap-[12px]">
+        {
+          site.social.map((s) => (
+            <a
+              href={s.href}
+              aria-label={s.label}
+              class="w-8 h-8 rounded-full border border-border flex items-center justify-center text-ink hover:bg-cream transition-colors"
+            >
+              <Icon name={s.icon as any} size={15} />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Newsletter demo: evita el submit real y muestra un acuse.
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter]');
+  const ok = document.querySelector<HTMLElement>('[data-newsletter-ok]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (form.checkValidity()) {
+      form.reset();
+      ok?.classList.remove('hidden');
+    }
+  });
+</script>

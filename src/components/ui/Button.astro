@@ -1,0 +1,66 @@
+---
+/**
+ * Botón del design system (brief → "Botones — variantes y tamaños").
+ * Renderiza <a> si recibe `href`, si no <button>.
+ *
+ * Variantes:
+ *  - primary:   fondo maroon, texto blanco.
+ *  - secondary: transparente, borde 1.5px maroon, texto maroon.
+ *  - link:      sin fondo ni padding, texto maroon subrayado.
+ * Tamaños: sm / md (default) / lg.
+ *
+ * NOTA: el botón blanco del slider tipo revista es una excepción aparte y no
+ * vive acá (se resolverá en el componente del slider cuando se implemente).
+ */
+type Variant = 'primary' | 'secondary' | 'link';
+type Size = 'sm' | 'md' | 'lg';
+
+interface Props {
+  variant?: Variant;
+  size?: Size;
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  class?: string;
+  'aria-label'?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 font-body font-bold rounded-btn transition-transform duration-150 ease-out hover:-translate-y-px disabled:cursor-not-allowed';
+
+const variants: Record<Variant, string> = {
+  primary: 'bg-maroon text-white border-0 disabled:opacity-[0.45]',
+  secondary: 'bg-transparent text-maroon border-1.5 border-solid border-maroon',
+  link: 'bg-transparent text-maroon underline underline-offset-[3px] hover:translate-y-0 !p-0',
+};
+
+const sizes: Record<Size, string> = {
+  sm: 'text-[13px] px-4 py-2',
+  md: 'text-[15px] px-6 py-3',
+  lg: 'text-[17px] px-[30px] py-4',
+};
+
+const cls = [base, variants[variant], sizes[size], className].filter(Boolean).join(' ');
+---
+
+{
+  href && !disabled ? (
+    <a href={href} class={cls} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={cls} disabled={disabled} {...rest}>
+      <slot />
+    </button>
+  )
+}

@@ -1,0 +1,71 @@
+---
+/**
+ * Layout base — envuelve Header + <slot /> + Footer.
+ * Todas las páginas del sitio lo usan; el header/footer no se duplica por página.
+ */
+import '@styles/global.css';
+import IconSprite from '@components/ui/IconSprite.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import { site } from '@data/site';
+
+interface Props {
+  /** Título de la página (sin el sufijo de marca). Si se omite, usa el default. */
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  /** Ancho completo sin el contenedor de 1120px (para el Home full-bleed). */
+  fullBleed?: boolean;
+}
+
+const { title, description = site.defaultDescription, ogImage = site.ogImage } =
+  Astro.props;
+
+const pageTitle = title ? site.titleTemplate.replace('%s', title) : site.name + ' — Prototipo';
+const pathname = Astro.url.pathname;
+const canonical = new URL(pathname, Astro.site ?? Astro.url).toString();
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/felipe-logo.svg" />
+    {/* TODO: generar favicon.ico + apple-touch-icon (180x180) con el logo de Felipe. */}
+    <link rel="apple-touch-icon" href="/felipe-logo.svg" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {/*
+      TODO: quitar noindex/nofollow (y el public/robots.txt) cuando el sitio
+      esté aprobado por el cliente y conectado al CMS final. Mientras sea
+      prototipo de revisión NO debe indexarse ni aparecer en buscadores.
+    */}
+    <meta name="robots" content="noindex, nofollow" />
+
+    {/* SEO / social — estructura lista aunque esté en noindex. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title ?? site.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <IconSprite />
+    <Header pathname={pathname} />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
