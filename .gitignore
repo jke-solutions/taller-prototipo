@@ -32,3 +32,9 @@ Thumbs.db
 
 # misc
 *.local
+
+# imágenes de prueba pesadas en docs/ (los SVG de marca sí se versionan)
+docs/*.jpg
+docs/*.jpeg
+docs/*.png
+docs/*.webp

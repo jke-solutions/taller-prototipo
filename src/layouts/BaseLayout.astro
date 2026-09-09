@@ -31,9 +31,10 @@ const canonical = new URL(pathname, Astro.site ?? Astro.url).toString();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/felipe-logo.svg" />
-    {/* TODO: generar favicon.ico + apple-touch-icon (180x180) con el logo de Felipe. */}
-    <link rel="apple-touch-icon" href="/felipe-logo.svg" />
+    {/* Favicon: isotipo de Felipe (public/favicon.svg). */}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* TODO: generar favicon.ico (fallback) y apple-touch-icon.png (180x180) a partir del isotipo. */}
+    <link rel="apple-touch-icon" href="/favicon.svg" />
 
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
