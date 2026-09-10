@@ -1,18 +1,30 @@
 ---
 /**
  * Tarjeta de categoría del Home. Toda la tarjeta es un link.
- * El color de marca de la categoría tiñe el círculo del ícono y el contador
- * (vía currentColor); el resto del texto usa los colores del sistema.
+ * Muestra la ilustración de la categoría (mascota Felipe) en vez de un ícono;
+ * el color de marca solo tiñe el contador "N piezas" (vía currentColor).
  * Ref. visual: .f-cat de la variante F.
  */
-import Icon from '@components/ui/Icon.astro';
+import { Image } from 'astro:assets';
 import type { Category, BrandColor } from '@data/categories';
 
 interface Props {
   category: Category;
+  /** Índice dentro del listado, para escalonar la animación de aparición. */
+  index?: number;
+  /**
+   * Es la última categoría del listado: en desktop no lleva línea divisoria
+   * a la derecha. OJO: no se puede resolver con la pseudoclase CSS
+   * `last:` (`:last-child`) porque cada tarjeta queda envuelta en su propio
+   * `<div data-slide>` del carrusel responsive — ahí SIEMPRE es "la última"
+   * (y única) hija de ESE div, sin importar su posición real entre las
+   * categorías. Por eso el índice se calcula en CategoryGrid.astro y se
+   * pasa explícito.
+   */
+  isLast?: boolean;
 }
 
-const { category } = Astro.props;
+const { category, index = 0, isLast = false } = Astro.props;
 
 const brandVar: Record<BrandColor, string> = {
   teal: 'var(--teal)',
@@ -25,22 +37,29 @@ const brandVar: Record<BrandColor, string> = {
 
 <a
   href={category.href}
-  class="f-cat group flex h-full flex-col items-center justify-center text-center gap-[18px] px-7 py-12 min-h-[420px] sm:min-h-[560px] border border-border sm:border-0 sm:border-r sm:last:border-r-0 rounded-card sm:rounded-none transition-colors hover:bg-cream"
-  style={`color:${brandVar[category.color]};`}
+  class:list={[
+    'f-cat group flex h-full flex-col items-center justify-center text-center gap-[20px] px-8 py-14 min-h-[460px] sm:min-h-[620px] border border-border rounded-card',
+    'sm:rounded-none sm:border-t-0 sm:border-b-0 sm:border-l-0',
+    isLast && 'sm:border-r-0',
+    'transition-colors transition-transform [@media(hover:hover)]:hover:bg-cream [@media(hover:hover)]:hover:-translate-y-[2px]',
+  ]}
+  style={`color:${brandVar[category.color]}; --i:${index};`}
+  data-reveal-child
 >
-  <span
-    class="flex items-center justify-center w-[84px] h-[84px] rounded-full border-1.5"
-    style="border-color:currentColor;"
-  >
-    <Icon name={category.icon} size={36} />
-  </span>
-  <h3 class="font-display text-[21px] text-ink">{category.name}</h3>
-  <p class="font-body text-[14.5px] text-muted max-w-[240px]">{category.description}</p>
-  <span class="font-body text-[12px] font-extrabold uppercase tracking-[0.04em]">
+  <Image
+    src={category.image}
+    alt={`Ilustración de la categoría ${category.name}`}
+    widths={[180, 360]}
+    sizes="(min-width: 768px) 180px, 150px"
+    class="h-auto w-[150px] md:w-[180px] transition-transform duration-300 [@media(hover:hover)]:group-hover:scale-105"
+  />
+  <h3 class="font-display text-[24px] md:text-[28px] text-ink">{category.name}</h3>
+  <p class="font-body text-[15.5px] md:text-[17px] text-muted max-w-[260px] md:max-w-[280px]">{category.description}</p>
+  <span class="font-body text-[13px] md:text-[14px] font-extrabold uppercase tracking-[0.04em]">
     {category.pieces} piezas
   </span>
   <span
-    class="font-body text-[13px] font-bold text-ink underline underline-offset-[3px] mt-[2px]"
+    class="font-body text-[14px] md:text-[15px] font-bold text-ink underline underline-offset-[3px] mt-[2px]"
   >
     Ver colección
   </span>

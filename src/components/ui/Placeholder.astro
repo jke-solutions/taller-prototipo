@@ -63,15 +63,21 @@ const iconColor = color === 'cream' ? 'var(--muted)' : brandVar[color];
   role="img"
   aria-label={image ? undefined : `Espacio para ${label.toLowerCase()}`}
 >
-  <div style={`width:${iconScale}%; color:${iconColor};`}>
-    <Icon name={icon} size={0} class="w-full h-auto" />
-  </div>
-  <span
-    class="absolute bottom-[10px] left-1/2 -translate-x-1/2 whitespace-nowrap font-body text-[11px] font-bold uppercase tracking-[0.05em]"
-    style="color:color-mix(in oklch, var(--ink) 55%, transparent);"
-  >
-    {label}
-  </span>
+  {
+    !image && (
+      <>
+        <div style={`width:${iconScale}%; color:${iconColor};`}>
+          <Icon name={icon} size={0} class="w-full h-auto" />
+        </div>
+        <span
+          class="absolute bottom-[10px] left-1/2 -translate-x-1/2 whitespace-nowrap font-body text-[11px] font-bold uppercase tracking-[0.05em]"
+          style="color:color-mix(in oklch, var(--ink) 55%, transparent);"
+        >
+          {label}
+        </span>
+      </>
+    )
+  }
 
   {
     image && (

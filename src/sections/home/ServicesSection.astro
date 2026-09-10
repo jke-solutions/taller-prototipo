@@ -1,0 +1,39 @@
+---
+/**
+ * "Servicios" — va debajo de "Producto destacado".
+ * Rótulo de sección + dos tarjetas (Cursos y Talleres / Trabajos
+ * Personalizados) que linkean a su página.
+ *
+ * Fondo crema (el mismo tono del panel de "Conoce el taller"), con línea fina
+ * arriba: la banda crema separa el bloque de las secciones blancas y hace que
+ * las tarjetas blancas resalten.
+ *
+ * Igual que "Producto destacado": el rótulo queda en el ancho de lectura y las
+ * tarjetas usan un contenedor un poco más ancho (1320px). Desktop: grid de 2
+ * columnas; mobile se apilan. Aparición escalonada por scroll (scrollReveal).
+ */
+import ServiceCard from './ServiceCard.astro';
+import { services as defaultServices, type ServiceItem } from '@data/services';
+
+interface Props {
+  eyebrow?: string;
+  items?: ServiceItem[];
+}
+
+const { eyebrow = 'Servicios', items = defaultServices } = Astro.props;
+---
+
+<section class="snap-start border-t border-border bg-cream pb-6 md:pb-8">
+  <div class="pb-5 pt-12 md:pb-6 md:pt-14">
+    <div class="wrap" data-reveal>
+      <p class="section-eyebrow">{eyebrow}</p>
+      <div class="accent-rule mt-[14px]"></div>
+    </div>
+  </div>
+
+  <div class="mx-auto w-full max-w-[1320px] px-[4%] md:px-[3%]">
+    <div class="grid items-start gap-6 md:grid-cols-2" data-reveal>
+      {items.map((service, i) => <ServiceCard service={service} index={i} />)}
+    </div>
+  </div>
+</section>

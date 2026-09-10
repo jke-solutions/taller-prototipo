@@ -21,19 +21,14 @@ const { eyebrow = 'Producto destacado', products = defaultProducts } = Astro.pro
 const showControls = products.length > 1;
 ---
 
-<section class="bg-white pb-18">
-  <SectionLabel eyebrow={eyebrow}>
-    {
-      showControls && (
-        <span slot="action" class="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.04em] text-muted">
-          <Icon name="arrow-right" size={14} />
-          Deslizá para ver más
-        </span>
-      )
-    }
-  </SectionLabel>
+<section class="bg-white pb-12 snap-start">
+  <SectionLabel eyebrow={eyebrow} />
 
-  <div class="wrap">
+  {/* Contenedor más ancho que el ".wrap" estándar (1120px): el título arriba
+      queda en el ancho de lectura normal, pero la tarjeta respira con más
+      aire a los costados (padding lateral en % en vez de un valor fijo, así
+      escala con el viewport en vez de dejar la tarjeta apretada). */}
+  <div class="mx-auto w-full max-w-[1320px] px-[4%] md:px-[3%]">
     <div class="relative" data-featured-slider>
       <div
         class="no-scrollbar flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"

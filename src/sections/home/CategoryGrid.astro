@@ -20,18 +20,20 @@ interface Props {
 const { eyebrow = 'Explora por categoría', categories = categoriesDefault } = Astro.props;
 ---
 
-<section>
+<section class="snap-start">
   <SectionLabel eyebrow={eyebrow} withBorderTop />
 
   <div data-rcarousel data-bp="640" data-interval="5000">
     <div
-      class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto border-y border-border bg-white px-5 pb-4 sm:grid sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] sm:gap-0 sm:overflow-visible sm:px-0 sm:pb-0"
+      class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto border-y border-border bg-white px-5 pb-4 sm:grid sm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] sm:gap-0 sm:overflow-visible sm:px-0 sm:pb-0"
       data-track
+      data-reveal
+      data-reveal-slow
     >
       {
-        categories.map((category) => (
+        categories.map((category, i) => (
           <div class="shrink-0 basis-[82%] snap-start sm:contents" data-slide>
-            <CategoryCard category={category} />
+            <CategoryCard category={category} index={i} isLast={i === categories.length - 1} />
           </div>
         ))
       }

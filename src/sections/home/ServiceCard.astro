@@ -1,0 +1,73 @@
+---
+/**
+ * Tarjeta de la sección "Servicios".
+ * Blanca, borde fino, radio de tarjeta. El toque de color es el rótulo corto
+ * (kicker) y el botón maroon.
+ *
+ * Toda la tarjeta es un <a>: linkea a la página del servicio. El hover solo
+ * suma micro-movimiento (no es requisito: funciona igual en mobile).
+ * Aparición escalonada vía [data-reveal-child] + `--i` (ver scrollReveal.ts).
+ */
+import Icon from '@components/ui/Icon.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+import type { ServiceItem } from '@data/services';
+
+interface Props {
+  service: ServiceItem;
+  /** Índice para escalonar la animación de aparición. */
+  index?: number;
+}
+
+const { service, index = 0 } = Astro.props;
+
+// Color de marca solo para el kicker (brief → paleta).
+const kickerColor: Record<ServiceItem['color'], string> = {
+  teal: 'var(--teal)',
+  gold: 'color-mix(in oklch, var(--gold) 78%, black)',
+};
+---
+
+<a
+  class:list={[
+    'svc-card group flex flex-col rounded-card border border-border bg-white p-5 md:p-6',
+    'transition-[transform,box-shadow] duration-300 motion-reduce:transition-none',
+    '[@media(hover:hover)]:hover:-translate-y-1',
+    '[@media(hover:hover)]:hover:shadow-[0_18px_34px_-20px_rgba(100,27,11,0.35)]',
+  ]}
+  style={`--i:${index};`}
+  href={service.href}
+  data-reveal-child
+>
+  <Placeholder
+    icon={service.icon}
+    label={`Foto de ${service.title}`}
+    color={service.color}
+    ratio="16 / 9"
+    iconScale={16}
+    image={service.image}
+    class="mb-4 max-h-[260px] md:max-h-[300px]"
+  />
+
+  <span
+    class="mb-2 block font-body text-[12px] font-extrabold uppercase tracking-[0.04em]"
+    style={`color:${kickerColor[service.color]};`}
+  >
+    {service.kicker}
+  </span>
+
+  <h3 class="mb-2 font-display text-[20px] text-ink">{service.title}</h3>
+  <p class="mb-5 font-body text-[15px] leading-[1.6] text-muted">{service.description}</p>
+
+  {/* Estilado como botón primario (brief). Es un <span>, no un <a>: la tarjeta
+      entera ya es el enlace, no se pueden anidar anchors. */}
+  <span
+    class="inline-flex items-center gap-2 self-start rounded-btn bg-maroon px-6 py-3 font-body text-[15px] font-bold text-white"
+  >
+    {service.cta}
+    <Icon
+      name="arrow-right"
+      size={16}
+      class="transition-transform duration-200 [@media(hover:hover)]:group-hover:translate-x-1 motion-reduce:transition-none"
+    />
+  </span>
+</a>

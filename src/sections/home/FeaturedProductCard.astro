@@ -18,17 +18,27 @@ const { product } = Astro.props;
 ---
 
 <article
-  class="grid md:grid-cols-2 gap-7 md:gap-14 items-center border border-border rounded-card bg-white p-7 md:p-12"
+  class="grid md:grid-cols-2 gap-7 md:gap-16 items-center border border-border rounded-card bg-white p-8 md:p-16"
+  data-reveal
 >
-  <Placeholder icon={product.icon} label={`Foto de ${product.name}`} iconScale={26} />
+  <div data-reveal-child style="--i:0;">
+    <Placeholder
+      icon={product.icon}
+      label={`Foto de ${product.name}`}
+      color={product.color}
+      ratio="1 / 1"
+      iconScale={26}
+      image={product.image}
+    />
+  </div>
 
-  <div>
-    <h3 class="font-display text-[26px] text-ink mb-[10px]">{product.name}</h3>
-    <div class="flex flex-wrap gap-2 mb-4">
+  <div data-reveal-child style="--i:1;">
+    <h3 class="font-display text-[30px] text-ink mb-[14px]">{product.name}</h3>
+    <div class="flex flex-wrap gap-2 mb-5">
       {product.tags.map((t) => <Tag variant={t.variant}>{t.label}</Tag>)}
     </div>
-    <p class="font-body text-[14.5px] text-muted leading-[1.7] mb-5">{product.description}</p>
-    <div class="font-display text-[22px] text-maroon mb-[18px]">{product.price}</div>
+    <p class="font-body text-[16px] text-muted leading-[1.8] mb-6">{product.description}</p>
+    <div class="font-display text-[26px] text-maroon mb-[22px]">{product.price}</div>
     <Button href={product.href} variant="primary">Añadir al carrito</Button>
   </div>
 </article>

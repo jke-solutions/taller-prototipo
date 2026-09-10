@@ -4,8 +4,15 @@
  * CMS sin tocar los componentes: mismo shape de datos.
  *
  * Lista confirmada por el cliente: Cerámica, Madera, Piezas Mixtas, Kits.
+ * Cada categoría muestra su ilustración de la mascota Felipe (ya no íconos).
  */
-import type { IconName } from '@components/ui/icons';
+import type { ImageMetadata } from 'astro';
+
+// Ilustraciones por categoría (astro:assets las optimiza en build).
+import ceramicaImg from '@assets/categorias/ceramica.png';
+import maderaImg from '@assets/categorias/madera.png';
+import piezasMixtasImg from '@assets/categorias/piezas-mixtas.png';
+import kitsImg from '@assets/categorias/kits.png';
 
 export type BrandColor =
   | 'teal'
@@ -20,9 +27,10 @@ export interface Category {
   description: string;
   /** Cantidad de piezas disponibles (texto "N piezas"). */
   pieces: number;
-  /** Color de marca que tiñe el ícono y el acento de la tarjeta. */
+  /** Color de marca que tiñe el acento de la tarjeta (contador "N piezas"). */
   color: BrandColor;
-  icon: IconName;
+  /** Ilustración de la categoría (mascota Felipe). Optimizada en build. */
+  image: ImageMetadata;
   href: string;
 }
 
@@ -33,7 +41,7 @@ export const categories: Category[] = [
     description: 'Piezas modeladas y esmaltadas una por una.',
     pieces: 31,
     color: 'teal',
-    icon: 'bowl',
+    image: ceramicaImg,
     href: '/catalogo/ceramica',
   },
   {
@@ -42,7 +50,7 @@ export const categories: Category[] = [
     description: 'Bandejas, cuencos y objetos torneados a mano.',
     pieces: 24,
     color: 'gold',
-    icon: 'tray',
+    image: maderaImg,
     href: '/catalogo/madera',
   },
   {
@@ -51,7 +59,7 @@ export const categories: Category[] = [
     description: 'Madera y cerámica combinadas en una sola pieza.',
     pieces: 14,
     color: 'olive',
-    icon: 'vase',
+    image: piezasMixtasImg,
     href: '/catalogo/piezas-mixtas',
   },
   {
@@ -60,7 +68,7 @@ export const categories: Category[] = [
     description: 'Sets de piezas combinadas, listos para regalar.',
     pieces: 8,
     color: 'violet',
-    icon: 'tag',
+    image: kitsImg,
     href: '/catalogo/kits',
   },
 ];

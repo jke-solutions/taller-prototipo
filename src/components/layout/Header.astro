@@ -1,9 +1,11 @@
 ---
 /**
  * Header del sitio — se repite en todas las páginas vía BaseLayout.
+ * Sticky siempre (position: sticky) con sombra sutil solo cuando hay scroll.
  * Fondo blanco, borde inferior fino. Logo a la izquierda, nav al centro-derecha,
  * botón "Carrito (0)" a la derecha. Bajo 768px el nav se oculta y aparece el
- * botón de menú (drawer con JS vanilla mínimo).
+ * botón de menú: un panel liviano que se despliega DEBAJO del header (sin
+ * overlay ni blur), se cierra al tocar un link, Escape o fuera del header.
  */
 import Icon from '@components/ui/Icon.astro';
 import { mainNav } from '@data/nav';
@@ -19,11 +21,14 @@ const isActive = (href: string) =>
   href !== '/' && (pathname === href || pathname.startsWith(href + '/'));
 ---
 
-<header class="bg-white border-b border-border">
-  <div class="wrap flex items-center justify-between py-6">
+<header
+  class="sticky top-0 z-40 bg-white border-b border-border transition-shadow duration-200"
+  data-header
+>
+  <div class="wrap flex items-center justify-between py-4 md:py-5">
     <a href="/" class="flex items-center gap-[12px]" aria-label={`${site.name} — inicio`}>
-      <img src="/felipe-logo.svg" alt="" width="40" height="43" class="w-10 h-auto" />
-      <span class="font-display font-extrabold text-[20px] text-ink tracking-[-0.01em]">
+      <img src="/felipe-logo.svg" alt="" width="40" height="43" class="w-9 md:w-10 h-auto" />
+      <span class="font-display font-extrabold text-[19px] md:text-[20px] text-ink tracking-[-0.01em]">
         {site.name}
       </span>
     </a>
@@ -58,64 +63,95 @@ const isActive = (href: string) =>
         aria-label="Abrir menú"
         aria-expanded="false"
         aria-controls="mobile-menu"
-        data-menu-open
+        data-menu-toggle
       >
-        <Icon name="menu" size={20} />
+        <span data-icon-open><Icon name="menu" size={20} /></span>
+        <span data-icon-close hidden><Icon name="close" size={20} /></span>
       </button>
     </div>
   </div>
 
-  {/* Drawer mobile — oculto por defecto, se muestra al tocar el botón. */}
+  {/* Panel mobile — se despliega bajo el header. Cerrado: max-height 0 + inert. */}
   <div
     id="mobile-menu"
-    class="fixed inset-0 z-50 hidden md:hidden"
+    class="md:hidden absolute inset-x-0 top-full bg-white border-b border-border overflow-hidden transition-[max-height,opacity] duration-200 ease-out motion-reduce:transition-none"
+    style="max-height:0;opacity:0;"
     data-menu-panel
+    inert
   >
-    <div class="absolute inset-0 bg-black/40" data-menu-close></div>
-    <nav
-      class="absolute right-0 top-0 h-full w-[78%] max-w-[320px] bg-white shadow-xl flex flex-col p-8 gap-2"
-      aria-label="Navegación principal"
-    >
-      <button
-        type="button"
-        class="self-end flex items-center justify-center w-9 h-9 border border-ink rounded-[2px] text-ink mb-2"
-        aria-label="Cerrar menú"
-        data-menu-close
-      >
-        <Icon name="close" size={20} />
-      </button>
+    <nav class="wrap flex flex-col pb-4" aria-label="Navegación principal">
       {
         mainNav.map((item) => (
           <a
             href={item.href}
-            class="py-2 font-bold text-[15px] text-ink border-b border-border"
+            class="py-4 font-bold text-[17px] text-ink border-b border-border"
             aria-current={isActive(item.href) ? 'page' : undefined}
           >
             {item.label}
           </a>
         ))
       }
-      <a href="/carrito" class="py-2 font-bold text-[15px] text-maroon">Carrito (0)</a>
+      <a href="/carrito" class="py-4 font-bold text-[17px] text-maroon">Carrito (0)</a>
     </nav>
   </div>
 </header>
 
 <script>
-  // Menú mobile: JS vanilla mínimo, sin librerías.
+  // Header sticky + menú mobile: JS vanilla mínimo, sin librerías.
+  const header = document.querySelector<HTMLElement>('[data-header]');
   const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
-  const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
-  const closers = document.querySelectorAll<HTMLElement>('[data-menu-close]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const iconOpen = toggle?.querySelector<HTMLElement>('[data-icon-open]');
+  const iconClose = toggle?.querySelector<HTMLElement>('[data-icon-close]');
+  const mdUp = window.matchMedia('(min-width: 768px)');
 
-  const setOpen = (open: boolean) => {
-    if (!panel || !openBtn) return;
-    panel.classList.toggle('hidden', !open);
-    openBtn.setAttribute('aria-expanded', String(open));
-    document.body.style.overflow = open ? 'hidden' : '';
+  let open = false;
+
+  const setOpen = (next: boolean) => {
+    if (!panel || !toggle) return;
+    open = next;
+    panel.style.maxHeight = open ? '70vh' : '0';
+    panel.style.opacity = open ? '1' : '0';
+    panel.toggleAttribute('inert', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    if (iconOpen) iconOpen.hidden = open;
+    if (iconClose) iconClose.hidden = !open;
   };
 
-  openBtn?.addEventListener('click', () => setOpen(true));
-  closers.forEach((el) => el.addEventListener('click', () => setOpen(false)));
+  toggle?.addEventListener('click', () => setOpen(!open));
+  panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
+    if (e.key === 'Escape' && open) {
+      setOpen(false);
+      toggle?.focus();
+    }
   });
+  // Tocar fuera del header cierra el panel.
+  document.addEventListener('pointerdown', (e) => {
+    if (open && !(e.target as Element).closest('[data-header]')) setOpen(false);
+  });
+  // Si se agranda la ventana al breakpoint desktop, el panel se cierra solo.
+  mdUp.addEventListener('change', (e) => e.matches && setOpen(false));
+
+  // Sombra sutil solo cuando hay scroll (un solo listener, con rAF).
+  let raf = 0;
+  const updateShadow = () => {
+    raf = 0;
+    header?.classList.toggle('is-scrolled', window.scrollY > 4);
+  };
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!raf) raf = requestAnimationFrame(updateShadow);
+    },
+    { passive: true }
+  );
+  updateShadow();
 </script>
+
+<style>
+  [data-header].is-scrolled {
+    box-shadow: 0 2px 12px rgba(100, 27, 11, 0.08);
+  }
+</style>

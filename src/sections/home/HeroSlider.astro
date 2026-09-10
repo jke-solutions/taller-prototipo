@@ -10,6 +10,16 @@
  *  - Flechas: círculos blancos semitransparentes, chevron oscuro.
  *  - Puntos: blancos, el activo más ancho.
  *
+ * Altura: ocupa toda la pantalla disponible bajo el header sticky
+ * (100dvh menos el alto del header: ~72px mobile / ~84px desktop), con un
+ * mínimo para que nunca se aplaste en pantallas muy bajas. El header queda
+ * siempre visible arriba (position: sticky) mientras el slider llena el resto.
+ *
+ * Animación: al mostrarse un slide, su texto entra en cascada de arriba hacia
+ * abajo (badge -> título -> subtítulo -> botón) y la foto hace un Ken Burns
+ * muy suave (scale 1 -> 1.06). Todo se desactiva con prefers-reduced-motion,
+ * y sin JS el contenido queda visible de entrada (ver clase .js en <html>).
+ *
  * Mecánica: scroll-snap (swipe táctil nativo) + JS vanilla (autoplay pausable,
  * flechas, puntos sincronizados con IntersectionObserver). Sin librerías.
  * Ref. visual: captura "Men Summer Collection" aprobada por el cliente.
@@ -33,7 +43,7 @@ const showControls = slides.length > 1;
 ---
 
 <section
-  class="relative overflow-hidden bg-ink"
+  class="relative overflow-hidden bg-ink snap-start"
   data-hero-slider
   aria-roledescription="carrusel"
   aria-label="Destacados de Taller Azotea"
@@ -45,45 +55,57 @@ const showControls = slides.length > 1;
     {
       slides.map((slide, i) => (
         <div
-          class="relative shrink-0 basis-full snap-start min-h-[68vh] md:min-h-[82vh] flex items-center justify-center"
+          class="relative shrink-0 basis-full snap-start h-[calc(100dvh-72px)] min-h-[480px] md:h-[calc(100dvh-84px)] md:min-h-[560px] flex items-center justify-center"
           data-slide
           role="group"
           aria-roledescription="slide"
           aria-label={`${i + 1} de ${slides.length}`}
         >
-          <Image
-            src={imageMap[slide.image]}
-            alt={slide.alt}
-            widths={widths}
-            sizes="100vw"
-            loading={i === 0 ? 'eager' : 'lazy'}
-            fetchpriority={i === 0 ? 'high' : 'auto'}
-            class="absolute inset-0 h-full w-full object-cover"
-          />
+          <div class="absolute inset-0 overflow-hidden">
+            <Image
+              src={imageMap[slide.image]}
+              alt={slide.alt}
+              widths={widths}
+              sizes="100vw"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              class="hero-img h-full w-full object-cover opacity-0 transition-opacity duration-500 [&[data-loaded]]:opacity-100"
+              data-hero-img
+            />
+          </div>
           {/* Overlay oscuro para legibilidad (confirmado con el cliente). */}
           <div
             class="absolute inset-0"
             style="background:linear-gradient(to bottom, rgba(0,0,0,.20) 0%, rgba(0,0,0,.30) 45%, rgba(0,0,0,.45) 100%);"
           />
 
-          <div class="relative z-10 mx-auto max-w-[760px] px-6 text-center text-white">
+          <div class="relative z-10 mx-auto max-w-[640px] px-14 sm:px-10 md:px-6 text-center text-white">
             <span
-              class="mb-6 inline-block rounded-[3px] border border-white/70 px-4 py-2 text-[12px] font-bold uppercase tracking-[0.16em]"
+              class="mb-5 md:mb-6 inline-block rounded-[3px] border border-white/70 px-4 py-2 text-[12px] font-bold uppercase tracking-[0.16em]"
+              data-reveal-item
+              style="--i:0;"
             >
               {slide.badge}
             </span>
             <h2
-              class="mb-5 font-display font-extrabold leading-[1.05] text-white"
-              style="font-size:clamp(30px, 6vw, 56px);"
+              class="mb-4 md:mb-5 font-display font-extrabold leading-[1.05] text-white"
+              style="font-size:clamp(26px, 5.6vw, 56px); --i:1;"
+              data-reveal-item
             >
               {slide.title}
             </h2>
-            <p class="mx-auto mb-8 max-w-[520px] text-[15px] leading-[1.6] text-white/90 md:text-[17px]">
+            <p
+              class="mx-auto mb-6 md:mb-8 max-w-[520px] text-[14px] leading-[1.6] text-white/90 md:text-[17px]"
+              data-reveal-item
+              style="--i:2;"
+            >
               {slide.subtitle}
             </p>
             <a
               href={slide.cta.href}
-              class="inline-block rounded-[4px] bg-white px-8 py-4 text-[14px] font-bold uppercase tracking-[0.08em] text-ink transition-transform hover:-translate-y-px"
+              class="inline-block rounded-[4px] bg-white px-7 py-3.5 md:px-8 md:py-4 text-[13px] md:text-[14px] font-bold uppercase tracking-[0.08em] text-ink transition-transform hover:-translate-y-px"
+              data-reveal-item
+              style="--i:3;"
             >
               {slide.cta.label}
             </a>
@@ -133,7 +155,54 @@ const showControls = slides.length > 1;
   }
 </section>
 
+<style>
+  /* Cascada de texto arriba -> abajo, solo cuando hay JS (ver .js en <html>). */
+  :global(.js) [data-slide] [data-reveal-item] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: calc(var(--i) * 220ms);
+  }
+  :global(.js) [data-slide][data-active] [data-reveal-item] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Ken Burns muy suave sobre la foto del slide activo. */
+  :global(.js) [data-slide][data-active] .hero-img[data-loaded] {
+    animation: hero-kb 7s ease-out forwards;
+    will-change: transform;
+  }
+  @keyframes hero-kb {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.06);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) [data-slide] [data-reveal-item] {
+      transition: opacity 0.2s ease;
+      transform: none;
+    }
+    :global(.js) [data-slide][data-active] .hero-img[data-loaded] {
+      animation: none;
+    }
+  }
+</style>
+
 <script>
+  // Fade-in de las fotos del slider al terminar de cargar.
+  document.querySelectorAll<HTMLImageElement>('[data-hero-img]').forEach((img) => {
+    if (img.complete && img.naturalWidth > 0) {
+      img.setAttribute('data-loaded', '');
+    } else {
+      img.addEventListener('load', () => img.setAttribute('data-loaded', ''), { once: true });
+    }
+  });
+
   // Slider tipo revista — vanilla, sin librerías.
   document.querySelectorAll<HTMLElement>('[data-hero-slider]').forEach((root) => {
     const track = root.querySelector<HTMLElement>('[data-track]');
@@ -141,7 +210,7 @@ const showControls = slides.length > 1;
     const prev = root.querySelector<HTMLButtonElement>('[data-prev]');
     const next = root.querySelector<HTMLButtonElement>('[data-next]');
     const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
-    if (!track || slides.length < 2) return;
+    if (!track) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let current = 0;
@@ -150,74 +219,117 @@ const showControls = slides.length > 1;
 
     const setActive = (i: number) => {
       current = i;
+      slides.forEach((s, si) => s.toggleAttribute('data-active', si === i));
       dots.forEach((d, di) => {
         d.toggleAttribute('data-active', di === i);
         d.style.width = di === i ? '34px' : '22px';
       });
     };
 
-    const goTo = (i: number) => {
-      const target = (i + slides.length) % slides.length;
-      const left = slides[target].offsetLeft - slides[0].offsetLeft;
-      track.scrollTo({ left, behavior: reduceMotion ? 'auto' : 'smooth' });
-      setActive(target);
+    // Repite la cascada del slide activo (badge -> título -> texto -> botón)
+    // cada vez que se vuelve a ver el hero por scroll, no solo la primera vez.
+    const replayCascade = () => {
+      const active = slides[current];
+      if (!active) return;
+      const items = [...active.querySelectorAll<HTMLElement>('[data-reveal-item]')];
+      // Ojo: sacar "data-active" NO apaga el texto de un salto — como el
+      // estado base también tiene transition, solo cambia el destino y
+      // empieza a interpolar lento (a los ~30ms del truco anterior, la
+      // opacidad apenas bajaba de 1 a ~0.97: invisible al ojo, por eso no
+      // se notaba ningún reinicio). Hay que forzar el salto instantáneo a
+      // opacity:0 apagando la transición un instante, y recién ahí volver
+      // a prenderla para que el fade-in se vea completo desde cero.
+      items.forEach((it) => it.style.setProperty('transition', 'none', 'important'));
+      active.removeAttribute('data-active');
+      void active.offsetWidth; // aplica el salto instantáneo antes de seguir
+      items.forEach((it) => it.style.removeProperty('transition'));
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          active.setAttribute('data-active', '');
+        });
+      });
     };
 
-    const start = () => {
-      if (reduceMotion) return;
-      stop();
-      timer = window.setInterval(() => goTo(current + 1), 5000);
-    };
-    const stop = () => {
-      window.clearInterval(timer);
-      timer = 0;
-    };
-    const pauseThenResume = () => {
-      stop();
-      window.clearTimeout(resumeTimer);
-      resumeTimer = window.setTimeout(start, 6000);
-    };
+    if (slides.length < 2) {
+      // Un solo slide: igual activa la cascada de texto y el Ken Burns.
+      requestAnimationFrame(() => setActive(0));
+    } else {
+      const goTo = (i: number) => {
+        const target = (i + slides.length) % slides.length;
+        const left = slides[target].offsetLeft - slides[0].offsetLeft;
+        track.scrollTo({ left, behavior: reduceMotion ? 'auto' : 'smooth' });
+        setActive(target);
+      };
 
-    prev?.addEventListener('click', () => {
-      goTo(current - 1);
-      pauseThenResume();
-    });
-    next?.addEventListener('click', () => {
-      goTo(current + 1);
-      pauseThenResume();
-    });
-    dots.forEach((d, i) =>
-      d.addEventListener('click', () => {
-        goTo(i);
+      const start = () => {
+        if (reduceMotion) return;
+        stop();
+        timer = window.setInterval(() => goTo(current + 1), 6000);
+      };
+      const stop = () => {
+        window.clearInterval(timer);
+        timer = 0;
+      };
+      const pauseThenResume = () => {
+        stop();
+        window.clearTimeout(resumeTimer);
+        resumeTimer = window.setTimeout(start, 6000);
+      };
+
+      prev?.addEventListener('click', () => {
+        goTo(current - 1);
         pauseThenResume();
-      })
-    );
+      });
+      next?.addEventListener('click', () => {
+        goTo(current + 1);
+        pauseThenResume();
+      });
+      dots.forEach((d, i) =>
+        d.addEventListener('click', () => {
+          goTo(i);
+          pauseThenResume();
+        })
+      );
 
-    // pointerdown cubre mouse y touch en un solo evento.
-    root.addEventListener('pointerdown', pauseThenResume);
-    root.addEventListener('mouseenter', stop);
-    root.addEventListener('mouseleave', start);
+      // pointerdown cubre mouse y touch en un solo evento.
+      root.addEventListener('pointerdown', pauseThenResume);
+      root.addEventListener('mouseenter', stop);
+      root.addEventListener('mouseleave', start);
 
-    // Punto activo según el slide visible (fiable en mobile).
-    const io = new IntersectionObserver(
+      // Punto activo según el slide visible (fiable en mobile).
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+              setActive(slides.indexOf(entry.target as HTMLElement));
+            }
+          });
+        },
+        { root: track, threshold: [0.6] }
+      );
+      slides.forEach((s) => io.observe(s));
+
+      // Pausa el autoplay cuando la sección no está en pantalla.
+      new IntersectionObserver(
+        (entries) => entries.forEach((e) => (e.isIntersecting ? start() : stop())),
+        { threshold: 0.2 }
+      ).observe(root);
+
+      requestAnimationFrame(() => setActive(0));
+      start();
+    }
+
+    // Repite la cascada al volver a ver el hero por scroll (subiendo o
+    // bajando), no solo la primera vez que carga la página.
+    let heroWasVisible = true;
+    new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-            setActive(slides.indexOf(entry.target as HTMLElement));
-          }
+          if (entry.isIntersecting && !heroWasVisible) replayCascade();
+          heroWasVisible = entry.isIntersecting;
         });
       },
-      { root: track, threshold: [0.6] }
-    );
-    slides.forEach((s) => io.observe(s));
-
-    // Pausa el autoplay cuando la sección no está en pantalla.
-    new IntersectionObserver(
-      (entries) => entries.forEach((e) => (e.isIntersecting ? start() : stop())),
-      { threshold: 0.2 }
+      { threshold: 0.3 }
     ).observe(root);
-
-    setActive(0);
-    start();
   });
 </script>

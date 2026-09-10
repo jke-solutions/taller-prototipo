@@ -6,12 +6,12 @@
  */
 import Icon from '@components/ui/Icon.astro';
 import { site } from '@data/site';
-import { helpNav } from '@data/nav';
+import { helpNav, legalNav } from '@data/nav';
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="bg-white border-t border-border pt-12 pb-[28px] text-ink">
+<footer class="bg-white border-t border-border pt-12 pb-[28px] text-ink snap-end">
   <div class="wrap">
     <div class="flex flex-wrap justify-between gap-8 mb-[36px]">
       <div class="max-w-[280px]">
@@ -60,20 +60,34 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <div class="border-t border-border pt-[18px] flex flex-wrap justify-between items-center gap-[10px] text-[12.5px] text-muted">
-      <span>© {year} {site.name}</span>
-      <div class="flex gap-[12px]">
+    <div class="border-t border-border pt-[18px] flex flex-col gap-[16px] text-[12.5px] text-muted">
+      <ul class="flex flex-wrap justify-center md:justify-start gap-x-[20px] gap-y-[6px]">
         {
-          site.social.map((s) => (
-            <a
-              href={s.href}
-              aria-label={s.label}
-              class="w-8 h-8 rounded-full border border-border flex items-center justify-center text-ink hover:bg-cream transition-colors"
-            >
-              <Icon name={s.icon as any} size={15} />
-            </a>
+          legalNav.map((item) => (
+            <li>
+              <a href={item.href} class="hover:text-ink transition-colors">
+                {item.label}
+              </a>
+            </li>
           ))
         }
+      </ul>
+
+      <div class="flex flex-wrap justify-center md:justify-between items-center gap-[14px]">
+        <span>© {year} {site.name}</span>
+        <div class="flex gap-[12px]">
+          {
+            site.social.map((s) => (
+              <a
+                href={s.href}
+                aria-label={s.label}
+                class="w-8 h-8 rounded-full border border-border flex items-center justify-center text-ink hover:bg-cream transition-colors"
+              >
+                <Icon name={s.icon as any} size={15} />
+              </a>
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>

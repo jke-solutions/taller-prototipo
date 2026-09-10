@@ -27,8 +27,9 @@ const canonical = new URL(pathname, Astro.site ?? Astro.url).toString();
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" class="snap-y snap-mandatory scroll-pt-[72px] md:scroll-pt-[84px]">
   <head>
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {/* Favicon: isotipo de Felipe (public/favicon.svg). */}
@@ -68,5 +69,10 @@ const canonical = new URL(pathname, Astro.site ?? Astro.url).toString();
       <slot />
     </main>
     <Footer />
+
+    <script>
+      import { initScrollReveal } from '@/scripts/scrollReveal';
+      initScrollReveal();
+    </script>
   </body>
 </html>

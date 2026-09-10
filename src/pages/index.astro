@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import HeroSlider from '@sections/home/HeroSlider.astro';
 import CategoryGrid from '@sections/home/CategoryGrid.astro';
 import FeaturedProducts from '@sections/home/FeaturedProducts.astro';
+import ServicesSection from '@sections/home/ServicesSection.astro';
 import PromoGrid from '@sections/home/PromoGrid.astro';
 import StorySection from '@sections/home/StorySection.astro';
 ---
@@ -14,12 +15,14 @@ import StorySection from '@sections/home/StorySection.astro';
        que queda disponible por si se reutiliza en otra página)
     2. Explora por categoría
     3. Producto destacado (slider de varios)
-    4. En promoción
-    5. Conoce el taller
+    4. Servicios (Cursos y Talleres / Trabajos Personalizados)
+    5. En promoción
+    6. Conoce el taller
   */}
   <HeroSlider />
   <CategoryGrid />
   <FeaturedProducts />
+  <ServicesSection />
   <PromoGrid />
   <StorySection />
 </BaseLayout>

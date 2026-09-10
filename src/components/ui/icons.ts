@@ -10,6 +10,8 @@ export const ICON_NAMES = [
   'vase',
   'candle',
   'figure',
+  'wheel',
+  'sketch',
   'tag',
   'instagram',
   'tiktok',

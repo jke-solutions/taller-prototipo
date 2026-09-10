@@ -22,6 +22,12 @@ export interface FeaturedProduct {
   /** Color del placeholder mientras no hay foto real. */
   color: BrandColor;
   href: string;
+  /**
+   * Foto real servida desde una URL externa / CDN (carga diferida por scroll
+   * vía LazyImage). Para probar el caso de imagen remota antes de tener CDN
+   * propio se usan URLs de Unsplash.
+   */
+  image?: { src: string; alt: string };
 }
 
 export const featuredProducts: FeaturedProduct[] = [
@@ -38,6 +44,10 @@ export const featuredProducts: FeaturedProduct[] = [
     icon: 'vase',
     color: 'teal',
     href: '/catalogo/ceramica/jarron-texturado-azotea',
+    image: {
+      src: 'https://images.unsplash.com/photo-1677761640321-b80251be00ca?auto=format&fit=crop&w=1200&q=80',
+      alt: 'Jarrón de cerámica texturado sobre fondo neutro',
+    },
   },
   {
     slug: 'bandeja-nogal-curva',
@@ -49,6 +59,10 @@ export const featuredProducts: FeaturedProduct[] = [
     icon: 'tray',
     color: 'gold',
     href: '/catalogo/madera/bandeja-nogal-curva',
+    image: {
+      src: 'https://images.unsplash.com/photo-1638493446293-ee3d0d537e4c?auto=format&fit=crop&w=1200&q=80',
+      alt: 'Bandeja y utensilios de madera torneada',
+    },
   },
   {
     slug: 'kit-desayuno-azotea',
@@ -63,5 +77,9 @@ export const featuredProducts: FeaturedProduct[] = [
     icon: 'mug',
     color: 'violet',
     href: '/catalogo/kits/kit-desayuno-azotea',
+    image: {
+      src: 'https://images.unsplash.com/photo-1581559178851-b99664da71ba?auto=format&fit=crop&w=1200&q=80',
+      alt: 'Set de vajilla de cerámica y madera para desayuno',
+    },
   },
 ];

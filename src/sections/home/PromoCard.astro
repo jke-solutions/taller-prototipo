@@ -6,15 +6,26 @@
  * SIEMPRE visible (no depende de :hover, para que funcione igual en mobile).
  * Ref. visual: .e-promo-card de la variante F.
  */
+import { Image } from 'astro:assets';
 import Placeholder from '@components/ui/Placeholder.astro';
 import type { PromoProduct } from '@data/promos';
 import type { BrandColor } from '@data/categories';
 
 interface Props {
   product: PromoProduct;
+  /** Índice dentro del listado, para escalonar la animación de aparición. */
+  index?: number;
+  /**
+   * Es la última promo del listado: en desktop no lleva línea divisoria a
+   * la derecha. No se resuelve con `last:` (`:last-child`) porque cada
+   * tarjeta queda envuelta en su propio `<div data-slide>` del carrusel
+   * responsive, donde siempre es "la única/última" hija — ver el mismo
+   * comentario en CategoryCard.astro.
+   */
+  isLast?: boolean;
 }
 
-const { product } = Astro.props;
+const { product, index = 0, isLast = false } = Astro.props;
 
 const brandVar: Record<BrandColor, string> = {
   teal: 'var(--teal)',
@@ -25,30 +36,51 @@ const brandVar: Record<BrandColor, string> = {
 };
 ---
 
-<article class="h-full bg-white p-6 border border-border rounded-card md:border-0 md:border-r md:last:border-r-0 md:rounded-none">
+<article
+  class:list={[
+    'h-full bg-white p-6 md:p-8 border border-border rounded-card',
+    'md:rounded-none md:border-t-0 md:border-b-0 md:border-l-0',
+    isLast && 'md:border-r-0',
+    'transition-transform [@media(hover:hover)]:hover:-translate-y-[2px]',
+  ]}
+  style={`--i:${index};`}
+  data-reveal-child
+>
   <Placeholder
     icon={product.icon}
     label={`Foto de ${product.name}`}
-    iconScale={32}
-    class="mb-4"
+    ratio="4 / 5"
+    iconScale={30}
+    class="mb-4 md:mb-5"
   >
+    {
+      product.image && (
+        <Image
+          src={product.image}
+          alt={`Foto de ${product.name}`}
+          widths={[240, 480, 720]}
+          sizes="(min-width: 768px) 22vw, 72vw"
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+      )
+    }
     <span
-      class="absolute top-[10px] left-[10px] bg-maroon text-white text-[12px] font-extrabold px-[9px] py-1 rounded-[3px]"
+      class="absolute top-[10px] left-[10px] z-10 bg-maroon text-white text-[12px] font-extrabold px-[9px] py-1 rounded-[3px]"
     >
       -{product.discountPercent}%
     </span>
   </Placeholder>
 
   <span
-    class="block font-body text-[11.5px] font-extrabold uppercase tracking-[0.04em] mb-2"
+    class="block font-body text-[12px] font-extrabold uppercase tracking-[0.04em] mb-2"
     style={`color:${brandVar[product.categoryColor]};`}
   >
     {product.category}
   </span>
-  <h3 class="font-display text-[15.5px] text-ink mb-[6px]">{product.name}</h3>
-  <div class="flex items-baseline gap-2 mb-[10px]">
-    <span class="font-display text-[16px] text-maroon">{product.priceNow}</span>
-    <span class="font-body text-[12.5px] text-muted line-through">{product.priceBefore}</span>
+  <h3 class="font-display text-[17px] text-ink mb-[8px]">{product.name}</h3>
+  <div class="flex items-baseline gap-2 mb-3">
+    <span class="font-display text-[18px] text-maroon">{product.priceNow}</span>
+    <span class="font-body text-[13px] text-muted line-through">{product.priceBefore}</span>
   </div>
   <a
     href={product.href}

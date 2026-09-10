@@ -17,12 +17,12 @@ const hasAction = Astro.slots.has('action');
 
 <div
   class:list={[
-    'bg-white pt-18 pb-6',
+    'bg-white pt-12 pb-6',
     withBorderTop && 'border-t border-border',
     className,
   ]}
 >
-  <div class="wrap">
+  <div class="wrap" data-reveal>
     <div class:list={['flex items-center', hasAction ? 'justify-between' : 'justify-start']}>
       <p class="section-eyebrow">{eyebrow}</p>
       {hasAction && <slot name="action" />}

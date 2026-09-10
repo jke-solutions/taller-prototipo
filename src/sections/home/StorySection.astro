@@ -18,12 +18,13 @@ interface Props {
 const { content = defaultStory } = Astro.props;
 ---
 
-<section class="bg-white border-t border-border">
+<section class="bg-white border-t border-border snap-start">
   <div class="grid items-stretch md:grid-cols-[1fr_1.1fr]">
     <div
       class="relative flex min-h-[300px] items-center justify-center border-b border-border bg-cream md:min-h-[68vh] md:border-b-0 md:border-r"
       role="img"
       aria-label="Espacio para foto del taller"
+      data-reveal
     >
       <img
         src={content.image.src}
@@ -39,15 +40,18 @@ const { content = defaultStory } = Astro.props;
 
     <div
       class="flex flex-col justify-center px-7 py-14 text-center md:px-16 md:py-20 md:text-left"
+      data-reveal
     >
-      <p class="section-eyebrow justify-center md:justify-start">{content.eyebrow}</p>
-      <h2 class="font-display text-[26px] text-ink mt-4 mb-3">{content.title}</h2>
+      <p class="section-eyebrow justify-center md:justify-start" data-reveal-child style="--i:0;">{content.eyebrow}</p>
+      <h2 class="font-display text-[26px] text-ink mt-4 mb-3" data-reveal-child style="--i:1;">{content.title}</h2>
       <p
         class="font-body text-[14.5px] text-muted leading-[1.7] mb-5 max-w-[440px] mx-auto md:mx-0"
+        data-reveal-child
+        style="--i:2;"
       >
         {content.paragraph}
       </p>
-      <div>
+      <div data-reveal-child style="--i:3;">
         <Button href={content.cta.href} variant="secondary">{content.cta.label}</Button>
       </div>
     </div>
