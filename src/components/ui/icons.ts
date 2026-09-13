@@ -20,6 +20,7 @@ export const ICON_NAMES = [
   'web',
   'menu',
   'close',
+  'copy',
   'arrow-left',
   'arrow-right',
   'book',

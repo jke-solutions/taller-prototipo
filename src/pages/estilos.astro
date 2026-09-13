@@ -10,6 +10,7 @@ import Tag from '@components/ui/Tag.astro';
 import Icon from '@components/ui/Icon.astro';
 import SectionLabel from '@components/ui/SectionLabel.astro';
 import Placeholder from '@components/ui/Placeholder.astro';
+import PromoModal from '@components/ui/PromoModal.astro';
 import { ICON_NAMES } from '@components/ui/icons';
 
 const brandColors = [
@@ -257,6 +258,48 @@ const textScale = [
         <Placeholder icon="vase" label="Foto del producto" />
         <Placeholder icon="bowl" label="Foto del producto" color="teal" />
         <Placeholder icon="tray" label="Foto del taller" ratio="4 / 5" color="gold" />
+      </div>
+    </section>
+
+    <!-- Modales de promoción -->
+    <section>
+      <h2 class="font-display text-[24px] text-ink mb-6">Modales de promoción</h2>
+      <p class="text-[13px] text-muted mb-6 max-w-[560px]">
+        3 variantes de <code>&lt;PromoModal /&gt;</code>: solo texto, con imagen y con cupón. Acá se
+        muestra el panel solo (sin overlay ni lógica de apertura/cierre).
+      </p>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8 items-start">
+        <div class="rounded-card bg-[color-mix(in_oklch,var(--ink)_45%,transparent)] p-8 flex justify-center">
+          <PromoModal
+            variant="texto"
+            badge="Oferta"
+            title="Envío gratis en tu próximo pedido"
+            description="Por tiempo limitado, todos los envíos dentro de Lima van por nuestra cuenta."
+            ctaLabel="Ver catálogo"
+          />
+        </div>
+        <div class="rounded-card bg-[color-mix(in_oklch,var(--ink)_45%,transparent)] p-8 flex justify-center">
+          <PromoModal
+            variant="imagen"
+            badge="Nueva colección"
+            title="Piezas de temporada ya disponibles"
+            description="Cerámica esmaltada a mano y bandejas de madera nueva, inspiradas en los tonos del taller."
+            ctaLabel="Explorar colección"
+            dismissLabel="Seguir viendo"
+            image={{ icon: 'vase', color: 'gold' }}
+          />
+        </div>
+        <div class="rounded-card bg-[color-mix(in_oklch,var(--ink)_45%,transparent)] p-8 flex justify-center">
+          <PromoModal
+            variant="cupon"
+            badge="Cupón exclusivo"
+            title="10% dcto con este código"
+            description="Válido en compras desde S/100. Un uso por cliente."
+            ctaLabel="Usar cupón ahora"
+            dismissLabel="Ahora no"
+            couponCode="AZOTEA10"
+          />
+        </div>
       </div>
     </section>
 

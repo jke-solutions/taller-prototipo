@@ -1,0 +1,100 @@
+---
+/**
+ * Modal de promoción (3 variantes, ver /estilos → "Modales de promoción").
+ * Reutiliza Button / Tag / Icon / Placeholder del design system.
+ *
+ * - texto:  sin imagen ni cupón. Aviso simple (envío gratis, descuento genérico).
+ * - imagen: foto/ilustración arriba (Placeholder mientras no hay asset real).
+ * - cupon:  código copiable en caja punteada.
+ *
+ * Solo dibuja el panel (sin overlay/backdrop ni lógica de apertura): quien
+ * lo use decide cómo mostrarlo (diálogo nativo, popover, etc.).
+ */
+import Button from './Button.astro';
+import Tag from './Tag.astro';
+import Icon from './Icon.astro';
+import Placeholder from './Placeholder.astro';
+import type { IconName } from './icons';
+import type { BrandColor } from '@data/categories';
+
+type Variant = 'texto' | 'imagen' | 'cupon';
+
+interface Props {
+  variant?: Variant;
+  badge?: string;
+  title: string;
+  description: string;
+  ctaLabel: string;
+  ctaHref?: string;
+  dismissLabel?: string;
+  /** Solo variant="imagen": ícono + tinte del placeholder. */
+  image?: { icon: IconName; color?: BrandColor };
+  /** Solo variant="cupon": código a mostrar/copiar. */
+  couponCode?: string;
+  class?: string;
+}
+
+const {
+  variant = 'texto',
+  badge,
+  title,
+  description,
+  ctaLabel,
+  ctaHref = '#',
+  dismissLabel = 'Ahora no, gracias',
+  image = { icon: 'vase', color: 'gold' },
+  couponCode = 'AZOTEA10',
+  class: className,
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'relative w-full max-w-[420px] bg-white rounded-[14px] shadow-[0_24px_60px_-12px_rgba(50,15,5,0.45)] overflow-hidden',
+    className,
+  ]}
+>
+  <button
+    type="button"
+    aria-label="Cerrar"
+    class="absolute top-3.5 right-3.5 z-10 flex h-8 w-8 items-center justify-center rounded-full border-0 cursor-pointer"
+    style={variant === 'imagen' ? 'background:rgba(255,255,255,0.9);' : 'background:var(--cream);'}
+  >
+    <Icon name="close" size={14} label="Cerrar" class="text-ink" />
+  </button>
+
+  {
+    variant === 'imagen' && (
+      <Placeholder icon={image.icon} label="Foto de la colección" color={image.color} ratio="2.1 / 1" class="rounded-none" />
+    )
+  }
+
+  <div class="flex flex-col items-center gap-[18px] px-8 pb-8 text-center" style={variant === 'imagen' ? 'padding-top:28px;' : 'padding-top:36px;'}>
+    {badge && <Tag variant="promo">{badge}</Tag>}
+
+    <div class="flex flex-col gap-2.5">
+      <h3 class="font-display text-[26px] text-ink">{title}</h3>
+      <p class="text-[15px] leading-relaxed text-muted m-0">{description}</p>
+    </div>
+
+    {
+      variant === 'cupon' && (
+        <div class="w-full flex items-center justify-between gap-3 rounded-input border-1.5 border-dashed border-primary bg-cream px-[18px] py-3.5">
+          <span class="font-display font-bold text-[20px] tracking-[0.06em] text-maroon">{couponCode}</span>
+          <button type="button" class="flex items-center gap-1.5 border-0 bg-transparent p-0 text-[13px] font-bold text-maroon cursor-pointer">
+            <Icon name="copy" size={15} />
+            Copiar
+          </button>
+        </div>
+      )
+    }
+
+    <Button variant="primary" href={ctaHref} class="w-full !justify-center">
+      {ctaLabel}
+    </Button>
+
+    <button type="button" class="border-0 bg-transparent p-0 text-[13.5px] font-bold text-muted underline underline-offset-[3px] cursor-pointer">
+      {dismissLabel}
+    </button>
+  </div>
+</div>
