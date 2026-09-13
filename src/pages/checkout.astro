@@ -1,0 +1,316 @@
+---
+/**
+ * Checkout: arma el pedido a partir del carrito (ver src/scripts/cart.ts) y
+ * los datos de entrega que llena el cliente. Sin pasarela de pago en el
+ * prototipo — el pago y la entrega se coordinan por WhatsApp desde /gracias
+ * (ver src/scripts/checkout.ts). "Guardar mis datos" es opt-in y guarda solo
+ * en localStorage de este navegador, para precargar el formulario la
+ * próxima vez.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import FormField from '@components/ui/FormField.astro';
+import FormSelect from '@components/ui/FormSelect.astro';
+import FormTextarea from '@components/ui/FormTextarea.astro';
+import { peruRegions } from '@data/regions';
+import { shippingMethods } from '@/scripts/checkout';
+---
+
+<BaseLayout
+  title="Checkout"
+  description="Finaliza tu pedido: ingresa tus datos de entrega y coordina el pago por WhatsApp."
+>
+  <div class="bg-white">
+    <div class="wrap py-10 md:py-14">
+      <nav class="text-[13px] text-muted mb-8 flex items-center gap-2 flex-wrap" aria-label="Ruta de navegación">
+        <a href="/" class="hover:text-ink transition-colors">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <a href="/carrito" class="hover:text-ink transition-colors">Carrito</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-ink">Checkout</span>
+      </nav>
+
+      <p class="section-eyebrow mb-2">Checkout</p>
+      <h1 class="font-display text-[28px] md:text-[32px] text-ink mb-8">Finalizar pedido</h1>
+
+      <div class="grid md:grid-cols-[1fr_380px] gap-10 md:gap-16 items-start">
+        <form data-checkout-form class="flex flex-col gap-9" novalidate>
+          <section class="flex flex-col gap-4">
+            <h2 class="font-display text-[20px] text-ink">Contacto</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField label="Nombre (opcional)" name="nombre" autocomplete="given-name" />
+              <FormField label="Apellidos (opcional)" name="apellidos" autocomplete="family-name" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField label="Correo electrónico" name="correo" type="email" required autocomplete="email" />
+              <FormField label="WhatsApp" name="whatsapp" type="tel" required autocomplete="tel" />
+            </div>
+          </section>
+
+          <section class="flex flex-col gap-4">
+            <h2 class="font-display text-[20px] text-ink">Entrega</h2>
+            <FormField label="DNI (para boleta)" name="dni" autocomplete="off" />
+            <FormField label="Dirección" name="direccion" required autocomplete="street-address" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField label="Distrito" name="distrito" required autocomplete="address-level2" />
+              <FormField label="Referencia (opcional)" name="referencia" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormSelect label="Región / Departamento" name="region" required>
+                {peruRegions.map((region) => <option>{region}</option>)}
+              </FormSelect>
+              <FormField label="Ciudad" name="ciudad" required autocomplete="address-level2" />
+            </div>
+          </section>
+
+          <section class="flex flex-col gap-3">
+            <h2 class="font-display text-[20px] text-ink">Método de envío</h2>
+            {
+              shippingMethods.map((method, i) => (
+                <label class="shipping-option flex items-center justify-between gap-4 p-4 border border-border rounded-input cursor-pointer transition-colors">
+                  <span class="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="envio"
+                      value={method.id}
+                      checked={i === 0}
+                      class="w-[18px] h-[18px] accent-maroon shrink-0"
+                    />
+                    <span>
+                      <span class="block font-extrabold text-[14.5px] text-ink">{method.label}</span>
+                      <span class="block text-[12.5px] text-muted">{method.description}</span>
+                    </span>
+                  </span>
+                  <span class="font-extrabold text-[14.5px] text-ink whitespace-nowrap">S/ {method.price.toFixed(2)}</span>
+                </label>
+              ))
+            }
+          </section>
+
+          <label class="flex items-start gap-[10px] text-[13.5px] text-muted leading-[1.6] bg-cream rounded-input px-4 py-3.5">
+            <input type="checkbox" name="guardarDatos" checked class="mt-[3px]" />
+            Guardar mis datos en este navegador para completarlos más rápido en mi próxima compra.
+          </label>
+
+          <FormTextarea label="Notas para tu pedido (opcional)" name="notas" rows={3} />
+
+          <div class="flex flex-col gap-3">
+            <Button type="submit" variant="primary" size="lg">
+              Finalizar pedido
+              <Icon name="arrow-right" size={15} />
+            </Button>
+            <p class="flex items-center gap-2 text-[12.5px] text-muted m-0">
+              <Icon name="whatsapp" size={16} class="text-teal shrink-0" />
+              Al finalizar te escribiremos por WhatsApp para coordinar el pago y la entrega.
+            </p>
+          </div>
+        </form>
+
+        <div class="flex flex-col gap-5">
+          <div class="border border-border rounded-card p-7 flex flex-col gap-5">
+            <p class="font-display text-[18px] text-ink">Resumen del pedido</p>
+
+            <div class="flex flex-col divide-y divide-border" data-checkout-items></div>
+
+            <div class="flex items-stretch gap-2">
+              <input
+                type="text"
+                placeholder="¿Tienes un cupón?"
+                class="flex-1 min-w-0 text-[14px] text-ink border border-border rounded-input px-4 h-[42px] focus-visible:outline-2 focus-visible:outline-maroon"
+              />
+              <button
+                type="button"
+                class="font-extrabold text-[12.5px] uppercase tracking-wide bg-cream text-maroon rounded-input px-4 h-[42px] whitespace-nowrap"
+              >
+                Aplicar
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-2 pt-4 border-t border-border text-[14px]">
+              <div class="flex items-center justify-between">
+                <span class="text-muted" data-checkout-subtotal-label>Subtotal</span>
+                <span class="font-bold text-ink" data-checkout-subtotal>S/ 0.00</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-muted">Envío</span>
+                <span class="font-bold text-ink" data-checkout-shipping>S/ 0.00</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-border">
+              <span class="font-extrabold text-[15px] text-ink">Total</span>
+              <span class="font-display text-[24px] text-maroon" data-checkout-total>S/ 0.00</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <a href="/politica-de-privacidad" class="flex items-center gap-3 py-3.5 text-[13px] font-bold text-ink border-b border-border">
+              <Icon name="lock" size={18} class="text-maroon shrink-0" />
+              Política de Privacidad
+            </a>
+            <a href="/envios-y-devoluciones" class="flex items-center gap-3 py-3.5 text-[13px] font-bold text-ink">
+              <Icon name="truck" size={18} class="text-maroon shrink-0" />
+              Envíos y Devoluciones
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<template data-checkout-row-template>
+  <div class="flex items-center gap-3 py-4">
+    <div class="relative w-14 h-14 rounded-card shrink-0 flex items-center justify-center" data-row-thumb>
+      <svg width="24" height="24" data-row-icon><use></use></svg>
+      <span
+        class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-maroon text-white text-[10px] font-bold leading-[18px] text-center"
+        data-row-qty
+      ></span>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="font-extrabold text-[14px] text-ink truncate m-0" data-row-name></p>
+      <p class="text-[12.5px] text-muted m-0" data-row-meta></p>
+    </div>
+    <p class="font-display text-[15px] text-maroon whitespace-nowrap m-0" data-row-subtotal></p>
+  </div>
+</template>
+
+<style>
+  .shipping-option:has(input:checked) {
+    border-color: var(--maroon);
+    background: color-mix(in oklch, var(--maroon) 6%, white);
+  }
+</style>
+
+<script>
+  import { getCart, parsePrice, clearCart, brandColorVar, type CartItem } from '@/scripts/cart';
+  import {
+    shippingMethods,
+    getSavedCustomer,
+    saveCustomer,
+    clearSavedCustomer,
+    createOrder,
+    saveLastOrder,
+    type CustomerData,
+  } from '@/scripts/checkout';
+
+  const form = document.querySelector<HTMLFormElement>('[data-checkout-form]');
+  const itemsEl = document.querySelector<HTMLElement>('[data-checkout-items]');
+  const subtotalLabelEl = document.querySelector<HTMLElement>('[data-checkout-subtotal-label]');
+  const subtotalEl = document.querySelector<HTMLElement>('[data-checkout-subtotal]');
+  const shippingEl = document.querySelector<HTMLElement>('[data-checkout-shipping]');
+  const totalEl = document.querySelector<HTMLElement>('[data-checkout-total]');
+  const rowTemplate = document.querySelector<HTMLTemplateElement>('[data-checkout-row-template]');
+
+  const cart = getCart();
+
+  // Sin productos no hay nada que finalizar: de vuelta al carrito.
+  if (cart.length === 0) {
+    window.location.href = '/carrito';
+  }
+
+  function selectedShipping() {
+    const id = form?.querySelector<HTMLInputElement>('input[name="envio"]:checked')?.value;
+    return shippingMethods.find((m) => m.id === id) ?? shippingMethods[0];
+  }
+
+  function renderSummary() {
+    if (!itemsEl || !rowTemplate || !subtotalEl || !shippingEl || !totalEl || !subtotalLabelEl) return;
+
+    itemsEl.innerHTML = '';
+    let subtotal = 0;
+    const count = cart.reduce((sum, i) => sum + i.qty, 0);
+
+    cart.forEach((item: CartItem) => {
+      const lineTotal = parsePrice(item.price) * item.qty;
+      subtotal += lineTotal;
+
+      const row = rowTemplate.content.cloneNode(true) as DocumentFragment;
+      const thumb = row.querySelector<HTMLElement>('[data-row-thumb]');
+      const svg = row.querySelector<SVGElement>('[data-row-icon]');
+      const use = row.querySelector<SVGUseElement>('[data-row-icon] use');
+      if (thumb) {
+        thumb.style.background = brandColorVar[item.color]
+          ? `color-mix(in oklch, ${brandColorVar[item.color]} 16%, white)`
+          : 'var(--cream)';
+      }
+      if (svg) svg.style.color = brandColorVar[item.color] ?? 'var(--muted)';
+      if (use) use.setAttribute('href', `#ic-${item.icon}`);
+
+      const nameEl = row.querySelector<HTMLElement>('[data-row-name]');
+      if (nameEl) nameEl.textContent = item.name;
+      const metaEl = row.querySelector<HTMLElement>('[data-row-meta]');
+      if (metaEl) metaEl.textContent = item.price;
+      const qtyEl = row.querySelector<HTMLElement>('[data-row-qty]');
+      if (qtyEl) qtyEl.textContent = String(item.qty);
+      const subtotalRowEl = row.querySelector<HTMLElement>('[data-row-subtotal]');
+      if (subtotalRowEl) subtotalRowEl.textContent = `S/ ${lineTotal.toFixed(2)}`;
+
+      itemsEl.appendChild(row);
+    });
+
+    const shipping = selectedShipping();
+    subtotalLabelEl.textContent = `Subtotal (${count} ${count === 1 ? 'artículo' : 'artículos'})`;
+    subtotalEl.textContent = `S/ ${subtotal.toFixed(2)}`;
+    shippingEl.textContent = `S/ ${shipping.price.toFixed(2)}`;
+    totalEl.textContent = `S/ ${(subtotal + shipping.price).toFixed(2)}`;
+  }
+
+  // Precarga los datos guardados si el cliente aceptó "Guardar mis datos" antes.
+  const saved = getSavedCustomer();
+  if (saved && form) {
+    (Object.keys(saved) as (keyof CustomerData)[]).forEach((key) => {
+      const field = form.elements.namedItem(key);
+      if (field instanceof HTMLInputElement || field instanceof HTMLSelectElement) {
+        field.value = saved[key];
+      }
+    });
+  }
+
+  form?.querySelectorAll<HTMLInputElement>('input[name="envio"]').forEach((el) => {
+    el.addEventListener('change', renderSummary);
+  });
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const data = new FormData(form);
+    const customer: CustomerData = {
+      nombre: String(data.get('nombre') ?? ''),
+      apellidos: String(data.get('apellidos') ?? ''),
+      correo: String(data.get('correo') ?? ''),
+      whatsapp: String(data.get('whatsapp') ?? ''),
+      dni: String(data.get('dni') ?? ''),
+      direccion: String(data.get('direccion') ?? ''),
+      distrito: String(data.get('distrito') ?? ''),
+      referencia: String(data.get('referencia') ?? ''),
+      region: String(data.get('region') ?? ''),
+      ciudad: String(data.get('ciudad') ?? ''),
+    };
+
+    if (data.get('guardarDatos')) {
+      saveCustomer(customer);
+    } else {
+      clearSavedCustomer();
+    }
+
+    const order = createOrder({
+      items: cart,
+      customer,
+      shippingMethod: selectedShipping(),
+      notes: String(data.get('notas') ?? ''),
+    });
+
+    saveLastOrder(order);
+    clearCart();
+    window.location.href = '/gracias';
+  });
+
+  renderSummary();
+</script>

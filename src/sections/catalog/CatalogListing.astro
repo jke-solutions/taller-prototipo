@@ -1,0 +1,78 @@
+---
+/**
+ * Sidebar de filtros + grid de productos, compartido entre `/catalogo`
+ * (todas las categorías) y `/catalogo/[categoria]` (una sola categoría ya
+ * fijada por la ruta — ahí `categories` llega vacío para que CatalogFilters
+ * no repita el checkbox de la categoría en la que ya estás).
+ */
+import RelatedProductCard from '@sections/product/RelatedProductCard.astro';
+import CatalogFilters from '@sections/catalog/CatalogFilters.astro';
+import type { ColorOption } from '@sections/catalog/CatalogFilters.astro';
+import type { Category } from '@data/categories';
+import type { Product } from '@data/products';
+
+interface Props {
+  products: Product[];
+  categories: (Category & { count: number })[];
+  colorOptions: ColorOption[];
+  priceMin: number;
+  priceMax: number;
+}
+
+const { products, categories, colorOptions, priceMin, priceMax } = Astro.props;
+---
+
+<div class="bg-white">
+  <div class="wrap py-10 md:py-14">
+    <div class="flex flex-col md:flex-row gap-8 md:gap-12" data-catalog>
+      <CatalogFilters
+        categories={categories}
+        colorOptions={colorOptions}
+        priceMin={priceMin}
+        priceMax={priceMax}
+      />
+
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-7">
+          <p class="font-body text-[14px] text-muted" data-result-count>
+            Mostrando {products.length} de {products.length} productos
+          </p>
+
+          <label class="flex items-center gap-2 font-body text-[14px] text-ink">
+            Ordenar por
+            <select
+              class="border border-border rounded-btn px-3 py-2 font-body text-[14px] text-ink bg-white"
+              data-catalog-sort
+            >
+              <option value="destacado">Destacado</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
+              <option value="nombre-asc">Nombre A-Z</option>
+            </select>
+          </label>
+        </div>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+          data-catalog-grid
+          data-reveal
+        >
+          {products.map((product) => <RelatedProductCard product={product} />)}
+        </div>
+
+        <p
+          class="font-body text-[15px] text-muted text-center py-16 border border-dashed border-border rounded-card"
+          data-catalog-empty
+          hidden
+        >
+          No hay piezas que calcen con estos filtros. Probá quitando alguno.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initCatalogFilters } from '@/scripts/catalogFilters';
+  initCatalogFilters();
+</script>

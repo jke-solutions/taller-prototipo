@@ -50,13 +50,19 @@ const isActive = (href: string) =>
       }
     </nav>
 
-    <div class="flex items-center gap-[12px]">
-      <a
-        href="/carrito"
-        class="border border-ink text-ink px-4 py-2 rounded-[2px] font-bold text-[13px] leading-none whitespace-nowrap"
+    <div class="flex items-center gap-[6px]">
+      <button
+        type="button"
+        class="relative w-10 h-10 flex items-center justify-center text-ink"
+        aria-label="Abrir carrito"
+        data-cart-open
       >
-        Carrito (0)
-      </a>
+        <Icon name="cart" size={22} />
+        <span
+          class="absolute top-1 right-1 min-w-[16px] h-4 px-[3px] rounded-full bg-maroon text-white text-[10px] font-bold leading-4 text-center"
+          data-cart-count
+        >0</span>
+      </button>
       <button
         type="button"
         class="md:hidden flex items-center justify-center w-9 h-9 border border-ink rounded-[2px] text-ink"
@@ -91,10 +97,17 @@ const isActive = (href: string) =>
           </a>
         ))
       }
-      <a href="/carrito" class="py-4 font-bold text-[17px] text-maroon">Carrito (0)</a>
+      <button type="button" class="py-4 font-bold text-[17px] text-maroon text-left" data-cart-open>
+        Carrito (<span data-cart-count>0</span>)
+      </button>
     </nav>
   </div>
 </header>
+
+<script>
+  import { initCartCount } from '@/scripts/cart';
+  initCartCount();
+</script>
 
 <script>
   // Header sticky + menú mobile: JS vanilla mínimo, sin librerías.
@@ -120,7 +133,7 @@ const isActive = (href: string) =>
   };
 
   toggle?.addEventListener('click', () => setOpen(!open));
-  panel?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  panel?.querySelectorAll('a, button').forEach((el) => el.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && open) {
       setOpen(false);

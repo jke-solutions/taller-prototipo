@@ -1,0 +1,265 @@
+---
+/**
+ * Panel de info del producto: nombre, precio, descripción, color (si aplica)
+ * y acciones. Sin reseñas/estrellas — a diferencia del layout de referencia,
+ * el cliente pidió no mostrarlas.
+ *
+ * Color: dropdown (<select>) y no swatches fijos, porque la cantidad y el
+ * significado de las variaciones cambia según el producto (dinámico) — un
+ * set de círculos de color fijo no sirve para todos los casos.
+ *
+ * "Comprar ahora" salta el carrito e igual que "Pagar pedido" del carrito
+ * termina en /checkout (mismo flujo, ver src/pages/carrito.astro).
+ */
+import Button from '@components/ui/Button.astro';
+import FormSelect from '@components/ui/FormSelect.astro';
+import Tag from '@components/ui/Tag.astro';
+import Icon from '@components/ui/Icon.astro';
+import Placeholder from '@components/ui/Placeholder.astro';
+import { site } from '@data/site';
+import type { Product } from '@data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const availabilityWhatsappHref = `${site.whatsappHref}?text=${encodeURIComponent(
+  `Hola, quiero consultar la disponibilidad de "${product.name}"`
+)}`;
+---
+
+<div>
+  <h1 class="font-display text-[32px] md:text-[36px] text-ink mb-3 leading-[1.1]">{product.name}</h1>
+
+  <div class="flex flex-wrap gap-2 mb-5">
+    {product.tags.map((t) => <Tag variant={t.variant}>{t.label}</Tag>)}
+  </div>
+
+  <div class="flex items-baseline gap-3 mb-1">
+    <span class="font-display text-[28px] text-maroon">{product.price}</span>
+    {product.priceBefore && <span class="font-body text-[16px] text-muted line-through">{product.priceBefore}</span>}
+  </div>
+  <p class="text-[13px] text-muted mb-6">Impuestos incluidos.</p>
+
+  <p class="font-body text-[16px] text-muted leading-[1.8] mb-8">{product.description}</p>
+
+  <form
+    class="space-y-6"
+    data-product-form
+    data-product-slug={product.slug}
+    data-product-name={product.name}
+    data-product-price={product.price}
+    data-product-icon={product.icon}
+    data-product-color={product.color}
+  >
+    {
+      product.colors && (
+        <div class="max-w-[280px]">
+          <FormSelect label="Color" name="color" required>
+            {product.colors.map((c) => (
+              <option value={c.value}>{c.label}</option>
+            ))}
+          </FormSelect>
+        </div>
+      )
+    }
+
+    <div>
+      <span class="block font-body text-[13px] font-bold text-ink mb-[6px]">Cantidad</span>
+      <div class="inline-flex items-center border border-border rounded-[2px]" data-qty>
+        <button
+          type="button"
+          class="w-10 h-10 flex items-center justify-center text-ink disabled:opacity-30"
+          aria-label="Reducir cantidad"
+          data-qty-decrease
+        >
+          <Icon name="minus" size={16} />
+        </button>
+        <input
+          type="number"
+          name="cantidad"
+          value="1"
+          min="1"
+          inputmode="numeric"
+          class="w-12 h-10 text-center font-body text-[15px] border-x border-border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          data-qty-input
+        />
+        <button
+          type="button"
+          class="w-10 h-10 flex items-center justify-center text-ink"
+          aria-label="Aumentar cantidad"
+          data-qty-increase
+        >
+          <Icon name="plus" size={16} />
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3 max-w-[320px]">
+      <Button type="submit" variant="primary" size="lg" disabled={!product.inStock} data-add-to-cart>
+        <span data-add-to-cart-label>{product.inStock ? 'Agregar al carrito' : 'Agotado'}</span>
+      </Button>
+
+      <Button type="button" variant="secondary" size="lg" disabled={!product.inStock} data-buy-now>
+        Comprar ahora
+      </Button>
+    </div>
+
+    {
+      !product.inStock && (
+        <div class="max-w-[320px]">
+          <p class="text-[13.5px] text-muted mb-3">
+            Este producto está agotado por ahora. Escríbenos si quieres que te avisemos cuando vuelva.
+          </p>
+          <a
+            href={availabilityWhatsappHref}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-btn border-1.5 border-solid border-maroon px-6 py-3 font-body font-bold text-[15px] text-maroon transition-transform duration-150 hover:-translate-y-px"
+          >
+            <Icon name="whatsapp" size={17} />
+            Consultar disponibilidad
+          </a>
+        </div>
+      )
+    }
+  </form>
+
+  <p class="text-[12.5px] text-muted mt-8">SKU: {product.sku}</p>
+
+  <div
+    class="fixed inset-0 z-50 hidden items-start justify-center overflow-y-auto bg-[rgba(100,27,11,0.28)] px-4 py-10"
+    data-cart-modal
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cart-modal-title"
+    hidden
+  >
+    <div class="w-full max-w-[380px] bg-white border border-border rounded-card p-6 md:p-7 shadow-[0_24px_48px_rgba(100,27,11,0.18)]" data-cart-modal-panel>
+      <div class="flex items-center justify-between gap-4 mb-5">
+        <div class="flex items-center gap-[10px]">
+          <span style="color: var(--forest);"><Icon name="check" size={20} /></span>
+          <span id="cart-modal-title" class="text-[15px] font-bold text-ink">Artículo agregado a tu carrito</span>
+        </div>
+        <button type="button" class="text-muted shrink-0" aria-label="Cerrar" data-cart-modal-close>
+          <Icon name="close" size={18} />
+        </button>
+      </div>
+
+      <div class="flex gap-[14px] mb-6">
+        <div class="w-[76px] h-[76px] shrink-0">
+          <Placeholder icon={product.icon} color={product.color} label={product.name} ratio="1 / 1" iconScale={40} image={product.gallery[0]?.image} />
+        </div>
+        <div class="font-bold text-[15px] text-ink leading-[1.35] self-center">{product.name}</div>
+      </div>
+
+      <div class="flex flex-col gap-[10px]">
+        <Button variant="secondary" size="lg" href="/carrito">
+          <span>Ver carrito (<span data-cart-modal-count>0</span>)</span>
+        </Button>
+        <Button variant="primary" size="lg" data-cart-modal-pay>Pagar pedido</Button>
+        <button type="button" class="text-center text-[13.5px] font-bold text-ink underline underline-offset-[3px] pt-1" data-cart-modal-close>
+          Seguir comprando
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { addToCart, getCart } from '@/scripts/cart';
+
+  document.querySelectorAll<HTMLElement>('[data-qty]').forEach((qty) => {
+    const input = qty.querySelector<HTMLInputElement>('[data-qty-input]');
+    const decrease = qty.querySelector<HTMLButtonElement>('[data-qty-decrease]');
+    const increase = qty.querySelector<HTMLButtonElement>('[data-qty-increase]');
+    if (!input) return;
+
+    const clamp = () => {
+      const value = Math.max(1, Math.floor(Number(input.value) || 1));
+      input.value = String(value);
+    };
+
+    decrease?.addEventListener('click', () => {
+      input.value = String(Math.max(1, Number(input.value) - 1));
+    });
+    increase?.addEventListener('click', () => {
+      input.value = String(Number(input.value) + 1);
+    });
+    input.addEventListener('change', clamp);
+  });
+
+  // Prototipo sin backend real: no hay checkout, pero el ítem se guarda en
+  // el carrito (localStorage) y "Pagar pedido" arma un pedido por WhatsApp
+  // (único canal de venta real que ya tiene el sitio).
+  document.querySelectorAll<HTMLFormElement>('[data-product-form]').forEach((form) => {
+    const button = form.querySelector<HTMLButtonElement>('[data-add-to-cart]');
+    const buyNow = form.querySelector<HTMLButtonElement>('[data-buy-now]');
+    const qtyInput = form.querySelector<HTMLInputElement>('[data-qty-input]');
+    const modal = document.querySelector<HTMLElement>('[data-cart-modal]');
+    const payBtn = modal?.querySelector<HTMLButtonElement>('[data-cart-modal-pay]');
+    const countEls = modal?.querySelectorAll<HTMLElement>('[data-cart-modal-count]') ?? [];
+
+    const item = {
+      slug: form.dataset.productSlug ?? '',
+      name: form.dataset.productName ?? '',
+      price: form.dataset.productPrice ?? '',
+      icon: form.dataset.productIcon ?? '',
+      color: form.dataset.productColor ?? '',
+    };
+
+    const currentQty = () => Number(qtyInput?.value) || 1;
+
+    const openModal = () => {
+      if (!modal) return;
+      const cart = getCart();
+      const count = cart.reduce((sum, i) => sum + i.qty, 0);
+      countEls.forEach((el) => (el.textContent = String(count)));
+      modal.hidden = false;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+      if (!modal) return;
+      modal.hidden = true;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    };
+
+    modal?.querySelectorAll<HTMLElement>('[data-cart-modal-close]').forEach((el) => {
+      el.addEventListener('click', closeModal);
+    });
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && !modal.hidden) closeModal();
+    });
+
+    // "Pagar pedido" en el modal lleva a /checkout, mismo flujo que "Pagar
+    // pedido" del carrito (src/pages/carrito.astro) — ahí sí se arma el
+    // pedido por WhatsApp, al confirmar los datos de envío.
+    payBtn?.addEventListener('click', () => {
+      window.location.href = '/checkout';
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!button || button.disabled) return;
+      addToCart(item, currentQty());
+      openModal();
+    });
+
+    // "Comprar ahora" salta el carrito y va directo a pagar.
+    buyNow?.addEventListener('click', () => {
+      if (buyNow.disabled) return;
+      addToCart(item, currentQty());
+      window.location.href = '/checkout';
+    });
+  });
+</script>

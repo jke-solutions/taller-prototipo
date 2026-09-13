@@ -1,0 +1,65 @@
+---
+/**
+ * Página de detalle de producto. Ruta dinámica: usa los mismos slugs de
+ * categoría/producto que ya traían los links del Home (`featuredProducts.ts`
+ * → href `/catalogo/{categoria}/{slug}`), así esos botones dejan de ser
+ * placeholders.
+ *
+ * Layout: galería con miniaturas debajo (no al costado) + panel de info a
+ * la derecha, detalles debajo, relacionados al final. Sin reseñas.
+ *
+ * Fondo: blanco (a pedido del cliente), a diferencia del crema por defecto
+ * del <body> — por eso el wrapper de toda la página fuerza bg-white en vez
+ * de depender del fondo global.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ProductGallery from '@sections/product/ProductGallery.astro';
+import ProductInfo from '@sections/product/ProductInfo.astro';
+import ProductDetails from '@sections/product/ProductDetails.astro';
+import RelatedProducts from '@sections/product/RelatedProducts.astro';
+import { products, getRelatedProducts } from '@data/products';
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { categoria: product.categorySlug, slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const related = getRelatedProducts(product);
+---
+
+<BaseLayout title={product.name} description={product.description}>
+  <div class="bg-white">
+    <div class="wrap py-10 md:py-14">
+      <nav class="text-[13px] text-muted mb-8 flex items-center gap-2 flex-wrap" aria-label="Ruta de navegación">
+        <a href="/" class="hover:text-ink transition-colors">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <a href={`/catalogo/${product.categorySlug}`} class="hover:text-ink transition-colors">{product.categoryName}</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-ink">{product.name}</span>
+      </nav>
+
+      <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-start" data-enter>
+        <div data-enter-child style="--i:0;">
+          <ProductGallery product={product} />
+        </div>
+        <div data-enter-child style="--i:1;">
+          <ProductInfo product={product} />
+        </div>
+      </div>
+
+      <div data-reveal>
+        <ProductDetails product={product} />
+      </div>
+    </div>
+
+    <RelatedProducts products={related} />
+  </div>
+</BaseLayout>
+
+<script>
+  import { initPageEnter } from '@/scripts/pageEnter';
+  initPageEnter();
+</script>

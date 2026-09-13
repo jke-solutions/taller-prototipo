@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+  <style>
+    :root{
+      --primary:#ff7d07; --cream:#fbf2e1; --maroon:#932810; --forest:#007239;
+      --gold:#f5a202; --olive:#9cbf3d; --violet:#5f54a6; --coral:#e2565b; --teal:#129892;
+      --ink:#641b0b; --muted:#804437; --border:#e6dbd8;
+    }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:'Nunito',sans-serif; color:var(--ink); background:#fff; -webkit-font-smoothing:antialiased; }
+    h1,h2{ font-family:'Baloo 2',sans-serif; line-height:1.1; margin:0; }
+    a{ color:inherit; text-decoration:none; }
+  </style>
+</helmet>
+
+<div style="min-height:100%; background:#fff; display:flex; flex-direction:column;">
+
+  <header style="border-bottom:1px solid var(--border); padding:20px 40px; display:flex; align-items:center; justify-content:space-between;">
+    <a href="#" style="display:flex; align-items:center; gap:10px;">
+      <img src="felipe-logo.svg" alt="" width="34" height="36" style="display:block;">
+      <span style="font-family:'Baloo 2',sans-serif; font-weight:800; font-size:19px; color:var(--ink); letter-spacing:-0.01em;">Taller Azotea</span>
+    </a>
+    <a href="#" style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:13px; color:var(--muted);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+      Buscar otro pedido
+    </a>
+  </header>
+
+  <div style="max-width:920px; margin:0 auto; width:100%; padding:44px 40px 64px; display:grid; grid-template-columns:1fr 340px; gap:56px; align-items:start;">
+
+    <div style="display:flex; flex-direction:column; gap:28px;">
+      <div>
+        <p style="font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); display:flex; align-items:center; gap:8px; margin:0 0 8px;">
+          <span style="width:16px; height:2px; background:var(--primary); display:inline-block;"></span>
+          Pedido AZ-1052
+        </p>
+        <h1 style="font-size:26px; color:var(--ink);">En preparación</h1>
+        <p style="font-size:14.5px; color:var(--muted); margin-top:8px;">Hecho el 12 de setiembre — coordinamos contigo por WhatsApp cualquier detalle.</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column;">
+
+        <div style="display:flex; gap:16px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:32px; height:32px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+            </div>
+            <div style="width:2px; flex:1; background:var(--forest); margin-top:2px;"></div>
+          </div>
+          <div style="padding-bottom:26px;">
+            <p style="font-weight:800; font-size:14.5px; color:var(--ink); margin:0 0 3px;">Pedido recibido</p>
+            <p style="font-size:12.5px; color:var(--muted); margin:0;">12 de setiembre, 10:40 a.m.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:32px; height:32px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.02 3.5c-4.7 0-8.5 3.8-8.5 8.5 0 1.5.4 2.9 1.08 4.13L3.5 20.5l4.5-1.08a8.46 8.46 0 0 0 4.02 1.02c4.7 0 8.5-3.8 8.5-8.5s-3.8-8.44-8.5-8.44Z"></path><path d="M17.3 14.5c-.3-.15-1.7-.85-2-.95-.27-.1-.46-.15-.66.15-.2.3-.75.95-.92 1.15-.17.2-.34.22-.63.07-.3-.15-1.24-.46-2.37-1.47-.87-.78-1.46-1.74-1.64-2.03-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.5.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.58-.48-.5-.66-.5-.17-.01-.37-.01-.56-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.5.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.38-.07-.13-.27-.2-.56-.35Z" fill="#fff" stroke="none"></path></svg>
+            </div>
+            <div style="width:2px; flex:1; background:var(--maroon); margin-top:2px;"></div>
+          </div>
+          <div style="padding-bottom:26px;">
+            <p style="font-weight:800; font-size:14.5px; color:var(--ink); margin:0 0 3px;">Pago y entrega coordinados por WhatsApp</p>
+            <p style="font-size:12.5px; color:var(--muted); margin:0;">12 de setiembre, 11:15 a.m.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:32px; height:32px; border-radius:50%; background:var(--maroon); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8.5 12 4 3 8.5l9 4.5 9-4.5Z"></path><path d="M3 8.5v7l9 4.5 9-4.5v-7"></path><path d="M12 13v8"></path></svg>
+            </div>
+            <div style="width:2px; flex:1; background:var(--border); margin-top:2px;"></div>
+          </div>
+          <div style="padding-bottom:26px;">
+            <span style="display:inline-block; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--maroon); background:color-mix(in oklch, var(--maroon) 10%, white); border-radius:4px; padding:2px 8px; margin-bottom:5px;">En curso</span>
+            <p style="font-weight:800; font-size:14.5px; color:var(--ink); margin:0 0 3px;">En preparación en el taller</p>
+            <p style="font-size:12.5px; color:var(--muted); margin:0;">Estamos armando tu pedido con cuidado.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#fff; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="12" height="9" rx="1.5"></rect><path d="M14 11h4l3 3v3h-7z"></path><circle cx="7" cy="19" r="1.7"></circle><circle cx="17.5" cy="19" r="1.7"></circle></svg>
+            </div>
+            <div style="width:2px; flex:1; background:var(--border); margin-top:2px;"></div>
+          </div>
+          <div style="padding-bottom:26px;">
+            <p style="font-weight:800; font-size:14.5px; color:var(--muted); margin:0 0 3px;">Enviado</p>
+            <p style="font-size:12.5px; color:var(--muted); margin:0;">Te avisamos por WhatsApp con el detalle del envío.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:16px;">
+          <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#fff; border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+            </div>
+          </div>
+          <div>
+            <p style="font-weight:800; font-size:14.5px; color:var(--muted); margin:0 0 3px;">Entregado</p>
+            <p style="font-size:12.5px; color:var(--muted); margin:0;">¡Que lo disfrutes!</p>
+          </div>
+        </div>
+
+      </div>
+
+      <a href="#" style="display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:15px 24px; background:var(--maroon); color:#fff; border-radius:6px; font-weight:800; font-size:14.5px; align-self:flex-start;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12.02 3.5c-4.7 0-8.5 3.8-8.5 8.5 0 1.5.4 2.9 1.08 4.13L3.5 20.5l4.5-1.08a8.46 8.46 0 0 0 4.02 1.02c4.7 0 8.5-3.8 8.5-8.5s-3.8-8.44-8.5-8.44Z"></path><path d="M17.3 14.5c-.3-.15-1.7-.85-2-.95-.27-.1-.46-.15-.66.15-.2.3-.75.95-.92 1.15-.17.2-.34.22-.63.07-.3-.15-1.24-.46-2.37-1.47-.87-.78-1.46-1.74-1.64-2.03-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.5.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.58-.48-.5-.66-.5-.17-.01-.37-.01-.56-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.5.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.38-.07-.13-.27-.2-.56-.35Z" fill="currentColor" stroke="none"></path></svg>
+        Escribir por WhatsApp
+      </a>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      <div style="border:1px solid var(--border); border-radius:6px; padding:24px; display:flex; flex-direction:column; gap:16px;">
+        <p style="font-family:'Baloo 2',sans-serif; font-size:16px; color:var(--ink);">Resumen del pedido</p>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; font-size:13.5px;">
+            <span style="color:var(--muted);">Jarrón texturado Azotea x1</span>
+            <span style="font-weight:800; color:var(--ink);">S/ 150.00</span>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; font-size:13.5px;">
+            <span style="color:var(--muted);">Bandeja de nogal curva x2</span>
+            <span style="font-weight:800; color:var(--ink);">S/ 360.00</span>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; font-size:13.5px;">
+            <span style="color:var(--muted);">Entrega Regular (Lima)</span>
+            <span style="font-weight:800; color:var(--ink);">S/ 15.00</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--border);">
+          <span style="font-weight:800; font-size:14px; color:var(--ink);">Total</span>
+          <span style="font-family:'Baloo 2',sans-serif; font-size:20px; color:var(--maroon);">S/ 525.00</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--muted); padding:0 4px;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="8" width="12" height="9" rx="1.5"></rect><path d="M14 11h4l3 3v3h-7z"></path><circle cx="7" cy="19" r="1.7"></circle><circle cx="17.5" cy="19" r="1.7"></circle></svg>
+        <span>Entrega Regular (Lima Metropolitana) — Av. La Marina 1234, San Miguel.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+---
+/**
+ * "Más productos en esta categoría" — grid simple, mismo patrón de reveal
+ * escalonado que el resto de grids del sitio.
+ */
+import RelatedProductCard from './RelatedProductCard.astro';
+import type { Product } from '@data/products';
+
+interface Props {
+  products: Product[];
+}
+
+const { products } = Astro.props;
+---
+
+{
+  products.length > 0 && (
+    <div class="wrap py-14 md:py-18 border-t border-border">
+      <p class="section-eyebrow mb-3">También te puede interesar</p>
+      <h2 class="font-display text-[26px] md:text-[30px] text-ink mb-8">Más productos en esta categoría</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6" data-reveal>
+        {products.map((product) => (
+          <RelatedProductCard product={product} />
+        ))}
+      </div>
+    </div>
+  )
+}

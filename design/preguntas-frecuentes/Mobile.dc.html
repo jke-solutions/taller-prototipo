@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap">
+  <style>
+    :root {
+      --primary: #ff7d07;
+      --cream: #fbf2e1;
+      --maroon: #932810;
+      --ink: #641b0b;
+      --muted: #804437;
+      --border: #e6dbd8;
+      --font-display: 'Baloo 2', 'Nunito', ui-sans-serif, sans-serif;
+      --font-body: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font-body); color: var(--ink); background: var(--cream); -webkit-font-smoothing: antialiased; }
+    h1 { font-family: var(--font-display); line-height: 1.08; margin: 0; }
+    button { font: inherit; }
+    button:focus-visible { outline: 2px solid var(--maroon); outline-offset: 2px; border-radius: 2px; }
+  </style>
+</helmet>
+
+<div style="background:var(--cream);">
+
+  <header style="padding:36px 20px 0;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="width:14px; height:2px; background:var(--primary); display:inline-block;"></span>
+      <span style="font-family:var(--font-body); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted);">Ayuda</span>
+    </div>
+
+    <h1 style="font-size:32px; color:var(--ink); margin-top:16px; letter-spacing:-0.01em;">Preguntas frecuentes</h1>
+
+    <p style="font-family:var(--font-body); font-size:16px; line-height:1.55; color:var(--muted); margin:14px 0 0;">
+      Resolvemos las dudas más comunes sobre nuestras piezas, los materiales que usamos y su cuidado.
+    </p>
+  </header>
+
+  <main style="padding:32px 20px 72px;">
+    <div style="border-top:1px solid var(--border);">
+      <sc-for list="{{items}}" as="item" hint-placeholder-count="3">
+        <div style="border-bottom:1px solid var(--border);">
+          <button onClick="{{item.toggle}}" aria-expanded="{{item.isOpen}}" style="all:unset; box-sizing:border-box; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px 0;">
+            <span style="font-family:var(--font-display); font-weight:600; font-size:16.5px; line-height:1.4; color:var(--ink); text-align:left;">{{item.question}}</span>
+            <span style="flex:none; position:relative; width:32px; height:32px; border-radius:50%; border:1.5px solid {{item.circleBorder}}; transition:border-color 220ms ease;">
+              <svg width="12" height="12" viewBox="0 0 24 24" style="position:absolute; inset:0; margin:auto;">
+                <path d="M5 12h14" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" style="position:absolute; inset:0; margin:auto; transform:{{item.vTransform}}; transition:transform 260ms ease;">
+                <path d="M12 5v14" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
+            </span>
+          </button>
+          <div style="display:grid; grid-template-rows:{{item.rows}}; transition:grid-template-rows 320ms ease;">
+            <div style="overflow:hidden;">
+              <p style="margin:0 0 24px; padding-right:8px; font-family:var(--font-body); font-size:15px; line-height:1.7; color:var(--ink);">{{item.answer}}</p>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </main>
+
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":2100}}'>
+const QUESTIONS = [
+  { q: '¿Todos los productos son hechos a mano?', a: 'Sí. Nuestras piezas son elaboradas artesanalmente, por lo que pueden presentar pequeñas variaciones en color, forma o textura. Estas diferencias son parte de su proceso y hacen que cada pieza sea única.' },
+  { q: '¿Trabajan con materiales reciclados?', a: 'Sí. Una parte importante de nuestro trabajo utiliza madera recuperada de muebles y otros materiales que pueden tener una segunda vida.' },
+  { q: '¿Puedo pedir un producto personalizado?', a: 'Dependiendo del tipo de proyecto y de nuestra disponibilidad, podemos realizar pedidos personalizados. Escríbenos para contarnos tu idea.' },
+  { q: '¿Las piezas de cerámica son aptas para uso diario?', a: 'Depende de cada pieza y su acabado. En la descripción de cada producto indicamos sus recomendaciones de uso y cuidado.' },
+  { q: '¿Las piezas de cerámica pueden ir al microondas o lavavajillas?', a: 'Algunas piezas pueden ser aptas para estos usos y otras requieren cuidados especiales. Te recomendamos revisar las indicaciones de cada producto o consultarnos antes de utilizarlas.' },
+  { q: '¿Por qué mi producto puede verse ligeramente diferente a la foto?', a: 'Al trabajar de manera artesanal, ninguna pieza es exactamente igual a otra. El color, las vetas de la madera, las texturas y pequeños detalles pueden variar.' },
+  { q: '¿Realizan envíos?', a: 'Sí, contamos con opciones de envío. Las condiciones y costos pueden variar según el destino.' },
+  { q: '¿Dónde puedo ver sus productos en persona?', a: 'Participamos ocasionalmente en ferias y eventos. Puedes seguirnos en nuestras redes sociales para conocer nuestras próximas fechas y novedades.' },
+  { q: '¿Realizan talleres?', a: 'Sí. Organizamos talleres y experiencias creativas para diferentes edades. La información sobre próximas fechas, edades y disponibilidad se publica en nuestros canales.' },
+  { q: '¿Cómo puedo cuidar mi pieza?', a: 'Cada material requiere cuidados diferentes. Te recomendamos evitar golpes, cambios bruscos de temperatura y productos abrasivos. Si tienes dudas sobre una pieza específica, escríbenos y estaremos felices de ayudarte.' },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: 0 };
+  }
+  renderVals() {
+    const openIndex = this.state.open;
+    return {
+      items: QUESTIONS.map((item, i) => {
+        const isOpen = openIndex === i;
+        return {
+          question: item.q,
+          answer: item.a,
+          isOpen: isOpen,
+          rows: isOpen ? '1fr' : '0fr',
+          vTransform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+          circleBorder: isOpen ? 'var(--primary)' : 'var(--border)',
+          toggle: () => this.setState({ open: isOpen ? -1 : i }),
+        };
+      }),
+    };
+  }
+}
+</script>
+</body>
+</html>

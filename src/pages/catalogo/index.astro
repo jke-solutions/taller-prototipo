@@ -1,0 +1,64 @@
+---
+/**
+ * Catálogo — listado general con filtros (sidebar) + grid de productos.
+ * Filtros y conteos salen de datos reales (categories.ts / products.ts), no
+ * inventados: con solo 3 productos en el prototipo, categorías/colores sin
+ * piezas aparecen igual mostrando "0" en vez de ocultarse. El filtrado y el
+ * orden corren en el cliente (catalogFilters.ts) sobre las tarjetas ya
+ * renderizadas — mismas tarjetas que el Home / la página de producto
+ * (RelatedProductCard), con sus fotos cargadas diferidas por scroll
+ * (LazyImage / IntersectionObserver, ver Placeholder.astro).
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CatalogListing from '@sections/catalog/CatalogListing.astro';
+import type { ColorOption } from '@sections/catalog/CatalogFilters.astro';
+import { categories } from '@data/categories';
+import { products } from '@data/products';
+
+const categoriesWithCount = categories.map((cat) => ({
+  ...cat,
+  count: products.filter((p) => p.categorySlug === cat.slug).length,
+}));
+
+const colorOptionsMap = new Map<string, ColorOption>();
+products.forEach((p) => {
+  (p.colors ?? []).forEach((c) => {
+    const existing = colorOptionsMap.get(c.value);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      colorOptionsMap.set(c.value, { label: c.label, value: c.value, count: 1 });
+    }
+  });
+});
+const colorOptions = [...colorOptionsMap.values()];
+
+const prices = products.map((p) => Number(p.price.replace(/[^\d.]/g, '')) || 0);
+const priceMin = Math.min(...prices);
+const priceMax = Math.max(...prices);
+---
+
+<BaseLayout
+  title="Catálogo"
+  description="Explora las piezas de cerámica, madera y kits hechos a mano de Taller Azotea."
+>
+  <div class="bg-cream border-b border-border">
+    <div class="wrap pt-10 pb-8 md:pt-14 md:pb-10">
+      <p class="font-body text-[13px] text-muted mb-3">
+        <a href="/" class="hover:text-ink transition-colors">Inicio</a> / Catálogo
+      </p>
+      <h1 class="font-display text-[34px] md:text-[44px] text-ink tracking-[-0.01em]">Catálogo</h1>
+      <p class="font-body text-[15.5px] md:text-[17px] text-muted mt-3 max-w-[560px]">
+        Piezas de cerámica, madera y kits hechos a mano, una por una.
+      </p>
+    </div>
+  </div>
+
+  <CatalogListing
+    products={products}
+    categories={categoriesWithCount}
+    colorOptions={colorOptions}
+    priceMin={priceMin}
+    priceMax={priceMax}
+  />
+</BaseLayout>

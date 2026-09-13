@@ -1,0 +1,66 @@
+---
+/**
+ * Catálogo filtrado por categoría — ruta propia (`/catalogo/{slug}`) en vez
+ * de filtro client-side sobre `/catalogo`: pensado para cuando el catálogo
+ * tenga muchos productos, así cada categoría es indexable/compartible y no
+ * hay que mandar al navegador el DOM de las otras categorías para ocultarlo.
+ * Mismo grid + filtros secundarios (color/precio/stock) que `/catalogo`,
+ * vía CatalogListing — ahí `categories` va vacío para no repetir el checkbox
+ * de la categoría en la que ya estás.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CatalogListing from '@sections/catalog/CatalogListing.astro';
+import type { ColorOption } from '@sections/catalog/CatalogFilters.astro';
+import { categories } from '@data/categories';
+import { products } from '@data/products';
+
+export function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { categoria: category.slug },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const categoryProducts = products.filter((p) => p.categorySlug === category.slug);
+
+const colorOptionsMap = new Map<string, ColorOption>();
+categoryProducts.forEach((p) => {
+  (p.colors ?? []).forEach((c) => {
+    const existing = colorOptionsMap.get(c.value);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      colorOptionsMap.set(c.value, { label: c.label, value: c.value, count: 1 });
+    }
+  });
+});
+const colorOptions = [...colorOptionsMap.values()];
+
+const prices = categoryProducts.map((p) => Number(p.price.replace(/[^\d.]/g, '')) || 0);
+const priceMin = prices.length ? Math.min(...prices) : 0;
+const priceMax = prices.length ? Math.max(...prices) : 0;
+---
+
+<BaseLayout title={category.name} description={category.description}>
+  <div class="bg-cream border-b border-border">
+    <div class="wrap pt-10 pb-8 md:pt-14 md:pb-10">
+      <p class="font-body text-[13px] text-muted mb-3">
+        <a href="/" class="hover:text-ink transition-colors">Inicio</a> /
+        <a href="/catalogo" class="hover:text-ink transition-colors">Catálogo</a> / {category.name}
+      </p>
+      <h1 class="font-display text-[34px] md:text-[44px] text-ink tracking-[-0.01em]">{category.name}</h1>
+      <p class="font-body text-[15.5px] md:text-[17px] text-muted mt-3 max-w-[560px]">
+        {category.description}
+      </p>
+    </div>
+  </div>
+
+  <CatalogListing
+    products={categoryProducts}
+    categories={[]}
+    colorOptions={colorOptions}
+    priceMin={priceMin}
+    priceMax={priceMax}
+  />
+</BaseLayout>

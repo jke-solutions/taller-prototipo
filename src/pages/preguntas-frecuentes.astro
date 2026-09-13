@@ -1,0 +1,110 @@
+---
+/**
+ * Preguntas Frecuentes — acordeón nativo (<details>/<summary>), sin JS propio:
+ * funciona sin depender de scripts y hereda el foco visible / reduced-motion
+ * ya definidos en global.css. Contenido fijo del brief del cliente; no sale
+ * de un data file por ser una sola página sin variantes (mismo criterio que
+ * nosotros.astro).
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Icon from '@components/ui/Icon.astro';
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+const faqs: FaqItem[] = [
+  {
+    question: '¿Todos los productos son hechos a mano?',
+    answer:
+      'Sí. Nuestras piezas son elaboradas artesanalmente, por lo que pueden presentar pequeñas variaciones en color, forma o textura. Estas diferencias son parte de su proceso y hacen que cada pieza sea única.',
+  },
+  {
+    question: '¿Trabajan con materiales reciclados?',
+    answer:
+      'Sí. Una parte importante de nuestro trabajo utiliza madera recuperada de muebles y otros materiales que pueden tener una segunda vida.',
+  },
+  {
+    question: '¿Puedo pedir un producto personalizado?',
+    answer:
+      'Dependiendo del tipo de proyecto y de nuestra disponibilidad, podemos realizar pedidos personalizados. Escríbenos para contarnos tu idea.',
+  },
+  {
+    question: '¿Las piezas de cerámica son aptas para uso diario?',
+    answer:
+      'Depende de cada pieza y su acabado. En la descripción de cada producto indicamos sus recomendaciones de uso y cuidado.',
+  },
+  {
+    question: '¿Las piezas de cerámica pueden ir al microondas o lavavajillas?',
+    answer:
+      'Algunas piezas pueden ser aptas para estos usos y otras requieren cuidados especiales. Te recomendamos revisar las indicaciones de cada producto o consultarnos antes de utilizarlas.',
+  },
+  {
+    question: '¿Por qué mi producto puede verse ligeramente diferente a la foto?',
+    answer:
+      'Al trabajar de manera artesanal, ninguna pieza es exactamente igual a otra. El color, las vetas de la madera, las texturas y pequeños detalles pueden variar.',
+  },
+  {
+    question: '¿Realizan envíos?',
+    answer: 'Sí, contamos con opciones de envío. Las condiciones y costos pueden variar según el destino.',
+  },
+  {
+    question: '¿Dónde puedo ver sus productos en persona?',
+    answer:
+      'Participamos ocasionalmente en ferias y eventos. Puedes seguirnos en nuestras redes sociales para conocer nuestras próximas fechas y novedades.',
+  },
+  {
+    question: '¿Realizan talleres?',
+    answer:
+      'Sí. Organizamos talleres y experiencias creativas para diferentes edades. La información sobre próximas fechas, edades y disponibilidad se publica en nuestros canales.',
+  },
+  {
+    question: '¿Cómo puedo cuidar mi pieza?',
+    answer:
+      'Cada material requiere cuidados diferentes. Te recomendamos evitar golpes, cambios bruscos de temperatura y productos abrasivos. Si tienes dudas sobre una pieza específica, escríbenos y estaremos felices de ayudarte.',
+  },
+];
+---
+
+<BaseLayout
+  title="Preguntas Frecuentes"
+  description="Resolvemos las dudas más comunes sobre nuestras piezas hechas a mano, los materiales que usamos y su cuidado."
+>
+  <article class="bg-cream">
+    <header class="max-w-[760px] mx-auto px-8 pt-14 md:pt-16">
+      <p class="section-eyebrow">Ayuda</p>
+
+      <h1 class="font-display text-[34px] md:text-[48px] text-ink mt-[22px] tracking-[-0.01em]">
+        Preguntas frecuentes
+      </h1>
+
+      <p class="font-body text-[16px] md:text-[19px] leading-[1.6] text-muted mt-5 max-w-[600px]">
+        Resolvemos las dudas más comunes sobre nuestras piezas, los materiales que usamos y su cuidado.
+      </p>
+    </header>
+
+    <div class="max-w-[720px] mx-auto px-8 pt-11 pb-20 md:pb-24">
+      <div class="border-t border-border">
+        {
+          faqs.map((item) => (
+            <details name="faq" class="group border-b border-border">
+              <summary class="flex items-center justify-between gap-5 md:gap-6 py-6 md:py-7 cursor-pointer list-none marker:content-none [&::-webkit-details-marker]:hidden">
+                <span class="font-display font-semibold text-[16.5px] md:text-[19px] leading-[1.4] text-ink">
+                  {item.question}
+                </span>
+                <span class="relative flex-none w-8 h-8 md:w-[38px] md:h-[38px] rounded-full border-[1.5px] border-border group-open:border-primary transition-colors">
+                  <Icon name="plus" size={13} class="absolute inset-0 m-auto text-ink group-open:hidden" />
+                  <Icon name="minus" size={13} class="absolute inset-0 m-auto text-ink hidden group-open:block" />
+                </span>
+              </summary>
+              <p class="max-w-[640px] pr-2 md:pr-[60px] pb-6 md:pb-7 font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink">
+                {item.answer}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </article>
+</BaseLayout>

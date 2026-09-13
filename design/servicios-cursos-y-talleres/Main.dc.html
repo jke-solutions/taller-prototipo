@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap">
+  <style>
+    :root {
+      --primary: #ff7d07;
+      --cream: #fbf2e1;
+      --maroon: #932810;
+      --teal: #129892;
+      --gold: #c47f00;
+      --ink: #641b0b;
+      --muted: #804437;
+      --border: #e6dbd8;
+      --font-display: 'Baloo 2', 'Nunito', ui-sans-serif, sans-serif;
+      --font-body: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font-body); color: var(--ink); background: #ffffff; -webkit-font-smoothing: antialiased; }
+    h1, h3, h4 { font-family: var(--font-display); line-height: 1.1; margin: 0; }
+    a { color: var(--maroon); text-decoration: none; }
+    a:hover { color: #7a1f0c; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--maroon); outline-offset: 2px; border-radius: 2px; }
+
+    .course-card { transition: transform .18s ease, box-shadow .18s ease; }
+    .course-card:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -20px rgba(100, 27, 11, 0.35); }
+
+    .meta-row { display: flex; align-items: flex-start; gap: 10px; }
+    .meta-row svg { flex: none; margin-top: 1px; }
+    .meta-label { display: block; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); opacity: 0.85; }
+    .meta-value { display: block; font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.4; margin-top: 1px; }
+
+    .obj-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+    .obj-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; line-height: 1.55; color: var(--ink); }
+    .obj-list svg { flex: none; margin-top: 3px; }
+
+    .wa-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: var(--maroon); color: #fff; font-family: var(--font-body); font-weight: 800; font-size: 15.5px; padding: 14px 20px; border-radius: 6px; transition: transform .15s ease; }
+    .wa-btn:hover { color: #fff; transform: translateY(-1px); }
+  </style>
+</helmet>
+
+<!-- Hero: mismo patrón que /catalogo — banda crema, breadcrumb, título, intro -->
+<div style="background:var(--cream); border-bottom:1px solid var(--border);">
+  <div style="max-width:1120px; margin:0 auto; padding:40px 32px 32px;">
+    <p style="font-family:var(--font-body); font-size:13px; color:var(--muted); margin:0 0 12px;">
+      <a href="/">Inicio</a> / <a href="/servicios">Servicios</a> / Cursos y Talleres
+    </p>
+    <h1 style="font-size:40px; color:var(--ink); letter-spacing:-0.01em;">Cursos y Talleres</h1>
+    <p style="font-family:var(--font-body); font-size:16.5px; color:var(--muted); margin:14px 0 0; max-width:560px; line-height:1.6;">
+      Clases en la azotea para niños y familias: se sientan a crear con sus manos y se llevan su propia pieza a casa.
+    </p>
+  </div>
+</div>
+
+<!-- Grid de talleres -->
+<div style="background:#ffffff;">
+  <div style="max-width:1120px; margin:0 auto; padding:48px 32px 64px;">
+    <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:24px; align-items:stretch;">
+
+      <!-- Taller de Creación de Personajes para Niños -->
+      <article class="course-card" style="display:flex; flex-direction:column; border:1px solid var(--border); border-radius:6px; background:#fff; overflow:hidden;">
+        <div style="position:relative; display:flex; align-items:center; justify-content:center; aspect-ratio:16/9; background:color-mix(in oklch, var(--teal) 16%, white); overflow:hidden;">
+          <div style="width:15%; color:var(--teal);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:auto;">
+              <path d="M4 20l1.4-5L16 4.5 19.5 8 9 18.6 4 20Z"></path>
+              <path d="M14.4 6.1l3.5 3.5"></path>
+            </svg>
+          </div>
+          <span style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:var(--font-body); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:color-mix(in oklch, var(--ink) 55%, transparent);">Foto del taller</span>
+        </div>
+
+        <div style="flex:1; display:flex; flex-direction:column; padding:24px 26px 26px;">
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+            <span style="display:inline-block; font-family:var(--font-body); font-weight:700; font-size:13px; padding:6px 14px; border-radius:4px; background:color-mix(in oklch, var(--teal) 16%, white); color:color-mix(in oklch, var(--teal) 70%, black);">Personalizado · máx. 2 niños</span>
+            <span style="display:inline-block; font-family:var(--font-body); font-weight:700; font-size:13px; padding:6px 14px; border-radius:4px; background:color-mix(in oklch, var(--ink) 8%, white); color:var(--muted);">Desde 5 años</span>
+          </div>
+
+          <h3 style="font-size:22px; color:var(--ink); margin-bottom:10px;">Taller de Creación de Personajes para Niños</h3>
+
+          <p style="font-family:var(--font-body); font-size:15px; line-height:1.65; color:var(--muted); margin:0 0 20px;">
+            Cada chico diseña y arma una pieza original y propia — desde una nave espacial hasta un lindo gatito. Sin límites para la imaginación.
+          </p>
+
+          <div style="margin-bottom:20px;">
+            <h4 style="font-family:var(--font-body); font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink); margin-bottom:10px;">Objetivos del taller</h4>
+            <ul class="obj-list">
+              <li>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                Desarrollo de habilidades cognitivas y motoras
+              </li>
+              <li>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                Conocimiento de materiales y herramientas
+              </li>
+              <li>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                Fomento de la paciencia y la perseverancia
+              </li>
+              <li>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                Conciencia ecológica: se trabaja con materiales reciclados
+              </li>
+            </ul>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px 18px; padding:18px 0; margin-bottom:20px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"></circle><path d="M3.5 19c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"></path><circle cx="17" cy="9.5" r="2.4"></circle><path d="M15.5 13.6c2 .4 3.5 2 3.5 4.4"></path></svg>
+              <span><span class="meta-label">Edad</span><span class="meta-value">Desde los 5 años</span></span>
+            </div>
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.5 2"></path></svg>
+              <span><span class="meta-label">Duración</span><span class="meta-value">2 horas</span></span>
+            </div>
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"></path><circle cx="12" cy="9.5" r="2.4"></circle></svg>
+              <span><span class="meta-label">Lugar</span><span class="meta-value">Chorrillos</span></span>
+            </div>
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 9.5h17"></path><path d="M8 3v4M16 3v4"></path></svg>
+              <span><span class="meta-label">Horarios</span><span class="meta-value">10 am–12 m · 2–4 pm</span></span>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:16px;">
+            <span style="font-family:var(--font-display); font-size:26px; color:var(--maroon);">S/ 180</span>
+            <span style="font-family:var(--font-body); font-size:13px; color:var(--muted);">por sesión</span>
+          </div>
+
+          <a class="wa-btn" href="https://wa.me/51922567282?text=Hola%2C%20quiero%20reservar%20el%20Taller%20de%20Creaci%C3%B3n%20de%20Personajes%20para%20Ni%C3%B1os" style="margin-top:auto;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.02 3.5c-4.7 0-8.5 3.8-8.5 8.5 0 1.5.4 2.9 1.08 4.13L3.5 20.5l4.5-1.08a8.46 8.46 0 0 0 4.02 1.02c4.7 0 8.5-3.8 8.5-8.5s-3.8-8.44-8.5-8.44Zm5.28 11c-.3-.15-1.7-.85-2-.95-.27-.1-.46-.15-.66.15-.2.3-.75.95-.92 1.15-.17.2-.34.22-.63.07-.3-.15-1.24-.46-2.37-1.47-.87-.78-1.46-1.74-1.64-2.03-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.5.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.58-.48-.5-.66-.5-.17-.01-.37-.01-.56-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.5.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.38-.07-.13-.27-.2-.56-.35Z"></path></svg>
+            Reservar por WhatsApp
+          </a>
+        </div>
+      </article>
+
+      <!-- Taller Autómata para Niños -->
+      <article class="course-card" style="display:flex; flex-direction:column; border:1px solid var(--border); border-radius:6px; background:#fff; overflow:hidden;">
+        <div style="position:relative; display:flex; align-items:center; justify-content:center; aspect-ratio:16/9; background:color-mix(in oklch, var(--gold) 14%, white); overflow:hidden;">
+          <div style="width:15%; color:var(--gold);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:auto;">
+              <circle cx="12" cy="10.5" r="7.5"></circle>
+              <circle cx="12" cy="10.5" r="2.4"></circle>
+              <path d="M4 21h16"></path>
+            </svg>
+          </div>
+          <span style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:var(--font-body); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:color-mix(in oklch, var(--ink) 55%, transparent);">Foto del taller</span>
+        </div>
+
+        <div style="flex:1; display:flex; flex-direction:column; padding:24px 26px 26px;">
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+            <span style="display:inline-block; font-family:var(--font-body); font-weight:700; font-size:13px; padding:6px 14px; border-radius:4px; background:color-mix(in oklch, var(--gold) 18%, white); color:var(--gold);">Personalizado · padres e hijos</span>
+            <span style="display:inline-block; font-family:var(--font-body); font-weight:700; font-size:13px; padding:6px 14px; border-radius:4px; background:color-mix(in oklch, var(--ink) 8%, white); color:var(--muted);">5 a 10 años</span>
+          </div>
+
+          <h3 style="font-size:22px; color:var(--ink); margin-bottom:10px;">Taller Autómata para Niños</h3>
+
+          <p style="font-family:var(--font-body); font-size:15px; line-height:1.65; color:var(--muted); margin:0 0 20px;">
+            Niños y padres exploran juntos la madera y el movimiento a través de engranajes, personalizando un mini personaje con partes móviles.
+          </p>
+
+          <div style="margin-bottom:20px;">
+            <h4 style="font-family:var(--font-body); font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink); margin-bottom:10px;">Qué van a hacer</h4>
+            <ul class="obj-list">
+              <li>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                Introducción a la madera y a los autómatas
+              </li>
+              <li>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                Uso de herramientas y armado
+              </li>
+              <li>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"></path></svg>
+                Acabados con aceites naturales y pinturas
+              </li>
+            </ul>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px 18px; padding:18px 0; margin-bottom:20px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"></circle><path d="M3.5 19c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"></path><circle cx="17" cy="9.5" r="2.4"></circle><path d="M15.5 13.6c2 .4 3.5 2 3.5 4.4"></path></svg>
+              <span><span class="meta-label">Edad</span><span class="meta-value">5 a 10 años</span></span>
+            </div>
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.5 2"></path></svg>
+              <span><span class="meta-label">Duración</span><span class="meta-value">1 h 30 min</span></span>
+            </div>
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"></path><circle cx="12" cy="9.5" r="2.4"></circle></svg>
+              <span><span class="meta-label">Lugar</span><span class="meta-value">Chorrillos</span></span>
+            </div>
+            <div class="meta-row">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 9.5h17"></path><path d="M8 3v4M16 3v4"></path></svg>
+              <span><span class="meta-label">Horarios</span><span class="meta-value">10 am–12 m · 2–4 pm</span></span>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:16px;">
+            <span style="font-family:var(--font-display); font-size:26px; color:var(--maroon);">S/ 120</span>
+            <span style="font-family:var(--font-body); font-size:13px; color:var(--muted);">por sesión</span>
+          </div>
+
+          <a class="wa-btn" href="https://wa.me/51922567282?text=Hola%2C%20quiero%20reservar%20el%20Taller%20Aut%C3%B3mata%20para%20Ni%C3%B1os" style="margin-top:auto;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.02 3.5c-4.7 0-8.5 3.8-8.5 8.5 0 1.5.4 2.9 1.08 4.13L3.5 20.5l4.5-1.08a8.46 8.46 0 0 0 4.02 1.02c4.7 0 8.5-3.8 8.5-8.5s-3.8-8.44-8.5-8.44Zm5.28 11c-.3-.15-1.7-.85-2-.95-.27-.1-.46-.15-.66.15-.2.3-.75.95-.92 1.15-.17.2-.34.22-.63.07-.3-.15-1.24-.46-2.37-1.47-.87-.78-1.46-1.74-1.64-2.03-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.5.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.66-1.6-.9-2.18-.24-.58-.48-.5-.66-.5-.17-.01-.37-.01-.56-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.1 3.2 5.08 4.5.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.38-.07-.13-.27-.2-.56-.35Z"></path></svg>
+            Reservar por WhatsApp
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1200,"height":1180}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

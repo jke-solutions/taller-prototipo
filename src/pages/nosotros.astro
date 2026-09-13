@@ -1,0 +1,96 @@
+---
+/**
+ * "Sobre Nosotros" / "Quiénes somos" — página interna con formato editorial
+ * (estilo blog/Medium): columna angosta, capitular en el primer párrafo,
+ * quiebre de fotos y una cita destacada. Contenido fijo del brief del
+ * cliente; no sale de un data file porque es una sola página, sin variantes.
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import taller from '@assets/slider/taller.jpg';
+import isotipoFelipe from '@assets/isotipo-felipe.svg';
+---
+
+<BaseLayout
+  title="Sobre Nosotros"
+  description="Somos Taller Azotea: un espacio creativo donde la madera recuperada y la cerámica se encuentran para crear objetos únicos, hechos a mano."
+>
+  <article class="bg-cream">
+    <!-- Hero -->
+    <header class="max-w-[760px] mx-auto px-8 sm:px-8 pt-14 md:pt-16">
+      <p class="section-eyebrow">Sobre nosotros</p>
+
+      <h1 class="font-display text-[38px] md:text-[52px] text-ink mt-[22px] tracking-[-0.01em]">
+        Quiénes somos
+      </h1>
+
+      <p class="font-body text-[17px] md:text-[20px] leading-[1.6] text-muted mt-[22px] max-w-[620px]">
+        Una azotea, dos oficios y un mismo cariño por hacer las cosas con las manos.
+      </p>
+
+      <div class="flex items-center gap-3 mt-8 pb-9">
+        <Image src={isotipoFelipe} alt="" width={34} height={34} class="rounded-full border-[1.5px] border-border bg-white" />
+        <span class="font-body text-[14px] font-bold text-ink">Taller Azotea</span>
+        <span class="w-[3px] h-[3px] rounded-full bg-border inline-block"></span>
+        <span class="font-body text-[14px] text-muted">Madera recuperada &amp; cerámica hecha a mano</span>
+      </div>
+    </header>
+
+    <!-- Imagen principal -->
+    <div class="max-w-[920px] mx-auto px-8">
+      <Image
+        src={taller}
+        alt="Vista del taller en la azotea, con herramientas de carpintería y piezas de cerámica en proceso"
+        widths={[640, 920, 1400]}
+        sizes="(min-width: 920px) 920px, 100vw"
+        class="w-full h-[260px] md:h-[440px] object-cover rounded-[8px]"
+      />
+    </div>
+
+    <!-- Cuerpo del artículo -->
+    <div class="max-w-[680px] mx-auto px-8 pt-14 pb-20 md:pb-24">
+      <p class="font-body text-[17px] md:text-[19px] leading-[1.85] text-ink mb-7 nos-dropcap">
+        Somos Taller Azotea, un espacio creativo donde la madera y la cerámica se encuentran
+        para dar vida a objetos únicos, funcionales y llenos de personalidad.
+      </p>
+
+      <p class="font-body text-[17px] md:text-[19px] leading-[1.85] text-ink mb-7">
+        Trabajamos principalmente con madera recuperada de muebles en desuso, transformándola
+        y combinándola con cerámica y otros materiales para crear piezas utilitarias y
+        decorativas hechas a mano.
+      </p>
+
+      <p class="font-display font-semibold italic text-[22px] md:text-[28px] leading-[1.45] text-maroon border-l-[3px] border-primary pl-[26px] my-11">
+        Nos inspira lo cotidiano, los pequeños detalles y, por supuesto, los gatos, que se han
+        convertido en una parte importante del universo de Taller Azotea.
+      </p>
+
+      <p class="font-body text-[17px] md:text-[19px] leading-[1.85] text-ink mb-7">
+        Creemos en crear objetos con historia, hechos con tiempo, dedicación y mucho cariño.
+        Cada pieza pasa por un proceso artesanal, por lo que puede tener pequeñas variaciones
+        que la hacen única e irrepetible.
+      </p>
+
+      <div class="flex items-center gap-[14px] mt-12 pt-8 border-t border-border">
+        <Image src={isotipoFelipe} alt="" width={44} height={44} class="rounded-full border-[1.5px] border-border bg-white" />
+        <p class="font-display font-semibold text-[17px] text-ink">
+          Hecho con tiempo, dedicación y mucho cariño — Taller Azotea.
+        </p>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  /* Capitular del primer párrafo, al estilo de una revista/blog editorial. */
+  .nos-dropcap::first-letter {
+    font-family: var(--font-display);
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--primary);
+    float: left;
+    line-height: 0.82;
+    padding-right: 10px;
+    padding-top: 6px;
+  }
+</style>

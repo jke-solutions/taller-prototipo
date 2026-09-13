@@ -1,0 +1,147 @@
+---
+/**
+ * Envíos y Devoluciones — página de política genérica, estilo editorial
+ * simple (mismo criterio que nosotros.astro / preguntas-frecuentes.astro:
+ * contenido fijo, sin data file, una sola página sin variantes).
+ *
+ * *** TODO: contenido placeholder basado en la estructura estándar de este
+ * tipo de política (plazos, zonas, tarifas, condiciones de cambio). El
+ * cliente debe confirmar cada valor marcado con *** antes de publicar:
+ * tarifas reales, zonas de cobertura, dirección de tienda/recojo, plazos
+ * de despacho y el correo de atención para cambios/devoluciones.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { site } from '@data/site';
+---
+
+<BaseLayout
+  title="Envíos y Devoluciones"
+  description="Conoce los plazos de entrega, costos de envío y condiciones de cambios y devoluciones de Taller Azotea."
+>
+  <article class="bg-cream">
+    <header class="max-w-[760px] mx-auto px-8 pt-14 md:pt-16">
+      <p class="section-eyebrow">Ayuda</p>
+
+      <h1 class="font-display text-[34px] md:text-[48px] text-ink mt-[22px] tracking-[-0.01em]">
+        Envíos y devoluciones
+      </h1>
+
+      <p class="font-body text-[16px] md:text-[19px] leading-[1.6] text-muted mt-5 max-w-[600px]">
+        Todo lo que debes saber sobre plazos de entrega, costos de envío y el proceso de
+        cambios y devoluciones.
+      </p>
+    </header>
+
+    <div class="max-w-[680px] mx-auto  pt-9 pb-20 md:pb-24 space-y-11">
+      <section>
+        <h2 class="font-display font-semibold text-[19px] md:text-[21px] text-ink mb-3">
+          Despacho de pedidos
+        </h2>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink">
+          Una vez confirmada tu compra y enviada la confirmación a tu correo electrónico,
+          despachamos los productos dentro de un plazo de
+          <strong class="text-ink">*** [2] a [4] días hábiles ***</strong>.
+        </p>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink mt-3">
+          Las entregas se realizan de <strong class="text-ink">*** lunes a sábados, de 10:00 a.m. a 8:00 p.m. ***</strong>
+          No se realizan entregas domingos ni feriados.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display font-semibold text-[19px] md:text-[21px] text-ink mb-3">
+          Envíos en Lima y Callao
+        </h2>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink mb-4">
+          El costo de envío depende de la zona de destino: <strong class="text-ink">*** definir zonas y tarifas reales de Taller Azotea ***</strong>
+        </p>
+        <ul class="text-[14px] md:text-[15px] text-ink leading-[1.8] list-disc pl-5 space-y-1">
+          <li><strong class="text-ink">*** Zona 1 (ej. Surco, Barranco, Miraflores, San Isidro, San Borja...): S/ *** ***</strong></li>
+          <li><strong class="text-ink">*** Zona 2 (ej. Ate, Rímac, Santa Anita, Callao Cercado...): S/ *** ***</strong></li>
+          <li><strong class="text-ink">*** Zona 3 (ej. Chorrillos, La Molina, Comas, Los Olivos, VES...): S/ *** ***</strong></li>
+        </ul>
+        <p class="font-body text-[14px] text-muted leading-[1.7] mt-4">
+          Si la entrega falla por un motivo ajeno a nosotros, coordinamos un reintento con costo
+          según cobertura. Si la falta es nuestra responsabilidad, la reentrega no tiene costo.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display font-semibold text-[19px] md:text-[21px] text-ink mb-3">
+          Envío express
+        </h2>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink">
+          *** Por el momento no realizamos envíos el mismo día. *** Si necesitas tu pedido con
+          urgencia, puedes recogerlo presencialmente coordinando previamente
+          <strong class="text-ink">*** el horario de atención de Taller Azotea ***</strong>.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display font-semibold text-[19px] md:text-[21px] text-ink mb-3">
+          Envíos a provincias
+        </h2>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink">
+          Realizamos envíos a <strong class="text-ink">*** [definir departamentos/cobertura] ***</strong>,
+          a las capitales de provincia.
+        </p>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink mt-3">
+          Tarifa: <strong class="text-ink">*** S/ [monto] hasta 1 kg, más S/ [monto] por kilogramo adicional ***</strong>.
+          Plazo de entrega: <strong class="text-ink">*** tres (3) a siete (7) días útiles ***</strong>,
+          contados desde el día siguiente del recojo en nuestro taller.
+        </p>
+        <p class="font-body text-[14px] text-muted leading-[1.7] mt-3">
+          Escríbenos a <a href={`mailto:${site.contactEmail}`} class="text-ink underline underline-offset-[3px]">{site.contactEmail}</a>
+          {' '}para consultar disponibilidad y tarifas a tu ciudad.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display font-semibold text-[19px] md:text-[21px] text-ink mb-3">
+          Recojo en tienda
+        </h2>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink">
+          Ofrecemos la modalidad de recojo en tienda sin costo alguno, en
+          <strong class="text-ink">*** [dirección del taller/tienda] ***</strong>.
+        </p>
+        <p class="font-body text-[14px] text-muted leading-[1.7] mt-3">
+          Para recoger tu pedido debes presentar tu DNI original. Si envías a un tercero, esa
+          persona también deberá presentar su DNI.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display font-semibold text-[19px] md:text-[21px] text-ink mb-3">
+          Cambios y devoluciones
+        </h2>
+        <p class="font-body text-[15px] md:text-[16.5px] leading-[1.75] text-ink">
+          Puedes solicitar un cambio o devolución dentro de un plazo máximo de
+          <strong class="text-ink">*** siete (7) días calendario ***</strong> desde que recibiste el producto,
+          en los siguientes casos:
+        </p>
+        <ul class="text-[14px] md:text-[15px] text-ink leading-[1.8] list-disc pl-5 space-y-1 mt-3">
+          <li>Defectos de fabricación.</li>
+          <li>Error en el tipo, color y/o cantidad del producto enviado.</li>
+          <li>El producto no corresponde a lo comprado.</li>
+        </ul>
+        <p class="font-body text-[14px] text-muted leading-[1.7] mt-4">
+          Para aceptar el cambio o devolución, el producto debe estar completo, con todos sus
+          elementos originales (etiquetas, tarjetas, cajas, empaques) en perfecto estado, sin
+          señales de uso, manchas, marcas ni olores.
+        </p>
+        <p class="font-body text-[14px] text-muted leading-[1.7] mt-3">
+          Escríbenos a <a href={`mailto:${site.contactEmail}`} class="text-ink underline underline-offset-[3px]">{site.contactEmail}</a>
+          {' '}con tu nombre completo, DNI, el motivo del cambio o devolución, una foto del
+          comprobante de compra y una foto del producto. Según disponibilidad, ofrecemos
+          reemplazo por un producto igual o similar, o el reembolso al medio de pago original.
+        </p>
+        <p class="font-body text-[14px] text-muted leading-[1.7] mt-3">
+          Todas nuestras piezas son elaboradas y trabajadas a mano, una por una. Al ser cada
+          pieza única, puede presentar ligeras variaciones en su diseño, color, tamaño o
+          acabado — estas variaciones son parte del proceso artesanal y no se consideran
+          defectos.
+        </p>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

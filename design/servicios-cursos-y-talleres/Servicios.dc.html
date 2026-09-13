@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap">
+  <style>
+    :root {
+      --primary: #ff7d07;
+      --cream: #fbf2e1;
+      --maroon: #932810;
+      --teal: #129892;
+      --gold: #c47f00;
+      --ink: #641b0b;
+      --muted: #804437;
+      --border: #e6dbd8;
+      --font-display: 'Baloo 2', 'Nunito', ui-sans-serif, sans-serif;
+      --font-body: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font-body); color: var(--ink); background: #ffffff; -webkit-font-smoothing: antialiased; }
+    h1, h3 { font-family: var(--font-display); line-height: 1.1; margin: 0; }
+    a { color: var(--maroon); text-decoration: none; }
+    a:hover { color: #7a1f0c; }
+
+    .svc-card { transition: transform .18s ease, box-shadow .18s ease; }
+    .svc-card:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -20px rgba(100, 27, 11, 0.35); }
+    .svc-cta { transition: transform .2s ease; }
+    .svc-card:hover .svc-cta svg { transform: translateX(3px); }
+  </style>
+</helmet>
+
+<!-- Hero: mismo patrón que /catalogo y /servicios/cursos-y-talleres -->
+<div style="background:var(--cream); border-bottom:1px solid var(--border);">
+  <div style="max-width:1120px; margin:0 auto; padding:40px 32px 32px;">
+    <p style="font-family:var(--font-body); font-size:13px; color:var(--muted); margin:0 0 12px;">
+      <a href="/">Inicio</a> / Servicios
+    </p>
+    <h1 style="font-size:40px; color:var(--ink); letter-spacing:-0.01em;">Servicios</h1>
+    <p style="font-family:var(--font-body); font-size:16.5px; color:var(--muted); margin:14px 0 0; max-width:560px; line-height:1.6;">
+      Desde clases para niños hasta encargos a medida: así podés sumarte al trabajo de Taller Azotea.
+    </p>
+  </div>
+</div>
+
+<!-- Grid de categorías de servicio -->
+<div style="background:#ffffff;">
+  <div style="max-width:1120px; margin:0 auto; padding:48px 32px 64px;">
+    <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:24px; align-items:stretch;">
+
+      <!-- Cursos y Talleres -->
+      <a class="svc-card" href="/servicios/cursos-y-talleres" style="display:flex; flex-direction:column; border:1px solid var(--border); border-radius:6px; background:#fff; padding:24px;">
+        <div style="position:relative; display:flex; align-items:center; justify-content:center; aspect-ratio:16/9; border-radius:6px; overflow:hidden; background:color-mix(in oklch, var(--teal) 16%, white); margin-bottom:16px;">
+          <div style="width:16%; color:var(--teal);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:auto;">
+              <circle cx="12" cy="10.5" r="7.5"></circle>
+              <circle cx="12" cy="10.5" r="2.4"></circle>
+              <path d="M4 21h16"></path>
+            </svg>
+          </div>
+          <span style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:var(--font-body); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:color-mix(in oklch, var(--ink) 55%, transparent);">Foto de Cursos y Talleres</span>
+        </div>
+
+        <span style="display:block; font-family:var(--font-body); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--teal); margin-bottom:8px;">Formación</span>
+        <h3 style="font-size:22px; color:var(--ink); margin-bottom:8px;">Cursos y Talleres</h3>
+        <p style="font-family:var(--font-body); font-size:15px; line-height:1.6; color:var(--muted); margin:0 0 20px;">Sumate a una clase en la azotea y llevate tu propia pieza.</p>
+
+        <span class="svc-cta" style="margin-top:auto; align-self:flex-start; display:inline-flex; align-items:center; gap:8px; border-radius:6px; background:var(--maroon); color:#fff; font-family:var(--font-body); font-weight:700; font-size:15px; padding:12px 24px;">
+          Ver cursos y talleres
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .2s ease;"><path d="M9 5l7 7-7 7"></path></svg>
+        </span>
+      </a>
+
+      <!-- Trabajos Personalizados -->
+      <a class="svc-card" href="/servicios/trabajos-personalizados" style="display:flex; flex-direction:column; border:1px solid var(--border); border-radius:6px; background:#fff; padding:24px;">
+        <div style="position:relative; display:flex; align-items:center; justify-content:center; aspect-ratio:16/9; border-radius:6px; overflow:hidden; background:color-mix(in oklch, var(--gold) 14%, white); margin-bottom:16px;">
+          <div style="width:16%; color:var(--gold);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:100%; height:auto;">
+              <path d="M4 20l1.4-5L16 4.5 19.5 8 9 18.6 4 20Z"></path>
+              <path d="M14.4 6.1l3.5 3.5"></path>
+            </svg>
+          </div>
+          <span style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); white-space:nowrap; font-family:var(--font-body); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:color-mix(in oklch, var(--ink) 55%, transparent);">Foto de Trabajos Personalizados</span>
+        </div>
+
+        <span style="display:block; font-family:var(--font-body); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--gold); margin-bottom:8px;">A medida</span>
+        <h3 style="font-size:22px; color:var(--ink); margin-bottom:8px;">Trabajos Personalizados</h3>
+        <p style="font-family:var(--font-body); font-size:15px; line-height:1.6; color:var(--muted); margin:0 0 20px;">Encargá piezas a medida para tu casa, tu negocio o para regalar.</p>
+
+        <span class="svc-cta" style="margin-top:auto; align-self:flex-start; display:inline-flex; align-items:center; gap:8px; border-radius:6px; background:var(--maroon); color:#fff; font-family:var(--font-body); font-weight:700; font-size:15px; padding:12px 24px;">
+          Enviar una solicitud
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .2s ease;"><path d="M9 5l7 7-7 7"></path></svg>
+        </span>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1200,"height":660}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

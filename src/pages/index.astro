@@ -8,21 +8,20 @@ import PromoGrid from '@sections/home/PromoGrid.astro';
 import StorySection from '@sections/home/StorySection.astro';
 ---
 
-<BaseLayout title="Inicio">
+<BaseLayout title="Inicio" snapScroll>
   {/*
-    Orden del Home (brief):
-    1. Slider tipo revista  (reemplaza al Hero estático — ver src/sections/home/Hero.astro,
-       que queda disponible por si se reutiliza en otra página)
-    2. En promoción
-    3. Producto destacado (slider de varios)
-    4. Servicios (Cursos y Talleres / Trabajos Personalizados)
-    5. Explora por categoría
+    Orden del Home (a pedido del cliente):
+    1. Slider tipo revista
+    2. Producto destacado (slider de varios)
+    3. En promoción
+    4. Explora por categoría
+    5. Servicios (Cursos y Talleres / Trabajos Personalizados)
     6. Conoce el taller
   */}
   <HeroSlider />
-  <PromoGrid />
   <FeaturedProducts />
-  <ServicesSection />
+  <PromoGrid />
   <CategoryGrid />
+  <ServicesSection />
   <StorySection />
 </BaseLayout>

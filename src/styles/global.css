@@ -176,11 +176,50 @@
     transition-duration: 1.5s, 1.5s;
     transition-delay: calc(var(--i, 0) * 320ms);
   }
+
+  /*
+   * Animación de ENTRADA a la página (distinta de [data-reveal]: esa solo
+   * anima con el scroll, nunca al cargar — ver scrollReveal.ts). Esta se
+   * dispara una sola vez, apenas monta la página, para el contenido que
+   * ya está a la vista sin necesidad de scrollear (ver pageEnter.ts).
+   */
+  .js [data-enter] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .js [data-enter][data-entered] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .js [data-enter]:has([data-enter-child]) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .js [data-enter] [data-enter-child] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--i, 0) * 140ms);
+  }
+
+  .js [data-enter][data-entered] [data-enter-child] {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
-  [data-reveal] [data-reveal-child] {
+  [data-reveal] [data-reveal-child],
+  [data-enter],
+  [data-enter] [data-enter-child] {
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;

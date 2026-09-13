@@ -1,0 +1,62 @@
+---
+/**
+ * Tarjeta de "Más productos" — mismo lenguaje visual que las tarjetas del
+ * Home (borde + fondo blanco + tags + precio + botón, ver
+ * FeaturedProductCard.astro / PromoCard.astro), en vez de solo foto+nombre+
+ * precio. Sin reseñas/estrellas.
+ */
+import Placeholder from '@components/ui/Placeholder.astro';
+import Button from '@components/ui/Button.astro';
+import Tag from '@components/ui/Tag.astro';
+import type { Product } from '@data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const href = `/catalogo/${product.categorySlug}/${product.slug}`;
+
+// Atributos data-* para que el catálogo (catalogo/index.astro) pueda
+// filtrar/ordenar estas mismas tarjetas sin duplicar el markup. No afectan
+// el render en ningún otro lugar donde se usa esta tarjeta.
+const filterPrice = Number(product.price.replace(/[^\d.]/g, '')) || 0;
+const filterColors = (product.colors ?? []).map((c) => c.value).join(' ');
+---
+
+<article
+  class="group flex h-full flex-col border border-border rounded-card bg-white p-5"
+  data-reveal-child
+  data-product-card
+  data-category={product.categorySlug}
+  data-name={product.name}
+  data-price={filterPrice}
+  data-colors={filterColors}
+  data-in-stock={String(product.inStock)}
+>
+  <a href={href} class="block mb-4" aria-label={product.name}>
+    <Placeholder
+      icon={product.icon}
+      color={product.color}
+      label={`Foto de ${product.name}`}
+      image={product.gallery[0]?.image}
+      ratio="1 / 1"
+      iconScale={26}
+      class="transition-transform duration-200 group-hover:-translate-y-1"
+    />
+  </a>
+
+  <div class="flex flex-wrap gap-2 mb-3">
+    {product.tags.map((t) => <Tag variant={t.variant}>{t.label}</Tag>)}
+  </div>
+
+  <h3 class="font-display text-[17px] text-ink leading-[1.3] mb-1">
+    <a href={href}>{product.name}</a>
+  </h3>
+
+  <p class="font-display text-[16px] text-maroon mb-4">{product.price}</p>
+
+  <Button href={href} variant="secondary" size="sm" class="mt-auto w-full justify-center">
+    Ver producto
+  </Button>
+</article>

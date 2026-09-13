@@ -1,0 +1,26 @@
+---
+/**
+ * Textarea para formularios (ver FormField.astro — mismo sistema).
+ */
+interface Props {
+  label: string;
+  name: string;
+  required?: boolean;
+  rows?: number;
+}
+
+const { label, name, required = false, rows = 4 } = Astro.props;
+---
+
+<label class="block">
+  <span class="block font-body text-[13px] font-bold text-ink mb-[6px]">
+    {label}
+    {required && <span class="text-maroon">*</span>}
+  </span>
+  <textarea
+    name={name}
+    required={required}
+    rows={rows}
+    class="w-full font-body text-[14px] px-[14px] py-[11px] border border-border rounded-input bg-white text-ink outline-none transition-colors focus:border-ink resize-y"
+  ></textarea>
+</label>

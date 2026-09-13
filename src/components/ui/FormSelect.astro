@@ -1,0 +1,27 @@
+---
+/**
+ * Select de una opción para formularios (ver FormField.astro — mismo
+ * sistema, versión <select>). El slot lleva las <option>.
+ */
+interface Props {
+  label: string;
+  name: string;
+  required?: boolean;
+}
+
+const { label, name, required = false } = Astro.props;
+---
+
+<label class="block">
+  <span class="block font-body text-[13px] font-bold text-ink mb-[6px]">
+    {label}
+    {required && <span class="text-maroon">*</span>}
+  </span>
+  <select
+    name={name}
+    required={required}
+    class="w-full font-body text-[14px] px-[14px] py-[11px] border border-border rounded-input bg-white text-ink outline-none transition-colors focus:border-ink"
+  >
+    <slot />
+  </select>
+</label>

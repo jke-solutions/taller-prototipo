@@ -1,0 +1,37 @@
+---
+/**
+ * "Servicios" — página hub que agrupa las categorías de servicio
+ * (Cursos y Talleres / Trabajos Personalizados) y reenvía a cada una.
+ * Reusa ServiceCard.astro (mismo componente que la sección "Servicios" del
+ * Home) para no duplicar el lenguaje visual de la tarjeta; solo se le suma
+ * el hero, igual que /catalogo y las páginas de cada servicio.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ServiceCard from '@sections/home/ServiceCard.astro';
+import { services } from '@data/services';
+---
+
+<BaseLayout
+  title="Servicios"
+  description="Desde clases para niños hasta encargos a medida: así podés sumarte al trabajo de Taller Azotea."
+>
+  <div class="bg-cream border-b border-border">
+    <div class="wrap pt-10 pb-8 md:pt-14 md:pb-10">
+      <p class="font-body text-[13px] text-muted mb-3">
+        <a href="/" class="hover:text-ink transition-colors">Inicio</a> / Servicios
+      </p>
+      <h1 class="font-display text-[34px] md:text-[44px] text-ink tracking-[-0.01em]">Servicios</h1>
+      <p class="font-body text-[15.5px] md:text-[17px] text-muted mt-3 max-w-[560px]">
+        Desde clases para niños hasta encargos a medida: así podés sumarte al trabajo de Taller Azotea.
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-white">
+    <div class="wrap py-10 md:py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal>
+        {services.map((service, i) => <ServiceCard service={service} index={i} />)}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

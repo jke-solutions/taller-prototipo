@@ -1,22 +1,33 @@
 ---
 /**
  * Footer del sitio — se repite en todas las páginas vía BaseLayout.
- * Fondo blanco, borde superior fino. 3 columnas: marca, ayuda, newsletter.
- * Abajo: copyright + íconos de redes.
+ * Fondo blanco, borde superior fino. 4 columnas: marca, ayuda, políticas
+ * (legales) y newsletter. Abajo: copyright + íconos de redes.
  */
 import Icon from '@components/ui/Icon.astro';
 import { site } from '@data/site';
-import { helpNav, legalNav } from '@data/nav';
+import { helpNav, legalNav, libroDeReclamaciones } from '@data/nav';
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="bg-white border-t border-border pt-12 pb-[28px] text-ink snap-end">
+<footer class="bg-white border-t border-border pt-12 pb-[28px] text-ink md:snap-end">
   <div class="wrap">
     <div class="flex flex-wrap justify-between gap-8 mb-[36px]">
       <div class="max-w-[280px]">
-        <h4 class="font-display text-[16px] mb-[12px]">{site.name}</h4>
-        <p class="text-[13.5px] text-muted leading-[1.7]">{site.shortDescription}</p>
+        <a href="/" class="flex items-center gap-[10px] mb-[12px]" aria-label={`${site.name} — inicio`}>
+          <img src="/felipe-logo.svg" alt="" width="40" height="43" class="w-8 h-auto" />
+          <h4 class="font-display text-[16px]">{site.name}</h4>
+        </a>
+        <p class="text-[13.5px] text-muted leading-[1.7] mb-[14px]">{site.shortDescription}</p>
+        {/* Obligatorio por ley (INDECOPI): botón visible, no un link más. */}
+        <a
+          href={libroDeReclamaciones.href}
+          class="inline-flex items-center gap-[6px] border border-border rounded-[3px] px-[10px] py-[7px] text-[12.5px] font-bold text-ink hover:bg-cream transition-colors"
+        >
+          <Icon name="book" size={14} />
+          {libroDeReclamaciones.label}
+        </a>
       </div>
 
       <div>
@@ -24,6 +35,21 @@ const year = new Date().getFullYear();
         <ul class="space-y-[6px]">
           {
             helpNav.map((item) => (
+              <li>
+                <a href={item.href} class="text-[13.5px] text-ink opacity-75 hover:opacity-100 leading-[1.7]">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display text-[16px] mb-[12px]">Políticas</h4>
+        <ul class="space-y-[6px]">
+          {
+            legalNav.map((item) => (
               <li>
                 <a href={item.href} class="text-[13.5px] text-ink opacity-75 hover:opacity-100 leading-[1.7]">
                   {item.label}
@@ -60,34 +86,20 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <div class="border-t border-border pt-[18px] flex flex-col gap-[16px] text-[12.5px] text-muted">
-      <ul class="flex flex-wrap justify-center md:justify-start gap-x-[20px] gap-y-[6px]">
+    <div class="border-t border-border pt-[18px] flex flex-wrap justify-center md:justify-between items-center gap-[14px] text-[12.5px] text-muted">
+      <span>© {year} {site.name}</span>
+      <div class="flex gap-[12px]">
         {
-          legalNav.map((item) => (
-            <li>
-              <a href={item.href} class="hover:text-ink transition-colors">
-                {item.label}
-              </a>
-            </li>
+          site.social.map((s) => (
+            <a
+              href={s.href}
+              aria-label={s.label}
+              class="w-8 h-8 rounded-full border border-border flex items-center justify-center text-ink hover:bg-cream transition-colors"
+            >
+              <Icon name={s.icon as any} size={15} />
+            </a>
           ))
         }
-      </ul>
-
-      <div class="flex flex-wrap justify-center md:justify-between items-center gap-[14px]">
-        <span>© {year} {site.name}</span>
-        <div class="flex gap-[12px]">
-          {
-            site.social.map((s) => (
-              <a
-                href={s.href}
-                aria-label={s.label}
-                class="w-8 h-8 rounded-full border border-border flex items-center justify-center text-ink hover:bg-cream transition-colors"
-              >
-                <Icon name={s.icon as any} size={15} />
-              </a>
-            ))
-          }
-        </div>
       </div>
     </div>
   </div>

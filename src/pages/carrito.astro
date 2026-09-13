@@ -1,0 +1,253 @@
+---
+/**
+ * Página de carrito. El contenido depende 100% de localStorage (ver
+ * src/scripts/cart.ts), así que se pinta en el cliente: el markup de acá
+ * solo da la estructura y los estados vacíos; el script de abajo arma las
+ * filas de producto.
+ *
+ * Fondo blanco a propósito (a diferencia del resto del sitio, que usa
+ * --cream): pedido explícito para que el carrito se lea como un paso de
+ * checkout, no como una sección más del home.
+ *
+ * Sin checkout propio en el prototipo: "Pagar pedido" arma un pedido por
+ * WhatsApp (mismo canal que ya usa la página de Contacto). El campo de
+ * cupón es solo visual — no hay backend de promociones todavía.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+---
+
+<BaseLayout title="Carrito">
+  <div class="bg-white">
+    <div class="wrap py-10 md:py-14">
+      <nav class="text-[13px] text-muted mb-8 flex items-center gap-2 flex-wrap" aria-label="Ruta de navegación">
+        <a href="/" class="hover:text-ink transition-colors">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-ink">Carrito</span>
+      </nav>
+
+      <p class="section-eyebrow mb-2">Carrito</p>
+      <h1 class="font-display text-[28px] md:text-[32px] text-ink mb-1">Tu carrito</h1>
+      <p class="text-[15px] text-muted mb-8" data-cart-count-label>Todavía no agregaste nada.</p>
+
+      <div data-cart-empty class="hidden flex-col items-center text-center py-16 gap-6">
+        <div class="w-24 h-24 rounded-full bg-cream flex items-center justify-center">
+          <Icon name="cart" size={40} class="text-maroon" />
+        </div>
+        <div class="max-w-[420px] flex flex-col gap-2">
+          <h2 class="font-display text-[22px] text-ink">Todavía no agregaste nada</h2>
+          <p class="text-[15px] text-muted leading-relaxed">
+            Explora el catálogo y encuentra la pieza de cerámica que le falta a tu espacio.
+          </p>
+        </div>
+        <Button href="/catalogo" variant="primary">
+          Ir al catálogo
+          <Icon name="arrow-right" size={15} />
+        </Button>
+      </div>
+
+      <div data-cart-content class="hidden grid md:grid-cols-[1fr_340px] gap-10 md:gap-16 items-start">
+        <div class="flex flex-col">
+          <div class="hidden md:flex items-center gap-5 pb-3 border-b border-border text-[12px] font-extrabold uppercase tracking-wide text-muted">
+            <div class="w-8 shrink-0"></div>
+            <div class="w-16 shrink-0"></div>
+            <div class="flex-1">Producto</div>
+            <div class="w-[104px]">Cantidad</div>
+            <div class="w-[90px] text-right">Subtotal</div>
+          </div>
+
+          <div data-cart-items class="flex flex-col divide-y divide-border border-b border-border md:border-t-0"></div>
+
+          <div class="flex items-center justify-between flex-wrap gap-4 mt-6">
+            <a href="/catalogo" class="inline-flex items-center gap-2 font-bold text-[14px] text-maroon">
+              <Icon name="arrow-left" size={15} />
+              Seguir comprando
+            </a>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 font-bold text-[13px] text-muted hover:text-maroon transition-colors"
+              data-cart-clear
+            >
+              <Icon name="close" size={14} />
+              Vaciar carrito
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-8">
+          <div class="border border-border rounded-card p-7 flex flex-col gap-5">
+            <p class="font-display text-[18px] text-ink">Resumen del pedido</p>
+
+            <div class="flex items-center justify-between text-[14px] pb-4 border-b border-border">
+              <span class="text-muted" data-cart-subtotal-label>Subtotal</span>
+              <span class="font-bold text-ink" data-cart-subtotal>S/ 0.00</span>
+            </div>
+
+            <div class="flex items-stretch gap-2">
+              <input
+                type="text"
+                placeholder="¿Tienes un cupón?"
+                class="flex-1 min-w-0 text-[14px] text-ink border border-border rounded-input px-4 h-[42px] focus-visible:outline-2 focus-visible:outline-maroon"
+                data-cart-coupon
+              />
+              <button
+                type="button"
+                class="font-extrabold text-[12.5px] uppercase tracking-wide bg-cream text-maroon rounded-input px-4 h-[42px] whitespace-nowrap"
+                data-cart-coupon-apply
+              >
+                Aplicar
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-[15px] text-ink">Total</span>
+              <span class="font-display text-[24px] text-maroon" data-cart-total>S/ 0.00</span>
+            </div>
+            <p class="text-[12.5px] text-muted -mt-3">Impuestos incluidos.</p>
+
+            <Button variant="primary" size="lg" data-cart-pay>Pagar pedido</Button>
+            <Button href="/catalogo" variant="link" class="self-center">Seguir comprando</Button>
+
+            <div class="flex items-center gap-3 text-[12.5px] text-muted pt-4 border-t border-border">
+              <Icon name="whatsapp" size={18} class="text-teal shrink-0" />
+              <span>Coordinamos el pago y envío por WhatsApp al confirmar tu pedido.</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <a href="/politica-de-privacidad" class="flex items-center gap-3 py-3.5 text-[13px] font-bold text-ink border-b border-border">
+              <Icon name="lock" size={18} class="text-maroon shrink-0" />
+              Política de Privacidad
+            </a>
+            <a href="/envios-y-devoluciones" class="flex items-center gap-3 py-3.5 text-[13px] font-bold text-ink">
+              <Icon name="truck" size={18} class="text-maroon shrink-0" />
+              Envíos y Devoluciones
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<template data-cart-row-template>
+  <div class="flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-5 py-5">
+    <button type="button" class="w-8 h-8 flex items-center justify-center text-muted hover:text-maroon shrink-0 order-1" aria-label="Quitar del carrito" data-row-remove>
+      <Icon name="close" size={16} />
+    </button>
+    <div class="w-16 h-16 md:w-[84px] md:h-[84px] rounded-card shrink-0 flex items-center justify-center order-2" data-row-thumb>
+      <svg width="30" height="30" data-row-icon><use></use></svg>
+    </div>
+    <div class="flex-1 min-w-[140px] order-3">
+      <div class="font-extrabold text-[15px] text-ink" data-row-name></div>
+      <div class="text-[13px] text-muted" data-row-meta></div>
+    </div>
+    <div class="inline-flex items-center gap-1 border border-border rounded-full p-1 order-4 w-[104px] justify-center">
+      <button type="button" class="w-7 h-7 rounded-full flex items-center justify-center text-ink hover:text-maroon" aria-label="Reducir cantidad" data-row-decrease>
+        <Icon name="minus" size={13} />
+      </button>
+      <span class="w-5 text-center text-[14px] font-bold" data-row-qty></span>
+      <button type="button" class="w-7 h-7 rounded-full flex items-center justify-center text-ink hover:text-maroon" aria-label="Aumentar cantidad" data-row-increase>
+        <Icon name="plus" size={13} />
+      </button>
+    </div>
+    <div class="w-full md:w-[90px] text-right md:text-right font-display text-[16px] text-maroon order-5" data-row-subtotal></div>
+  </div>
+</template>
+
+<script>
+  import {
+    getCart,
+    updateCartQty,
+    removeFromCart,
+    clearCart,
+    parsePrice,
+    brandColorVar,
+    type CartItem,
+  } from '@/scripts/cart';
+
+  const emptyEl = document.querySelector<HTMLElement>('[data-cart-empty]');
+  const contentEl = document.querySelector<HTMLElement>('[data-cart-content]');
+  const itemsEl = document.querySelector<HTMLElement>('[data-cart-items]');
+  const countLabelEl = document.querySelector<HTMLElement>('[data-cart-count-label]');
+  const subtotalEl = document.querySelector<HTMLElement>('[data-cart-subtotal]');
+  const subtotalLabelEl = document.querySelector<HTMLElement>('[data-cart-subtotal-label]');
+  const totalEl = document.querySelector<HTMLElement>('[data-cart-total]');
+  const payBtn = document.querySelector<HTMLButtonElement>('[data-cart-pay]');
+  const clearBtn = document.querySelector<HTMLButtonElement>('[data-cart-clear]');
+  const rowTemplate = document.querySelector<HTMLTemplateElement>('[data-cart-row-template]');
+
+  function render() {
+    const cart = getCart();
+    if (!emptyEl || !contentEl || !itemsEl || !rowTemplate) return;
+
+    emptyEl.classList.toggle('hidden', cart.length > 0);
+    emptyEl.classList.toggle('flex', cart.length === 0);
+    contentEl.classList.toggle('hidden', cart.length === 0);
+    contentEl.classList.toggle('grid', cart.length > 0);
+
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    if (countLabelEl) {
+      countLabelEl.textContent = count > 0 ? `${count} ${count === 1 ? 'producto' : 'productos'}` : 'Todavía no agregaste nada.';
+    }
+
+    if (cart.length === 0) return;
+
+    itemsEl.innerHTML = '';
+    let subtotal = 0;
+
+    cart.forEach((item: CartItem) => {
+      const lineTotal = parsePrice(item.price) * item.qty;
+      subtotal += lineTotal;
+
+      const row = rowTemplate.content.cloneNode(true) as DocumentFragment;
+      const thumb = row.querySelector<HTMLElement>('[data-row-thumb]');
+      const icon = row.querySelector<SVGUseElement>('[data-row-icon] use');
+      if (thumb) thumb.style.background = brandColorVar[item.color] ? `color-mix(in oklch, ${brandColorVar[item.color]} 16%, white)` : 'var(--cream)';
+      const svg = row.querySelector<SVGElement>('[data-row-icon]');
+      if (svg) svg.style.color = brandColorVar[item.color] ?? 'var(--muted)';
+      if (icon) icon.setAttribute('href', `#ic-${item.icon}`);
+      const nameEl = row.querySelector<HTMLElement>('[data-row-name]');
+      if (nameEl) nameEl.textContent = item.name;
+      const metaEl = row.querySelector<HTMLElement>('[data-row-meta]');
+      if (metaEl) metaEl.textContent = item.price;
+      const qtyEl = row.querySelector<HTMLElement>('[data-row-qty]');
+      if (qtyEl) qtyEl.textContent = String(item.qty);
+      const subtotalRowEl = row.querySelector<HTMLElement>('[data-row-subtotal]');
+      if (subtotalRowEl) subtotalRowEl.textContent = `S/ ${lineTotal.toFixed(2)}`;
+
+      row.querySelector('[data-row-decrease]')?.addEventListener('click', () => {
+        if (item.qty <= 1) return;
+        updateCartQty(item.slug, item.qty - 1);
+        render();
+      });
+      row.querySelector('[data-row-increase]')?.addEventListener('click', () => {
+        updateCartQty(item.slug, item.qty + 1);
+        render();
+      });
+      row.querySelector('[data-row-remove]')?.addEventListener('click', () => {
+        removeFromCart(item.slug);
+        render();
+      });
+
+      itemsEl.appendChild(row);
+    });
+
+    if (subtotalLabelEl) subtotalLabelEl.textContent = `Subtotal (${count} ${count === 1 ? 'artículo' : 'artículos'})`;
+    if (subtotalEl) subtotalEl.textContent = `S/ ${subtotal.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `S/ ${subtotal.toFixed(2)}`;
+  }
+
+  payBtn?.addEventListener('click', () => {
+    if (getCart().length === 0) return;
+    window.location.href = '/checkout';
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    clearCart();
+    render();
+  });
+
+  render();
+</script>

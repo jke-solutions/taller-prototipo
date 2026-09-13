@@ -1,0 +1,298 @@
+---
+/**
+ * Seguimiento de pedido. Sin backend en el prototipo: solo puede confirmar
+ * el último pedido hecho en ESTE navegador (ver findOrder en
+ * src/scripts/checkout.ts) — por eso pide número de pedido + correo, como
+ * verificación mínima, y no una búsqueda real entre pedidos de terceros.
+ * Precarga el número de pedido desde ?pedido= (link de /gracias) y el
+ * correo desde los datos guardados del cliente, si existen.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import FormField from '@components/ui/FormField.astro';
+---
+
+<BaseLayout
+  title="Seguimiento de pedido"
+  description="Consulta el estado de tu pedido con tu número de pedido y correo."
+>
+  <div class="bg-cream">
+    <div class="wrap py-14 md:py-20">
+      <div
+        data-seguimiento-search
+        class="flex flex-col items-center text-center gap-6 max-w-[440px] mx-auto bg-white border border-border rounded-card p-9 md:p-11"
+      >
+        <div class="w-16 h-16 rounded-full bg-cream flex items-center justify-center">
+          <Icon name="search" size={26} class="text-maroon" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <h1 class="font-display text-[24px] text-ink">Sigue tu pedido</h1>
+          <p class="text-[14.5px] leading-relaxed text-muted m-0">
+            Ingresa el número de tu pedido y el correo con el que lo hiciste para ver en qué va.
+          </p>
+        </div>
+
+        <form data-seguimiento-form class="w-full flex flex-col gap-4 text-left" novalidate>
+          <FormField label="Número de pedido" name="pedido" required autocomplete="off" />
+          <FormField label="Correo electrónico" name="correo" type="email" required autocomplete="email" />
+
+          <p class="hidden text-[13px] font-bold text-maroon m-0" data-seguimiento-error>
+            No encontramos un pedido con esos datos en este navegador. Revisa el número de pedido
+            y el correo.
+          </p>
+
+          <Button type="submit" variant="primary" size="lg">
+            Buscar pedido
+            <Icon name="arrow-right" size={15} />
+          </Button>
+        </form>
+
+        <p class="text-[12.5px] leading-relaxed text-muted m-0">
+          El seguimiento se guarda en este navegador. Si compraste desde otro dispositivo o no
+          encuentras tu número de pedido, escríbenos por WhatsApp.
+        </p>
+      </div>
+
+      <div
+        data-seguimiento-result
+        class="hidden grid md:grid-cols-[1fr_340px] gap-10 md:gap-16 items-start bg-white border border-border rounded-card p-8 md:p-11"
+      >
+        <div class="flex flex-col gap-7">
+          <div>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 font-bold text-[13px] text-muted mb-4"
+              data-seguimiento-back
+            >
+              <Icon name="arrow-left" size={14} />
+              Buscar otro pedido
+            </button>
+            <p class="section-eyebrow mb-2" data-seguimiento-number>Pedido</p>
+            <h1 class="font-display text-[26px] text-ink" data-seguimiento-status-label></h1>
+            <p class="text-[14px] text-muted mt-2 m-0" data-seguimiento-date></p>
+          </div>
+
+          <div class="flex flex-col" data-seguimiento-timeline></div>
+
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener"
+            class="self-start inline-flex items-center gap-2 bg-maroon text-white font-bold rounded-btn px-6 py-3.5 text-[14.5px]"
+            data-seguimiento-whatsapp
+          >
+            <Icon name="whatsapp" size={16} />
+            Escribir por WhatsApp
+          </a>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="border border-border rounded-card p-6 flex flex-col gap-4">
+            <p class="font-display text-[16px] text-ink">Resumen del pedido</p>
+            <div class="flex flex-col gap-3" data-seguimiento-items></div>
+            <div class="flex items-center justify-between pt-3 border-t border-border">
+              <span class="font-extrabold text-[14px] text-ink">Total</span>
+              <span class="font-display text-[19px] text-maroon" data-seguimiento-total></span>
+            </div>
+          </div>
+          <div class="flex items-start gap-2 text-[12.5px] text-muted">
+            <Icon name="truck" size={16} class="text-maroon shrink-0 mt-0.5" />
+            <span data-seguimiento-address></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<template data-seguimiento-step-template>
+  <div class="flex gap-4">
+    <div class="flex flex-col items-center shrink-0">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" data-step-circle>
+        <svg width="14" height="14" data-step-icon><use></use></svg>
+      </div>
+      <div class="w-[2px] flex-1 mt-0.5" data-step-line></div>
+    </div>
+    <div class="pb-6">
+      <span
+        class="hidden text-[10px] font-extrabold uppercase tracking-wide text-maroon bg-cream rounded-tag px-2 py-0.5 mb-1"
+        data-step-badge
+        >En curso</span
+      >
+      <p class="font-extrabold text-[14px] m-0" data-step-label></p>
+      <p class="text-[12.5px] text-muted m-0 mt-0.5" data-step-desc></p>
+    </div>
+  </div>
+</template>
+
+<script>
+  import {
+    getSavedCustomer,
+    findOrder,
+    buildOrderWhatsappMessage,
+    orderStatusSteps,
+    orderStatusIndex,
+    type Order,
+  } from '@/scripts/checkout';
+  import { site } from '@data/site';
+
+  const searchEl = document.querySelector<HTMLElement>('[data-seguimiento-search]');
+  const resultEl = document.querySelector<HTMLElement>('[data-seguimiento-result]');
+  const form = document.querySelector<HTMLFormElement>('[data-seguimiento-form]');
+  const errorEl = document.querySelector<HTMLElement>('[data-seguimiento-error]');
+  const backBtn = document.querySelector<HTMLButtonElement>('[data-seguimiento-back]');
+
+  const numberEl = document.querySelector<HTMLElement>('[data-seguimiento-number]');
+  const statusLabelEl = document.querySelector<HTMLElement>('[data-seguimiento-status-label]');
+  const dateEl = document.querySelector<HTMLElement>('[data-seguimiento-date]');
+  const timelineEl = document.querySelector<HTMLElement>('[data-seguimiento-timeline]');
+  const stepTemplate = document.querySelector<HTMLTemplateElement>('[data-seguimiento-step-template]');
+  const whatsappEl = document.querySelector<HTMLAnchorElement>('[data-seguimiento-whatsapp]');
+  const itemsEl = document.querySelector<HTMLElement>('[data-seguimiento-items]');
+  const totalEl = document.querySelector<HTMLElement>('[data-seguimiento-total]');
+  const addressEl = document.querySelector<HTMLElement>('[data-seguimiento-address]');
+
+  function renderTimeline(order: Order) {
+    if (!timelineEl || !stepTemplate) return;
+    timelineEl.innerHTML = '';
+    const currentIndex = orderStatusIndex(order.status);
+
+    orderStatusSteps.forEach((step, i) => {
+      const row = stepTemplate.content.cloneNode(true) as DocumentFragment;
+      const circle = row.querySelector<HTMLElement>('[data-step-circle]');
+      const iconSvg = row.querySelector<SVGElement>('[data-step-icon]');
+      const iconUse = row.querySelector<SVGUseElement>('[data-step-icon] use');
+      const line = row.querySelector<HTMLElement>('[data-step-line]');
+      const badge = row.querySelector<HTMLElement>('[data-step-badge]');
+      const label = row.querySelector<HTMLElement>('[data-step-label]');
+      const desc = row.querySelector<HTMLElement>('[data-step-desc]');
+
+      if (label) {
+        label.textContent = step.label;
+        label.style.color = i <= currentIndex ? 'var(--ink)' : 'var(--muted)';
+      }
+      if (desc) desc.textContent = step.description;
+      if (iconUse) iconUse.setAttribute('href', `#ic-${step.icon}`);
+
+      if (circle && iconSvg) {
+        if (i < currentIndex) {
+          circle.style.background = 'var(--forest)';
+          circle.style.border = 'none';
+          iconSvg.style.color = '#fff';
+          if (iconUse) iconUse.setAttribute('href', '#ic-check');
+        } else if (i === currentIndex) {
+          circle.style.background = 'var(--maroon)';
+          circle.style.border = 'none';
+          iconSvg.style.color = '#fff';
+          badge?.classList.remove('hidden');
+        } else {
+          circle.style.background = '#fff';
+          circle.style.border = '1.5px solid var(--border)';
+          iconSvg.style.color = 'var(--muted)';
+        }
+      }
+
+      if (line) {
+        line.style.background = i === orderStatusSteps.length - 1 ? 'transparent' : i < currentIndex ? 'var(--forest)' : 'var(--border)';
+      }
+
+      timelineEl.appendChild(row);
+    });
+  }
+
+  function showResult(order: Order) {
+    if (numberEl) numberEl.textContent = `Pedido ${order.orderNumber}`;
+    const currentStep = orderStatusSteps[orderStatusIndex(order.status)];
+    if (statusLabelEl) statusLabelEl.textContent = currentStep?.label ?? '';
+    if (dateEl) {
+      const created = new Date(order.createdAt);
+      dateEl.textContent = `Hecho el ${created.toLocaleDateString('es-PE', { day: 'numeric', month: 'long' })} — coordinamos contigo por WhatsApp cualquier detalle.`;
+    }
+
+    renderTimeline(order);
+
+    if (whatsappEl) {
+      whatsappEl.href = `${site.whatsappHref}?text=${encodeURIComponent(buildOrderWhatsappMessage(order))}`;
+    }
+
+    if (itemsEl) {
+      itemsEl.innerHTML = '';
+      order.items.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between text-[13.5px]';
+        const label = document.createElement('span');
+        label.className = 'text-muted';
+        label.textContent = `${item.name} x${item.qty}`;
+        const value = document.createElement('span');
+        value.className = 'font-bold text-ink';
+        value.textContent = item.price;
+        row.append(label, value);
+        itemsEl.appendChild(row);
+      });
+      const shippingRow = document.createElement('div');
+      shippingRow.className = 'flex items-center justify-between text-[13.5px]';
+      const shippingLabel = document.createElement('span');
+      shippingLabel.className = 'text-muted';
+      shippingLabel.textContent = order.shippingMethod.label;
+      const shippingValue = document.createElement('span');
+      shippingValue.className = 'font-bold text-ink';
+      shippingValue.textContent = `S/ ${order.shippingCost.toFixed(2)}`;
+      shippingRow.append(shippingLabel, shippingValue);
+      itemsEl.appendChild(shippingRow);
+    }
+
+    if (totalEl) totalEl.textContent = `S/ ${order.total.toFixed(2)}`;
+    if (addressEl) {
+      addressEl.textContent = `${order.shippingMethod.label} — ${order.customer.direccion}, ${order.customer.distrito}.`;
+    }
+
+    searchEl?.classList.add('hidden');
+    resultEl?.classList.remove('hidden');
+    resultEl?.classList.add('grid');
+  }
+
+  function showSearch() {
+    resultEl?.classList.add('hidden');
+    resultEl?.classList.remove('grid');
+    searchEl?.classList.remove('hidden');
+  }
+
+  backBtn?.addEventListener('click', showSearch);
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const pedido = String(data.get('pedido') ?? '');
+    const correo = String(data.get('correo') ?? '');
+    const order = findOrder(pedido, correo);
+
+    if (!order) {
+      errorEl?.classList.remove('hidden');
+      return;
+    }
+    errorEl?.classList.add('hidden');
+    showResult(order);
+  });
+
+  // Precarga el número de pedido desde el link de /gracias y el correo
+  // guardado, y busca de una vez si ya tenemos ambos datos.
+  const params = new URLSearchParams(window.location.search);
+  const pedidoParam = params.get('pedido');
+  const pedidoField = form?.elements.namedItem('pedido');
+  if (pedidoParam && pedidoField instanceof HTMLInputElement) {
+    pedidoField.value = pedidoParam;
+  }
+
+  const saved = getSavedCustomer();
+  const correoField = form?.elements.namedItem('correo');
+  if (saved?.correo && correoField instanceof HTMLInputElement) {
+    correoField.value = saved.correo;
+  }
+
+  if (pedidoParam && saved?.correo) {
+    const order = findOrder(pedidoParam, saved.correo);
+    if (order) showResult(order);
+  }
+</script>

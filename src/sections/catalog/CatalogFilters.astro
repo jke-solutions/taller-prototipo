@@ -1,0 +1,136 @@
+---
+/**
+ * Sidebar de filtros del catálogo. Todo sale de datos reales (categories.ts +
+ * conteos calculados sobre products.ts): sin categorías ni colores
+ * inventados. El filtrado en sí es client-side (ver @scripts/catalogFilters),
+ * este componente solo pinta los controles y expone su estado en el DOM.
+ */
+import type { Category } from '@data/categories';
+
+export interface ColorOption {
+  label: string;
+  value: string;
+  count: number;
+}
+
+interface Props {
+  categories: (Category & { count: number })[];
+  colorOptions: ColorOption[];
+  priceMin: number;
+  priceMax: number;
+}
+
+const { categories, colorOptions, priceMin, priceMax } = Astro.props;
+---
+
+<aside class="w-full md:w-[240px] shrink-0" data-catalog-filters>
+  <div class="flex items-center justify-between mb-2 md:hidden">
+    <span class="font-display text-[18px] text-ink">Filtros</span>
+    <button
+      type="button"
+      class="font-body text-[13px] font-bold text-maroon underline underline-offset-[3px]"
+      data-filters-reset
+    >
+      Limpiar
+    </button>
+  </div>
+
+  <div class="hidden md:flex items-center justify-between mb-5">
+    <h2 class="font-display text-[19px] text-ink">Filtros</h2>
+    <button
+      type="button"
+      class="font-body text-[13px] font-bold text-maroon underline underline-offset-[3px]"
+      data-filters-reset
+    >
+      Limpiar
+    </button>
+  </div>
+
+  <div class="space-y-7">
+    {
+      categories.length > 0 && (
+        <fieldset>
+          <legend class="font-body text-[13px] font-extrabold uppercase tracking-[0.04em] text-muted mb-3">
+            Categorías
+          </legend>
+          <div class="space-y-[10px]">
+            {categories.map((cat) => (
+              <label class="flex items-center justify-between gap-2 cursor-pointer group">
+                <span class="flex items-center gap-[10px]">
+                  <input
+                    type="checkbox"
+                    name="categoria"
+                    value={cat.slug}
+                    class="h-4 w-4 accent-maroon"
+                    data-filter-category
+                    disabled={cat.count === 0}
+                  />
+                  <span class="font-body text-[14.5px] text-ink group-has-[:disabled]:text-muted/60">
+                    {cat.name}
+                  </span>
+                </span>
+                <span class="font-body text-[13px] text-muted">{cat.count}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )
+    }
+
+    {
+      colorOptions.length > 0 && (
+        <fieldset class:list={[categories.length > 0 && 'pt-6 border-t border-border']}>
+          <legend class="font-body text-[13px] font-extrabold uppercase tracking-[0.04em] text-muted mb-3">
+            Color
+          </legend>
+          <div class="space-y-[10px]">
+            {colorOptions.map((opt) => (
+              <label class="flex items-center justify-between gap-2 cursor-pointer">
+                <span class="flex items-center gap-[10px]">
+                  <input
+                    type="checkbox"
+                    name="color"
+                    value={opt.value}
+                    class="h-4 w-4 accent-maroon"
+                    data-filter-color
+                  />
+                  <span class="font-body text-[14.5px] text-ink">{opt.label}</span>
+                </span>
+                <span class="font-body text-[13px] text-muted">{opt.count}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )
+    }
+
+    <fieldset class="pt-6 border-t border-border">
+      <legend class="font-body text-[13px] font-extrabold uppercase tracking-[0.04em] text-muted mb-3">
+        Precio máximo
+      </legend>
+      <input
+        type="range"
+        min={priceMin}
+        max={priceMax}
+        value={priceMax}
+        step="1"
+        class="w-full accent-maroon"
+        data-filter-price
+      />
+      <div class="flex justify-between font-body text-[13px] text-muted mt-2">
+        <span>S/ {priceMin.toFixed(2)}</span>
+        <span class="font-bold text-ink" data-filter-price-value>S/ {priceMax.toFixed(2)}</span>
+      </div>
+    </fieldset>
+
+    <fieldset class="pt-6 border-t border-border">
+      <legend class="font-body text-[13px] font-extrabold uppercase tracking-[0.04em] text-muted mb-3">
+        Disponibilidad
+      </legend>
+      <label class="flex items-center gap-[10px] cursor-pointer">
+        <input type="checkbox" class="h-4 w-4 accent-maroon" data-filter-in-stock />
+        <span class="font-body text-[14.5px] text-ink">Solo piezas disponibles</span>
+      </label>
+    </fieldset>
+  </div>
+</aside>

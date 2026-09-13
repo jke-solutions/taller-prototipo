@@ -2,12 +2,14 @@
 /**
  * Tarjeta de "En promoción".
  * Placeholder cuadrado con badge de descuento arriba-izquierda, categoría en
- * color, nombre, precio actual + precio tachado, y link "Añadir al carrito"
- * SIEMPRE visible (no depende de :hover, para que funcione igual en mobile).
+ * color, nombre, precio actual + precio tachado, y botón "Ver producto" que
+ * lleva al detalle (mismo botón que RelatedProductCard, no un link de texto:
+ * "Añadir al carrito" prometía una acción que la tarjeta no hacía).
  * Ref. visual: .e-promo-card de la variante F.
  */
 import { Image } from 'astro:assets';
 import Placeholder from '@components/ui/Placeholder.astro';
+import Button from '@components/ui/Button.astro';
 import type { PromoProduct } from '@data/promos';
 import type { BrandColor } from '@data/categories';
 
@@ -77,15 +79,12 @@ const brandVar: Record<BrandColor, string> = {
   >
     {product.category}
   </span>
-  <h3 class="font-display text-[17px] text-ink mb-[8px]">{product.name}</h3>
-  <div class="flex items-baseline gap-2 mb-3">
+  <h3 class="font-display text-[19px] md:text-[17px] text-ink mb-[8px]">{product.name}</h3>
+  <div class="flex items-baseline gap-2 mb-4">
     <span class="font-display text-[18px] text-maroon">{product.priceNow}</span>
     <span class="font-body text-[13px] text-muted line-through">{product.priceBefore}</span>
   </div>
-  <a
-    href={product.href}
-    class="font-body text-[13px] font-bold text-ink underline underline-offset-[3px]"
-  >
-    Añadir al carrito
-  </a>
+  <Button href={product.href} variant="secondary" size="sm" class="w-full justify-center">
+    Ver producto
+  </Button>
 </article>

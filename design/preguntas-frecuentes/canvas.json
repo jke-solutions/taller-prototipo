@@ -1,0 +1,7 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1000, "h": 1900, "title": "Preguntas Frecuentes — Desktop" },
+    { "file": "Mobile.dc.html", "x": 1120, "y": 0, "w": 390, "h": 2100, "title": "Preguntas Frecuentes — Mobile" }
+  ],
+  "launch": { "view": "focused", "file": "Main.dc.html" }
+}

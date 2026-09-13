@@ -1,0 +1,132 @@
+---
+/**
+ * Tarjeta de taller en /servicios/cursos-y-talleres.
+ * Mismo lenguaje visual que RelatedProductCard (borde + fondo blanco + tags +
+ * botón) sumando lo propio de un taller: objetivos y datos (edad, duración,
+ * lugar, horarios). Sin precio a la vista (pedido del cliente): el dato
+ * sigue en courses.ts por si se necesita más adelante.
+ *
+ * Dos CTA: "Consultar disponibilidad" abre WhatsApp con el taller ya
+ * armado en el mensaje; "Inscribirme aquí" no navega — dispara el modal de
+ * inscripción que vive en la página (cursos-y-talleres.astro) vía
+ * data-open-inscription, para no duplicar el formulario por tarjeta.
+ */
+import Placeholder from '@components/ui/Placeholder.astro';
+import Icon from '@components/ui/Icon.astro';
+import { site } from '@data/site';
+import type { Course } from '@data/courses';
+
+interface Props {
+  course: Course;
+}
+
+const { course } = Astro.props;
+
+const tintColor: Record<Course['color'], string> = {
+  teal: 'var(--teal)',
+  gold: 'color-mix(in oklch, var(--gold) 70%, black)',
+};
+const accent = tintColor[course.color];
+const whatsappHref = `${site.whatsappHref}?text=${encodeURIComponent(course.whatsappMessage)}`;
+---
+
+<article class="flex h-full flex-col border border-border rounded-card bg-white overflow-hidden" data-reveal-child>
+  <Placeholder
+    icon={course.icon}
+    color={course.color}
+    label="Foto del taller"
+    ratio="16 / 9"
+    iconScale={15}
+    class="rounded-none"
+  />
+
+  <div class="flex-1 flex flex-col p-6">
+    <div class="flex flex-wrap gap-2 mb-4">
+      <span
+        class="inline-block font-body font-bold text-[13px] px-[14px] py-[6px] rounded-tag"
+        style={`background:color-mix(in oklch, ${accent} 16%, white); color:${accent};`}
+      >
+        {course.modalityTag}
+      </span>
+      <span
+        class="inline-block font-body font-bold text-[13px] px-[14px] py-[6px] rounded-tag text-muted"
+        style="background:color-mix(in oklch, var(--ink) 8%, white);"
+      >
+        {course.ageTag}
+      </span>
+    </div>
+
+    <h3 class="font-display text-[22px] text-ink mb-3 leading-[1.2]">{course.title}</h3>
+    <p class="font-body text-[15px] leading-[1.65] text-muted mb-5">{course.description}</p>
+
+    <div class="mb-5">
+      <h4 class="font-body text-[12.5px] font-extrabold uppercase tracking-[0.05em] text-ink mb-[10px]">
+        {course.listTitle}
+      </h4>
+      <ul class="flex flex-col gap-[9px]">
+        {
+          course.listItems.map((item) => (
+            <li class="flex items-start gap-[10px] font-body text-[14.5px] leading-[1.55] text-ink">
+              <span class="mt-[3px] shrink-0" style={`color:${accent};`}>
+                <Icon name="check" size={17} />
+              </span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="grid grid-cols-2 gap-x-[18px] gap-y-[14px] py-[18px] mb-5 border-t border-b border-border">
+      <div class="flex items-start gap-[10px]">
+        <span class="text-muted mt-px shrink-0"><Icon name="users" size={17} /></span>
+        <span>
+          <span class="block font-body text-[11.5px] font-extrabold uppercase tracking-[0.05em] text-muted opacity-85">Edad</span>
+          <span class="block font-body text-[14px] font-bold text-ink leading-[1.4] mt-px">{course.age}</span>
+        </span>
+      </div>
+      <div class="flex items-start gap-[10px]">
+        <span class="text-muted mt-px shrink-0"><Icon name="clock" size={17} /></span>
+        <span>
+          <span class="block font-body text-[11.5px] font-extrabold uppercase tracking-[0.05em] text-muted opacity-85">Duración</span>
+          <span class="block font-body text-[14px] font-bold text-ink leading-[1.4] mt-px">{course.duration}</span>
+        </span>
+      </div>
+      <div class="flex items-start gap-[10px]">
+        <span class="text-muted mt-px shrink-0"><Icon name="map-pin" size={17} /></span>
+        <span>
+          <span class="block font-body text-[11.5px] font-extrabold uppercase tracking-[0.05em] text-muted opacity-85">Lugar</span>
+          <span class="block font-body text-[14px] font-bold text-ink leading-[1.4] mt-px">{course.location}</span>
+        </span>
+      </div>
+      <div class="flex items-start gap-[10px]">
+        <span class="text-muted mt-px shrink-0"><Icon name="calendar" size={17} /></span>
+        <span>
+          <span class="block font-body text-[11.5px] font-extrabold uppercase tracking-[0.05em] text-muted opacity-85">Horarios</span>
+          <span class="block font-body text-[14px] font-bold text-ink leading-[1.4] mt-px">{course.schedule}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="mt-auto flex flex-col sm:flex-row gap-3">
+      <a
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener"
+        class="flex-1 inline-flex items-center justify-center gap-[10px] rounded-btn border-1.5 border-solid border-maroon px-5 py-[13px] font-body font-bold text-[15px] text-maroon transition-transform duration-150 hover:-translate-y-px"
+      >
+        <Icon name="whatsapp" size={17} />
+        Consultar disponibilidad
+      </a>
+
+      <button
+        type="button"
+        data-open-inscription={course.slug}
+        data-course-title={course.title}
+        class="flex-1 inline-flex items-center justify-center gap-[10px] rounded-btn bg-maroon px-5 py-[14px] font-body font-bold text-[15px] text-white transition-transform duration-150 hover:-translate-y-px"
+      >
+        Inscribirme aquí
+      </button>
+    </div>
+  </div>
+</article>

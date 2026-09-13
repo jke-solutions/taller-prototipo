@@ -1,0 +1,29 @@
+---
+/**
+ * Input de texto de una línea para formularios (brief → sistema de diseño,
+ * variante de input reutilizada en Libro de Reclamaciones y futuros forms).
+ */
+interface Props {
+  label: string;
+  name: string;
+  type?: string;
+  required?: boolean;
+  autocomplete?: string;
+}
+
+const { label, name, type = 'text', required = false, autocomplete } = Astro.props;
+---
+
+<label class="block">
+  <span class="block font-body text-[13px] font-bold text-ink mb-[6px]">
+    {label}
+    {required && <span class="text-maroon">*</span>}
+  </span>
+  <input
+    type={type}
+    name={name}
+    required={required}
+    autocomplete={autocomplete}
+    class="w-full font-body text-[14px] px-[14px] py-[11px] border border-border rounded-input bg-white text-ink outline-none transition-colors focus:border-ink"
+  />
+</label>

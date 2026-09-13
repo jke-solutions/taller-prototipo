@@ -1,0 +1,100 @@
+---
+/**
+ * Galería de producto: foto grande arriba, miniaturas EN UNA FILA DEBAJO
+ * (no al costado — pedido explícito del cliente, a diferencia del layout de
+ * referencia que las ponía a la izquierda). Clic en una miniatura cambia
+ * cuál foto se ve arriba. Sin fotos reales todavía, cada slot cae al
+ * Placeholder de marca (mismo patrón que el resto del sitio).
+ *
+ * "En promoción" (product.discountPercent) NO es un tag — un tag es
+ * material/subcategoría (Cerámica, Madera, Edición limitada). Va como
+ * bandera "-X%" sobre la foto, misma esquina y estilo que el badge de
+ * PromoCard.astro en el Home, para que se lea como el mismo concepto en
+ * los dos lugares.
+ */
+import Placeholder from '@components/ui/Placeholder.astro';
+import type { Product } from '@data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+---
+
+<div data-gallery>
+  <div class="relative mb-4">
+    {
+      product.discountPercent && (
+        <span class="absolute top-[10px] left-[10px] z-10 bg-maroon text-white text-[12px] font-extrabold px-[9px] py-1 rounded-[3px]">
+          -{product.discountPercent}%
+        </span>
+      )
+    }
+    {
+      product.gallery.map((item, i) => (
+        <div data-gallery-slide data-index={i} class:list={[i !== 0 && 'hidden']}>
+          <Placeholder
+            icon={product.icon}
+            color={product.color}
+            label={item.label}
+            image={item.image}
+            ratio="1 / 1"
+            iconScale={26}
+          />
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    product.gallery.length > 1 && (
+      <div class="flex gap-3 overflow-x-auto no-scrollbar" role="tablist" aria-label="Fotos del producto">
+        {product.gallery.map((item, i) => (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={i === 0}
+            aria-controls={`gallery-slide-${i}`}
+            data-gallery-thumb
+            data-index={i}
+            class:list={[
+              'shrink-0 w-20 h-20 rounded-card overflow-hidden border-2 transition-colors',
+              i === 0 ? 'border-maroon' : 'border-transparent',
+            ]}
+          >
+            <Placeholder
+              icon={product.icon}
+              color={product.color}
+              label={item.label}
+              image={item.image}
+              ratio="1 / 1"
+              iconScale={34}
+              class="rounded-none"
+            />
+          </button>
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+    const slides = [...gallery.querySelectorAll<HTMLElement>('[data-gallery-slide]')];
+    const thumbs = [...gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumb]')];
+
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        const index = thumb.dataset.index;
+        slides.forEach((slide) => slide.classList.toggle('hidden', slide.dataset.index !== index));
+        thumbs.forEach((t) => {
+          const active = t === thumb;
+          t.setAttribute('aria-selected', String(active));
+          t.classList.toggle('border-maroon', active);
+          t.classList.toggle('border-transparent', !active);
+        });
+      });
+    });
+  });
+</script>

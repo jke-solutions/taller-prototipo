@@ -33,12 +33,12 @@ const { product } = Astro.props;
   </div>
 
   <div data-reveal-child style="--i:1;">
-    <h3 class="font-display text-[30px] text-ink mb-[14px]">{product.name}</h3>
+    <h3 class="font-display text-[34px] md:text-[30px] text-ink mb-[14px]">{product.name}</h3>
     <div class="flex flex-wrap gap-2 mb-5">
       {product.tags.map((t) => <Tag variant={t.variant}>{t.label}</Tag>)}
     </div>
     <p class="font-body text-[16px] text-muted leading-[1.8] mb-6">{product.description}</p>
     <div class="font-display text-[26px] text-maroon mb-[22px]">{product.price}</div>
-    <Button href={product.href} variant="primary">Añadir al carrito</Button>
+    <Button href={product.href} variant="primary">Ver producto</Button>
   </div>
 </article>

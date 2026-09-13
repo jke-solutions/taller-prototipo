@@ -1,0 +1,218 @@
+---
+/**
+ * "Trabajos Personalizados" (servicio del Home → ServicesSection). A
+ * diferencia de Cursos y Talleres, es un servicio genérico: panel con el
+ * proceso (3 pasos) + materiales + WhatsApp directo, y un formulario de
+ * solicitud. Mismo patrón que Contacto (panel maroon + form blanco), sin
+ * backend real (ver script al final — mismo patrón que el form de Contacto).
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import FormField from '@components/ui/FormField.astro';
+import FormSelect from '@components/ui/FormSelect.astro';
+import FormTextarea from '@components/ui/FormTextarea.astro';
+import { site } from '@data/site';
+
+const steps = [
+  'Nos contás qué necesitás: material, cantidad y para qué es.',
+  'Te armamos una propuesta con precio referencial y tiempo de entrega.',
+  'Confirmás el pedido y arrancamos la producción.',
+];
+
+const materials = ['Gres', 'Nogal', 'Roble'];
+
+const tiposPedido = [
+  'Vajilla para negocio',
+  'Mobiliario chico',
+  'Regalo corporativo',
+  'Pieza única',
+  'Otro',
+];
+
+const materialesPreferidos = [
+  'Cerámica (gres)',
+  'Madera (nogal)',
+  'Madera (roble)',
+  'Combinado',
+  'No estoy seguro/a',
+];
+---
+
+<BaseLayout
+  title="Trabajos Personalizados"
+  description="Encargos a medida en cerámica y madera: vajilla para tu restaurante, un regalo corporativo o esa pieza que no encontrás en ningún lado."
+>
+  <div class="bg-cream border-b border-border">
+    <div class="wrap pt-10 pb-8 md:pt-14 md:pb-10">
+      <p class="font-body text-[13px] text-muted mb-3">
+        <a href="/" class="hover:text-ink transition-colors">Inicio</a> /
+        <a href="/servicios" class="hover:text-ink transition-colors">Servicios</a> / Trabajos Personalizados
+      </p>
+      <h1 class="font-display text-[34px] md:text-[44px] text-ink tracking-[-0.01em]">Trabajos Personalizados</h1>
+      <p class="font-body text-[15.5px] md:text-[17px] text-muted mt-3 max-w-[600px]">
+        Encargos a medida en cerámica y madera: vajilla para tu restaurante, un regalo corporativo o esa pieza que no encontrás en ningún lado.
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-white">
+    <div class="max-w-[1000px] mx-auto px-8 py-10 md:py-14">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-7 items-stretch">
+        <!-- Panel: cómo funciona + materiales + WhatsApp directo -->
+        <div class="contact-panel relative overflow-hidden bg-maroon p-9 md:p-10 flex flex-col justify-between" style="color: var(--cream); border-radius: 10px;">
+          <svg viewBox="0 0 200 200" class="absolute -right-12 -top-12" style="width: 220px; height: 220px; opacity: 0.16;" aria-hidden="true">
+            <circle cx="100" cy="100" r="94" fill="none" stroke="var(--cream)" stroke-width="1.5"></circle>
+            <circle cx="100" cy="100" r="66" fill="none" stroke="var(--cream)" stroke-width="1.5"></circle>
+            <circle cx="100" cy="100" r="38" fill="none" stroke="var(--cream)" stroke-width="1.5"></circle>
+          </svg>
+
+          <div class="relative">
+            <div class="w-[46px] h-[46px] rounded-[8px] flex items-center justify-center mb-6" style="background: rgba(251, 242, 225, 0.14);">
+              <Icon name="sketch" size={22} />
+            </div>
+
+            <h2 class="font-display text-[22px] md:text-[24px] mb-3" style="color: var(--cream);">Cómo funciona</h2>
+            <p class="font-body text-[15px] leading-[1.7] max-w-[340px] opacity-90 mb-6">
+              Contanos tu idea con este formulario y te respondemos con una propuesta.
+            </p>
+
+            <ol class="flex flex-col gap-[18px] list-none p-0 m-0">
+              {
+                steps.map((step, i) => (
+                  <li class="flex gap-[14px]">
+                    <span
+                      class="flex-none w-[30px] h-[30px] rounded-full flex items-center justify-center font-display text-[14px] font-bold"
+                      style="border: 1.5px solid rgba(251,242,225,0.4); color: var(--cream);"
+                    >
+                      {i + 1}
+                    </span>
+                    <p class="font-body text-[14.5px] leading-[1.6] opacity-90 m-0">{step}</p>
+                  </li>
+                ))
+              }
+            </ol>
+
+            <div class="flex flex-wrap gap-2 mt-6">
+              {
+                materials.map((m) => (
+                  <span
+                    class="font-body text-[12.5px] font-bold px-3 py-[5px] rounded-tag"
+                    style="border: 1px solid rgba(251,242,225,0.35); color: var(--cream);"
+                  >
+                    {m}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="channel-list relative" style="border-top: 1px solid rgba(251,242,225,0.22);">
+            <p class="font-body text-[13px] opacity-75 mb-[14px]">¿Preferís escribirnos directo?</p>
+            <a href={site.whatsappHref} target="_blank" rel="noopener" class="channel-link">
+              <span class="channel-ring flex-none rounded-full flex items-center justify-center transition-colors">
+                <Icon name="whatsapp" size={18} />
+              </span>
+              <span class="channel-text">
+                <span class="block text-[11.5px] font-bold uppercase tracking-[0.07em] opacity-75">WhatsApp</span>
+                <span class="block text-[15px] font-bold">{site.whatsappNumber}</span>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Formulario de solicitud -->
+        <form data-custom-request-form class="bg-white border border-border p-9 md:p-10 flex flex-col gap-5" style="border-radius: 10px;">
+          <FormField label="Nombre" name="nombre" required autocomplete="name" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FormField label="WhatsApp" name="whatsapp" type="tel" required autocomplete="tel" />
+            <FormField label="Correo electrónico" name="correo" type="email" autocomplete="email" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FormSelect label="Tipo de pedido" name="tipo" required>
+              {tiposPedido.map((t) => <option>{t}</option>)}
+            </FormSelect>
+            <FormSelect label="Material preferido" name="material">
+              {materialesPreferidos.map((m) => <option>{m}</option>)}
+            </FormSelect>
+          </div>
+
+          <FormField label="Cantidad aproximada" name="cantidad" />
+
+          <FormTextarea
+            label="Contanos tu idea"
+            name="detalle"
+            required
+            rows={5}
+          />
+
+          <label class="flex items-start gap-[10px] text-[13.5px] text-muted leading-[1.6]">
+            <input type="checkbox" name="acepto" required class="mt-[3px]" />
+            Acepto la <a href="/politica-de-privacidad" class="text-ink underline underline-offset-[3px]">Política de Privacidad</a> de Taller Azotea.
+          </label>
+
+          <div>
+            <Button type="submit" variant="primary" size="lg">Enviar solicitud</Button>
+          </div>
+
+          <p class="text-[12.5px] text-muted -mt-2">
+            Te respondemos por WhatsApp o correo en 1-2 días hábiles con una propuesta.
+          </p>
+
+          <p class="text-[12.5px] text-muted -mt-2 hidden" data-custom-request-form-ok>
+            ¡Gracias! Recibimos tu solicitud. (demo — todavía sin backend)
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .channel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 32px;
+    padding-top: 28px;
+  }
+
+  .channel-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--cream);
+  }
+
+  .channel-ring {
+    width: 38px;
+    height: 38px;
+    border: 1.5px solid rgb(251 242 225 / 0.4);
+  }
+
+  .channel-link:hover .channel-ring {
+    border-color: rgb(251 242 225 / 0.7);
+  }
+
+  .channel-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+</style>
+
+<script>
+  // Sin backend en el prototipo: evita el submit real y muestra un acuse
+  // (mismo patrón que el formulario de Contacto).
+  const form = document.querySelector<HTMLFormElement>('[data-custom-request-form]');
+  const ok = document.querySelector<HTMLElement>('[data-custom-request-form-ok]');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (form.checkValidity()) {
+      form.reset();
+      ok?.classList.remove('hidden');
+    }
+  });
+</script>

@@ -1,0 +1,20 @@
+---
+/**
+ * Detalles/cuidados del producto, en texto plano debajo de la galería +
+ * info (sin tabs ni sección de reseñas — el cliente pidió no tener reseñas).
+ */
+import type { Product } from '@data/products';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+---
+
+<div class="max-w-[680px] mt-14 md:mt-18 pt-10 border-t border-border">
+  <h2 class="font-display text-[22px] text-ink mb-4">Detalles del producto</h2>
+  <ul class="text-[15px] text-muted leading-[1.8] list-disc pl-5 space-y-1">
+    {product.details.map((line) => <li>{line}</li>)}
+  </ul>
+</div>

@@ -7,6 +7,7 @@ import '@styles/global.css';
 import IconSprite from '@components/ui/IconSprite.astro';
 import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
+import CartDrawer from '@components/layout/CartDrawer.astro';
 import { site } from '@data/site';
 
 interface Props {
@@ -16,10 +17,22 @@ interface Props {
   ogImage?: string;
   /** Ancho completo sin el contenedor de 1120px (para el Home full-bleed). */
   fullBleed?: boolean;
+  /**
+   * Activa el scroll-snap "pantalla por pantalla" (secciones `snap-start` a
+   * 100dvh). Es el diseño exclusivo del Home; en cualquier otra página con
+   * contenido normal (como un formulario largo) el snap-mandatory global
+   * "engancha" el scroll a los puntos de snap y salta por encima del
+   * contenido intermedio — por eso es opt-in y no el default.
+   */
+  snapScroll?: boolean;
 }
 
-const { title, description = site.defaultDescription, ogImage = site.ogImage } =
-  Astro.props;
+const {
+  title,
+  description = site.defaultDescription,
+  ogImage = site.ogImage,
+  snapScroll = false,
+} = Astro.props;
 
 const pageTitle = title ? site.titleTemplate.replace('%s', title) : site.name + ' — Prototipo';
 const pathname = Astro.url.pathname;
@@ -27,7 +40,13 @@ const canonical = new URL(pathname, Astro.site ?? Astro.url).toString();
 ---
 
 <!doctype html>
-<html lang="es" class="snap-y snap-mandatory scroll-pt-[72px] md:scroll-pt-[84px]">
+<html
+  lang="es"
+  class:list={[
+    'scroll-pt-[72px] md:scroll-pt-[84px]',
+    snapScroll && 'snap-y snap-mandatory',
+  ]}
+>
   <head>
     <script is:inline>document.documentElement.classList.add('js');</script>
     <meta charset="UTF-8" />
@@ -69,6 +88,7 @@ const canonical = new URL(pathname, Astro.site ?? Astro.url).toString();
       <slot />
     </main>
     <Footer />
+    <CartDrawer />
 
     <script>
       import { initScrollReveal } from '@/scripts/scrollReveal';

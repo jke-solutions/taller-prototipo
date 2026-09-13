@@ -1,0 +1,273 @@
+---
+/**
+ * Libro de Reclamaciones Virtual — obligatorio en Perú para todo negocio
+ * que vende online (Ley 29571, D.S. 101-2022-PCM). Campos basados en el
+ * formato oficial de INDECOPI (Anexo del reglamento).
+ *
+ * Layout de dos columnas (formulario + panel lateral fijo con la info
+ * legal), inspirado en el Libro de Reclamaciones de referencia del
+ * cliente (origenperegrino.com): barras de sección sólidas, tarjeta única
+ * para el formulario y un panel aparte con plazos/definiciones/datos de
+ * la empresa, en vez de mezclar todo en el header.
+ *
+ * IMPORTANTE (prototipo sin backend): el envío se resuelve con un
+ * `mailto:` armado en el cliente — abre el correo del consumidor con todo
+ * pre-llenado hacia `site.contactEmail`. No hay servidor propio que
+ * reciba/guarde el reclamo todavía. Cuando el proyecto tenga backend real,
+ * reemplazar el submit por un POST a la API y guardar el reclamo con un
+ * correlativo, tal como exige la norma.
+ *
+ * *** TODO: el panel lateral incluye datos de la empresa (razón social,
+ * RUC, domicilio fiscal) que INDECOPI exige mostrar junto al libro — el
+ * cliente debe confirmarlos antes de publicar.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import Field from '@components/ui/FormField.astro';
+import SelectField from '@components/ui/FormSelect.astro';
+import TextAreaField from '@components/ui/FormTextarea.astro';
+import { site } from '@data/site';
+
+const departamentos = [
+  'Amazonas', 'Áncash', 'Apurímac', 'Arequipa', 'Ayacucho', 'Cajamarca',
+  'Callao', 'Cusco', 'Huancavelica', 'Huánuco', 'Ica', 'Junín',
+  'La Libertad', 'Lambayeque', 'Lima', 'Loreto', 'Madre de Dios',
+  'Moquegua', 'Pasco', 'Piura', 'Puno', 'San Martín', 'Tacna',
+  'Tumbes', 'Ucayali',
+];
+
+const sectionBar =
+  'block font-body text-[12.5px] font-bold uppercase tracking-[0.04em] text-cream bg-ink px-4 py-[10px] rounded-[4px] mb-4';
+---
+
+<BaseLayout
+  title="Libro de Reclamaciones"
+  description="Libro de Reclamaciones Virtual de Taller Azotea, conforme al Código de Protección y Defensa del Consumidor."
+>
+  <div class="wrap py-14 md:py-18">
+    <header class="max-w-[680px] mb-10">
+      <p class="section-eyebrow">Libro de Reclamaciones Virtual</p>
+      <h1 class="font-display text-[30px] md:text-[36px] text-ink mt-3">
+        Presenta tu reclamo o queja
+      </h1>
+    </header>
+
+    <div class="grid lg:grid-cols-[1fr_300px] gap-8 items-start">
+      <form
+        class="border border-border rounded-card bg-white p-6 md:p-10 space-y-10"
+        data-claim-form
+      >
+        <!-- 1. Datos del consumidor -->
+        <fieldset>
+          <legend class={sectionBar}>1. Datos del consumidor reclamante</legend>
+
+          <div class="space-y-4">
+            <div class="flex gap-6 text-[14px]">
+              <label class="flex items-center gap-2">
+                <input type="radio" name="tipoPersona" value="Natural" checked required />
+                Persona natural
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="tipoPersona" value="Jurídica" />
+                Persona jurídica
+              </label>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <Field label="Nombres y apellidos / Razón social" name="nombre" required autocomplete="name" />
+              <div class="grid grid-cols-[130px_1fr] gap-3">
+                <SelectField label="Tipo de doc." name="tipoDocumento" required>
+                  <option value="DNI">DNI</option>
+                  <option value="Carné de extranjería">Carné ext.</option>
+                  <option value="Pasaporte">Pasaporte</option>
+                  <option value="RUC">RUC</option>
+                </SelectField>
+                <Field label="N.° de documento" name="numeroDocumento" required />
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <Field label="Correo electrónico" name="email" type="email" required autocomplete="email" />
+              <Field label="Teléfono" name="telefono" type="tel" required autocomplete="tel" />
+            </div>
+
+            <Field label="Domicilio (dirección)" name="direccion" required autocomplete="street-address" />
+
+            <div class="grid sm:grid-cols-3 gap-4">
+              <SelectField label="Departamento" name="departamento" required>
+                {departamentos.map((d) => <option value={d}>{d}</option>)}
+              </SelectField>
+              <Field label="Provincia" name="provincia" required />
+              <Field label="Distrito" name="distrito" required />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 2. Identificación del bien contratado -->
+        <fieldset>
+          <legend class={sectionBar}>2. Identificación del bien contratado</legend>
+
+          <div class="space-y-4">
+            <div class="flex gap-6 text-[14px]">
+              <label class="flex items-center gap-2">
+                <input type="radio" name="tipoBien" value="Producto" checked required />
+                Producto
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="tipoBien" value="Servicio" />
+                Servicio
+              </label>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <Field label="Producto o servicio contratado" name="bienContratado" required />
+              <Field label="Monto reclamado (S/, opcional)" name="monto" type="number" />
+            </div>
+
+            <div>
+              <span class="block font-body text-[13px] font-bold text-ink mb-[6px]">Tipo de comprobante</span>
+              <div class="flex flex-wrap gap-x-6 gap-y-2 text-[14px]">
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="comprobante" value="Boleta" checked />
+                  Boleta
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="comprobante" value="Factura" />
+                  Factura
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="comprobante" value="Sin comprobante" />
+                  Sin comprobante
+                </label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 3. Detalle -->
+        <fieldset>
+          <legend class={sectionBar}>3. Detalle de la reclamación</legend>
+
+          <div class="space-y-4">
+            <div class="flex gap-6 text-[14px]">
+              <label class="flex items-center gap-2">
+                <input type="radio" name="tipoReclamo" value="Reclamo" checked required />
+                Reclamo
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="tipoReclamo" value="Queja" />
+                Queja
+              </label>
+            </div>
+
+            <TextAreaField label="Detalle de los hechos" name="detalle" required />
+            <TextAreaField label="Pedido del consumidor (qué solicitas)" name="pedido" required />
+
+            <p class="text-[12.5px] text-muted leading-[1.6] bg-cream border border-border rounded-[4px] px-4 py-3">
+              ¿Tienes fotos, boletas o algún comprobante? Este formulario todavía no
+              adjunta archivos: al enviarlo se abre tu correo con todo pre-llenado —
+              agrega los adjuntos ahí antes de mandarlo.
+            </p>
+          </div>
+        </fieldset>
+
+        <!-- 4. Declaraciones -->
+        <fieldset class="space-y-3 border-t border-border pt-6">
+          <label class="flex items-start gap-[10px] text-[13.5px] text-muted leading-[1.6]">
+            <input type="checkbox" required class="mt-[3px]" />
+            Declaro que la información consignada en este formulario es verdadera.
+          </label>
+          <label class="flex items-start gap-[10px] text-[13.5px] text-muted leading-[1.6]">
+            <input type="checkbox" required class="mt-[3px]" />
+            He leído y acepto la <a href="/politica-de-privacidad" class="text-ink underline underline-offset-[3px]">política de privacidad</a>.
+          </label>
+        </fieldset>
+
+        <div>
+          <Button type="submit" variant="primary" class="w-full sm:w-auto">
+            Enviar reclamación
+          </Button>
+          <p class="text-[12.5px] text-muted mt-3 hidden" data-claim-ok>
+            Se abrió tu correo con la reclamación lista para enviar a {site.contactEmail}.
+            Revisa los datos, adjunta lo que necesites y dale enviar desde ahí.
+          </p>
+        </div>
+      </form>
+
+      <!-- Panel lateral: plazos, definiciones y datos de la empresa -->
+      <aside class="lg:sticky lg:top-8 space-y-4">
+        <div class="border border-border rounded-card bg-white p-6 space-y-4">
+          <p class="font-body text-[13.5px] leading-[1.7] text-ink">
+            Conforme al Código de Protección y Defensa del Consumidor (Ley N.° 29571),
+            este establecimiento cuenta con un Libro de Reclamaciones Virtual a
+            disposición del consumidor.
+          </p>
+
+          <p class="font-body text-[13.5px] leading-[1.7] text-ink bg-cream border border-border rounded-[4px] px-4 py-3">
+            Plazo máximo de respuesta:{' '}
+            <strong class="text-ink">15 días hábiles</strong>.
+          </p>
+
+          <dl class="text-[12.5px] text-muted leading-[1.6] space-y-3">
+            <div>
+              <dt class="font-bold text-ink">RECLAMO</dt>
+              <dd>Disconformidad relacionada a los productos o servicios.</dd>
+            </div>
+            <div>
+              <dt class="font-bold text-ink">QUEJA</dt>
+              <dd>Disconformidad no relacionada a los productos o servicios, o malestar respecto a la atención al público.</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="border border-border rounded-card bg-white p-6 space-y-1 text-[12.5px] text-muted leading-[1.6]">
+          <p class="font-bold text-ink text-[13px]">{site.name}</p>
+          <p>RUC: <strong class="text-ink">*** [RUC] ***</strong></p>
+          <p>Domicilio fiscal: <strong class="text-ink">*** [dirección legal] ***</strong></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ contactEmail: site.contactEmail }}>
+  // Demo sin backend: arma un mailto: con todos los campos y lo abre.
+  // Cuando exista backend real, este bloque se reemplaza por un POST a la API.
+  const form = document.querySelector('[data-claim-form]');
+  const ok = document.querySelector('[data-claim-ok]');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const data = new FormData(form);
+    const get = (name) => data.get(name) || '—';
+
+    const lines = [
+      `Tipo de persona: ${get('tipoPersona')}`,
+      `Nombre / Razón social: ${get('nombre')}`,
+      `Documento: ${get('tipoDocumento')} ${get('numeroDocumento')}`,
+      `Correo: ${get('email')}`,
+      `Teléfono: ${get('telefono')}`,
+      `Dirección: ${get('direccion')}, ${get('distrito')}, ${get('provincia')}, ${get('departamento')}`,
+      '',
+      `Tipo de bien: ${get('tipoBien')}`,
+      `Producto/servicio contratado: ${get('bienContratado')}`,
+      `Monto reclamado: S/ ${get('monto')}`,
+      `Comprobante: ${get('comprobante')}`,
+      '',
+      `Tipo: ${get('tipoReclamo')}`,
+      `Detalle de los hechos: ${get('detalle')}`,
+      `Pedido del consumidor: ${get('pedido')}`,
+    ].join('\n');
+
+    const subject = encodeURIComponent(`Libro de Reclamaciones — ${get('nombre')}`);
+    const body = encodeURIComponent(lines);
+    window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
+
+    ok?.classList.remove('hidden');
+  });
+</script>
