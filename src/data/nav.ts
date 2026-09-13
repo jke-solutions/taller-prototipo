@@ -15,6 +15,7 @@ export const mainNav: NavItem[] = [
 ];
 
 export const helpNav: NavItem[] = [
+  { label: 'Seguimiento de pedido', href: '/seguimiento' },
   { label: 'Preguntas frecuentes', href: '/preguntas-frecuentes' },
   { label: 'Envíos y devoluciones', href: '/envios-y-devoluciones' },
 ];

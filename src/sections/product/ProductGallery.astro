@@ -13,6 +13,7 @@
  * los dos lugares.
  */
 import Placeholder from '@components/ui/Placeholder.astro';
+import Icon from '@components/ui/Icon.astro';
 import type { Product } from '@data/products';
 
 interface Props {
@@ -34,14 +35,38 @@ const { product } = Astro.props;
     {
       product.gallery.map((item, i) => (
         <div data-gallery-slide data-index={i} class:list={[i !== 0 && 'hidden']}>
-          <Placeholder
-            icon={product.icon}
-            color={product.color}
-            label={item.label}
-            image={item.image}
-            ratio="1 / 1"
-            iconScale={26}
-          />
+          {item.image ? (
+            <button
+              type="button"
+              class="group relative block w-full text-left cursor-zoom-in"
+              data-gallery-zoom-trigger
+              data-src={item.image.src}
+              data-alt={item.image.alt}
+              aria-label={`Ver imagen más grande: ${item.image.alt}`}
+            >
+              <Placeholder
+                icon={product.icon}
+                color={product.color}
+                label={item.label}
+                image={item.image}
+                ratio="1 / 1"
+                iconScale={26}
+              />
+              <span class="absolute bottom-[10px] left-1/2 -translate-x-1/2 flex items-center gap-[6px] whitespace-nowrap rounded-full bg-white/95 px-3 py-[7px] font-body text-[12.5px] font-bold text-ink shadow-[0_4px_10px_rgba(0,0,0,0.14)] opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
+                <Icon name="search" size={14} />
+                Haz clic para agrandar
+              </span>
+            </button>
+          ) : (
+            <Placeholder
+              icon={product.icon}
+              color={product.color}
+              label={item.label}
+              image={item.image}
+              ratio="1 / 1"
+              iconScale={26}
+            />
+          )}
         </div>
       ))
     }
@@ -77,6 +102,25 @@ const { product } = Astro.props;
       </div>
     )
   }
+
+  <div
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-[rgba(20,10,8,0.85)] p-4"
+    data-gallery-modal
+    role="dialog"
+    aria-modal="true"
+    aria-label={`Foto ampliada de ${product.name}`}
+    hidden
+  >
+    <button
+      type="button"
+      class="absolute top-4 right-4 md:top-6 md:right-6 text-white"
+      aria-label="Cerrar"
+      data-gallery-modal-close
+    >
+      <Icon name="close" size={26} />
+    </button>
+    <img data-gallery-modal-image src="" alt="" class="max-h-[90vh] max-w-[90vw] w-auto h-auto rounded-card object-contain" />
+  </div>
 </div>
 
 <script>
@@ -95,6 +139,40 @@ const { product } = Astro.props;
           t.classList.toggle('border-transparent', !active);
         });
       });
+    });
+
+    const modal = gallery.querySelector<HTMLElement>('[data-gallery-modal]');
+    const modalImage = modal?.querySelector<HTMLImageElement>('[data-gallery-modal-image]');
+    const zoomTriggers = [...gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-zoom-trigger]')];
+
+    const closeModal = () => {
+      if (!modal) return;
+      modal.hidden = true;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+    };
+
+    zoomTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        if (!modal || !modalImage) return;
+        modalImage.src = trigger.dataset.src ?? '';
+        modalImage.alt = trigger.dataset.alt ?? '';
+        modal.hidden = false;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+      });
+    });
+
+    modal?.querySelectorAll<HTMLElement>('[data-gallery-modal-close]').forEach((el) => {
+      el.addEventListener('click', closeModal);
+    });
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && !modal.hidden) closeModal();
     });
   });
 </script>

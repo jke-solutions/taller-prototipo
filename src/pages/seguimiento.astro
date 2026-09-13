@@ -11,6 +11,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Button from '@components/ui/Button.astro';
 import Icon from '@components/ui/Icon.astro';
 import FormField from '@components/ui/FormField.astro';
+import { site } from '@data/site';
 ---
 
 <BaseLayout
@@ -23,36 +24,61 @@ import FormField from '@components/ui/FormField.astro';
         data-seguimiento-search
         class="flex flex-col items-center text-center gap-6 max-w-[440px] mx-auto bg-white border border-border rounded-card p-9 md:p-11"
       >
-        <div class="w-16 h-16 rounded-full bg-cream flex items-center justify-center">
-          <Icon name="search" size={26} class="text-maroon" />
+        <div class="relative w-16 h-16" data-seguimiento-logo>
+          <span
+            class="absolute inset-0 rounded-full border-2 border-maroon opacity-0"
+            data-seguimiento-ring
+          ></span>
+          <span
+            class="absolute inset-0 rounded-full border-2 border-maroon opacity-0"
+            style="animation-delay: 0.5s;"
+            data-seguimiento-ring
+          ></span>
+          <img
+            src="/felipe-logo.svg"
+            alt=""
+            width="64"
+            height="64"
+            class="relative w-16 h-16 object-contain"
+            data-seguimiento-logo-img
+          />
         </div>
 
-        <div class="flex flex-col gap-2">
-          <h1 class="font-display text-[24px] text-ink">Sigue tu pedido</h1>
+        <div class="hidden flex-col gap-2" data-seguimiento-searching-content>
+          <h1 class="font-display text-[24px] text-ink">Buscando tu pedido…</h1>
           <p class="text-[14.5px] leading-relaxed text-muted m-0">
-            Ingresa el número de tu pedido y el correo con el que lo hiciste para ver en qué va.
+            Un momento, estamos revisando en este navegador.
           </p>
         </div>
 
-        <form data-seguimiento-form class="w-full flex flex-col gap-4 text-left" novalidate>
-          <FormField label="Número de pedido" name="pedido" required autocomplete="off" />
-          <FormField label="Correo electrónico" name="correo" type="email" required autocomplete="email" />
+        <div class="w-full flex flex-col gap-6" data-seguimiento-idle-content>
+          <div class="flex flex-col gap-2">
+            <h1 class="font-display text-[24px] text-ink">Sigue tu pedido</h1>
+            <p class="text-[14.5px] leading-relaxed text-muted m-0">
+              Ingresa tu número de pedido y el correo con el que compraste para ver en qué va tu
+              entrega.
+            </p>
+          </div>
 
-          <p class="hidden text-[13px] font-bold text-maroon m-0" data-seguimiento-error>
-            No encontramos un pedido con esos datos en este navegador. Revisa el número de pedido
-            y el correo.
+          <form data-seguimiento-form class="w-full flex flex-col gap-4 text-left" novalidate>
+            <FormField label="Número de pedido" name="pedido" required autocomplete="off" />
+            <FormField label="Correo electrónico" name="correo" type="email" required autocomplete="email" />
+
+            <p class="hidden text-[13px] font-bold text-maroon m-0" data-seguimiento-error>
+              No encontramos un pedido con esos datos en este navegador. Revisa el número de pedido
+              y el correo, o escríbenos por WhatsApp si compraste desde otro equipo.
+            </p>
+
+            <Button type="submit" variant="primary" size="lg" data-seguimiento-submit>
+              Buscar pedido
+              <Icon name="arrow-right" size={15} />
+            </Button>
+          </form>
+
+          <p class="text-[12.5px] leading-relaxed text-muted m-0">
+            ¿Olvidaste tu número de pedido? <a href={site.whatsappHref} target="_blank" rel="noopener" class="font-bold text-ink underline underline-offset-[3px]">Escríbenos por WhatsApp</a> y te ayudamos a encontrarlo.
           </p>
-
-          <Button type="submit" variant="primary" size="lg">
-            Buscar pedido
-            <Icon name="arrow-right" size={15} />
-          </Button>
-        </form>
-
-        <p class="text-[12.5px] leading-relaxed text-muted m-0">
-          El seguimiento se guarda en este navegador. Si compraste desde otro dispositivo o no
-          encuentras tu número de pedido, escríbenos por WhatsApp.
-        </p>
+        </div>
       </div>
 
       <div
@@ -97,15 +123,62 @@ import FormField from '@components/ui/FormField.astro';
               <span class="font-display text-[19px] text-maroon" data-seguimiento-total></span>
             </div>
           </div>
-          <div class="flex items-start gap-2 text-[12.5px] text-muted">
-            <Icon name="truck" size={16} class="text-maroon shrink-0 mt-0.5" />
-            <span data-seguimiento-address></span>
+          <div class="border border-border rounded-card p-6 flex flex-col gap-4">
+            <p class="font-display text-[16px] text-ink">Datos de envío</p>
+            <div class="flex items-start gap-3 text-[13px] text-muted">
+              <Icon name="users" size={16} class="text-maroon shrink-0 mt-0.5" />
+              <span data-seguimiento-customer-name></span>
+            </div>
+            <div class="flex items-start gap-3 text-[13px] text-muted">
+              <Icon name="map-pin" size={16} class="text-maroon shrink-0 mt-0.5" />
+              <span data-seguimiento-customer-address></span>
+            </div>
+            <div class="flex items-start gap-3 text-[13px] text-muted">
+              <Icon name="truck" size={16} class="text-maroon shrink-0 mt-0.5" />
+              <span data-seguimiento-shipping-method></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  [data-seguimiento-logo-img] {
+    animation: seguimiento-float 3s ease-in-out infinite;
+  }
+
+  [data-seguimiento-logo].is-searching [data-seguimiento-logo-img] {
+    animation: seguimiento-bounce 1.1s ease-in-out infinite;
+  }
+
+  [data-seguimiento-logo].is-searching [data-seguimiento-ring] {
+    animation: seguimiento-ring-pulse 1.6s ease-out infinite;
+  }
+
+  @keyframes seguimiento-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  @keyframes seguimiento-bounce {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-8px) rotate(4deg); }
+  }
+
+  @keyframes seguimiento-ring-pulse {
+    0% { transform: scale(0.85); opacity: 0.55; }
+    100% { transform: scale(1.45); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-seguimiento-logo-img],
+    [data-seguimiento-ring] {
+      animation: none !important;
+    }
+  }
+</style>
 
 <template data-seguimiento-step-template>
   <div class="flex gap-4">
@@ -152,7 +225,52 @@ import FormField from '@components/ui/FormField.astro';
   const whatsappEl = document.querySelector<HTMLAnchorElement>('[data-seguimiento-whatsapp]');
   const itemsEl = document.querySelector<HTMLElement>('[data-seguimiento-items]');
   const totalEl = document.querySelector<HTMLElement>('[data-seguimiento-total]');
-  const addressEl = document.querySelector<HTMLElement>('[data-seguimiento-address]');
+  const customerNameEl = document.querySelector<HTMLElement>('[data-seguimiento-customer-name]');
+  const customerAddressEl = document.querySelector<HTMLElement>('[data-seguimiento-customer-address]');
+  const shippingMethodEl = document.querySelector<HTMLElement>('[data-seguimiento-shipping-method]');
+
+  const brandVar: Record<string, string> = {
+    teal: 'var(--teal)',
+    gold: 'var(--gold)',
+    olive: 'var(--olive)',
+    coral: 'var(--coral)',
+    violet: 'var(--violet)',
+  };
+
+  const logoEl = document.querySelector<HTMLElement>('[data-seguimiento-logo]');
+  const submitBtn = document.querySelector<HTMLButtonElement>('[data-seguimiento-submit]');
+  const idleContentEl = document.querySelector<HTMLElement>('[data-seguimiento-idle-content]');
+  const searchingContentEl = document.querySelector<HTMLElement>('[data-seguimiento-searching-content]');
+
+  function setSearching(isSearching: boolean) {
+    logoEl?.classList.toggle('is-searching', isSearching);
+    if (submitBtn) submitBtn.disabled = isSearching;
+    searchEl?.classList.toggle('justify-center', isSearching);
+    idleContentEl?.classList.toggle('hidden', isSearching);
+    idleContentEl?.classList.toggle('flex', !isSearching);
+    searchingContentEl?.classList.toggle('hidden', !isSearching);
+    searchingContentEl?.classList.toggle('flex', isSearching);
+  }
+
+  // Delay artificial: no hay backend real, la búsqueda es instantánea, pero
+  // se oculta el formulario y se deja la animación del logo un momento —
+  // igual que un buscador real que tarda en responder. Se fija la altura
+  // del formulario antes de ocultarlo para que la página no salte.
+  function performSearch(pedido: string, correo: string) {
+    errorEl?.classList.add('hidden');
+    if (searchEl) searchEl.style.minHeight = `${searchEl.offsetHeight}px`;
+    setSearching(true);
+    window.setTimeout(() => {
+      const order = findOrder(pedido, correo);
+      setSearching(false);
+      if (searchEl) searchEl.style.minHeight = '';
+      if (!order) {
+        errorEl?.classList.remove('hidden');
+        return;
+      }
+      showResult(order);
+    }, 2200);
+  }
 
   function renderTimeline(order: Order) {
     if (!timelineEl || !stepTemplate) return;
@@ -221,18 +339,31 @@ import FormField from '@components/ui/FormField.astro';
       itemsEl.innerHTML = '';
       order.items.forEach((item) => {
         const row = document.createElement('div');
-        row.className = 'flex items-center justify-between text-[13.5px]';
+        row.className = 'flex items-center justify-between gap-3 text-[13.5px]';
+
+        const left = document.createElement('div');
+        left.className = 'flex items-center gap-3 min-w-0';
+
+        const thumb = document.createElement('div');
+        thumb.className = 'w-9 h-9 rounded-[6px] flex items-center justify-center shrink-0';
+        const accent = brandVar[item.color];
+        thumb.style.background = accent ? `color-mix(in oklch, ${accent} 16%, white)` : 'var(--cream)';
+        thumb.innerHTML = `<svg width="16" height="16" style="color: ${accent ?? 'var(--muted)'}"><use href="#ic-${item.icon}"></use></svg>`;
+
         const label = document.createElement('span');
-        label.className = 'text-muted';
+        label.className = 'text-muted truncate';
         label.textContent = `${item.name} x${item.qty}`;
+
+        left.append(thumb, label);
+
         const value = document.createElement('span');
-        value.className = 'font-bold text-ink';
+        value.className = 'font-bold text-ink shrink-0';
         value.textContent = item.price;
-        row.append(label, value);
+        row.append(left, value);
         itemsEl.appendChild(row);
       });
       const shippingRow = document.createElement('div');
-      shippingRow.className = 'flex items-center justify-between text-[13.5px]';
+      shippingRow.className = 'flex items-center justify-between text-[13.5px] pt-3 mt-1 border-t border-border';
       const shippingLabel = document.createElement('span');
       shippingLabel.className = 'text-muted';
       shippingLabel.textContent = order.shippingMethod.label;
@@ -244,8 +375,14 @@ import FormField from '@components/ui/FormField.astro';
     }
 
     if (totalEl) totalEl.textContent = `S/ ${order.total.toFixed(2)}`;
-    if (addressEl) {
-      addressEl.textContent = `${order.shippingMethod.label} — ${order.customer.direccion}, ${order.customer.distrito}.`;
+    if (customerNameEl) {
+      customerNameEl.textContent = order.customer.correo;
+    }
+    if (customerAddressEl) {
+      customerAddressEl.textContent = `${order.customer.direccion}, ${order.customer.distrito}, ${order.customer.ciudad}.`;
+    }
+    if (shippingMethodEl) {
+      shippingMethodEl.textContent = order.shippingMethod.label;
     }
 
     searchEl?.classList.add('hidden');
@@ -266,14 +403,7 @@ import FormField from '@components/ui/FormField.astro';
     const data = new FormData(form);
     const pedido = String(data.get('pedido') ?? '');
     const correo = String(data.get('correo') ?? '');
-    const order = findOrder(pedido, correo);
-
-    if (!order) {
-      errorEl?.classList.remove('hidden');
-      return;
-    }
-    errorEl?.classList.add('hidden');
-    showResult(order);
+    performSearch(pedido, correo);
   });
 
   // Precarga el número de pedido desde el link de /gracias y el correo
@@ -292,7 +422,6 @@ import FormField from '@components/ui/FormField.astro';
   }
 
   if (pedidoParam && saved?.correo) {
-    const order = findOrder(pedidoParam, saved.correo);
-    if (order) showResult(order);
+    performSearch(pedidoParam, saved.correo);
   }
 </script>
